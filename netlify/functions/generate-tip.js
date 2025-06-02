@@ -47,9 +47,9 @@ exports.handler = async (event, context) => {
 
         // Google Generative AI ஐ துவக்கவும்
         const genAI = new GoogleGenerativeAI(API_KEY);
-        const model = genAI.getGenerativeModel({ model: "gemini-pro" }); // அல்லது "gemini-1.5-flash" போன்றவை
+        const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" }); // அல்லது "gemini-1.5-flash" போன்றவை
 
-        console.log('Calling Gemini API with model:', "gemini-pro");
+        console.log('Calling Gemini API with model:', "gemini-pro-vision");
         const result = await model.generateContent(prompt);
         const response = await result.response;
         const text = response.text();
