@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personalized Wellness Tip Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Chosen Palette: Serene Horizon (Background: #FDFBF6, Card: #FFFFFF, Primary Accent: #6B8E23 (Olive Green), Secondary Accent: #87CEEB (Sky Blue), Text: #333333, Light Text: #6B7280, Error: #DC2626, Tip Box: #E0F2F7) */
+        /* Application Structure Plan: The SPA maintains a single-page, centered card layout for simplicity and direct interaction. The core interaction is user input for a wellness goal, followed by an AI-generated tip. The updated design focuses on a calming aesthetic with improved visual hierarchy and user feedback (loading state, multilingual support). The structure prioritizes a clear call-to-action and prominent display of the AI-generated solution, making it intuitive for users to achieve their immediate goal of getting a personalized tip. */
+        /* Visualization & Content Choices: The primary "visualization" is the AI-generated text tip itself, which is dynamically updated. The interaction is direct input and button click. The design aims to make this textual output feel like a valuable, personalized insight. No complex charts are used as the core function is text generation. The multilingual support allows for broader user understanding. */
+        /* CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. */
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF6; /* Very light, warm off-white for a soft, inviting base */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 1.5rem;
+            color: #333333; /* Darker text for better readability */
+        }
+        .container {
+            max-width: 640px;
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 1.75rem;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08); /* Softer, larger shadow */
+            padding: 2.5rem;
+            text-align: center;
+            position: relative;
+        }
+        .language-selector-wrapper {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+        }
+        .input-field {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 1px solid #D1D5DB; /* Light gray border */
+            border-radius: 0.875rem;
+            font-size: 1.05rem;
+            margin-bottom: 1.5rem;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .input-field:focus {
+            border-color: #87CEEB; /* Sky Blue on focus */
+            box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.4); /* Subtle blue focus ring */
+        }
+        .generate-button {
+            background-color: #6B8E23; /* Olive Green - Primary accent, natural and calming */
+            color: #ffffff;
+            padding: 1rem 2rem;
+            border-radius: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
+            box-shadow: 0 6px 15px rgba(107, 142, 35, 0.4); /* Stronger button shadow */
+            letter-spacing: 0.025em;
+        }
+        .generate-button:hover {
+            background-color: #556B2F; /* Darker Olive Green on hover */
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(107, 142, 35, 0.5);
+        }
+        .generate-button:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 10px rgba(107, 142, 35, 0.3);
+        }
+        .loading-indicator {
+            display: none; /* Managed by JS, starts hidden */
+            margin-top: 2rem;
+            font-size: 1.15rem;
+            color: #6B7280; /* Gray-500 */
+            display: flex; /* Use flex when visible */
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #6B8E23; /* Olive Green spinner */
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .tip-box {
+            background-color: #E0F2F7; /* Very light Sky Blue for tip box, calming */
+            border: 1px solid #B0D9E8; /* Slightly darker Sky Blue border */
+            border-radius: 1.25rem;
+            padding: 2rem;
+            margin-top: 2rem;
+            text-align: left;
+            color: #333333;
+            line-height: 1.7;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-style: italic;
+            font-size: 1.05rem;
+            transition: all 0.5s ease-in-out;
+        }
+        .tip-box p {
+            margin: 0;
+        }
+        .text-red-600 {
+            color: #DC2626; /* Tailwind's red-600 for errors */
+        }
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            body {
+                padding: 1rem;
+            }
+            .container {
+                padding: 1.5rem;
+                border-radius: 1.25rem;
+            }
+            .generate-button {
+                width: 100%;
+                padding: 0.9rem 1.5rem;
+            }
+            .language-selector-wrapper {
+                top: 0.75rem;
+                right: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="language-selector-wrapper">
+            <select id="languageSelect" class="p-2 border border-gray-300 rounded-md text-sm bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
+                <option value="ta">தமிழ்</option>
+                <option value="en">English</option>
+            </select>
+        </div>
+        <h1 id="mainTitle" class="text-3xl font-bold text-gray-800 mb-4 lg:text-4xl"></h1>
+        <p id="descriptionText" class="text-gray-600 mb-8 text-lg"></p>
+
+        <div class="mb-4">
+            <input type="text" id="goalInput" class="input-field">
+        </div>
+
+        <button id="generateBtn" class="generate-button"></button>
+
+        <div id="loading" class="loading-indicator">
+            <div class="loading-spinner"></div>
+            <p id="loadingText"></p>
+        </div>
+
+        <div id="tipOutput" class="tip-box"></div>
+    </div>
+
+    <script>
+        // Translations object for multilingual support
+        const translations = {
+            ta: {
+                mainTitle: 'உங்கள் ஆரோக்கிய இலக்கு என்ன?',
+                descriptionText: 'உங்கள் இலக்கை இங்கே உள்ளிட்டு, தனிப்பயனாக்கப்பட்ட ஆரோக்கிய உதவிக்குறிப்பைப் பெறுங்கள்.',
+                goalPlaceholder: 'எ.கா. மன அழுத்தத்தைக் குறைப்பது, எடை குறைப்பது, அதிக ஆற்றல் பெறுவது...',
+                generateButton: 'உதவிக்குறிப்பைப் பெறுங்கள்',
+                loadingText: 'உதவிக்குறிப்பு உருவாக்கப்படுகிறது...',
+                initialTip: 'உங்கள் தனிப்பயனாக்கப்பட்ட ஆரோக்கிய உதவிக்குறிப்பு இங்கே தோன்றும்.',
+                emptyGoalError: 'தயவுசெய்து உங்கள் ஆரோக்கிய இலக்கை உள்ளிடவும்.',
+                apiError: 'உதவிக்குறிப்பை உருவாக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.',
+                fetchError: 'உதவிக்குறிப்பை உருவாக்கும்போது ஒரு பிழை ஏற்பட்டது. உங்கள் இணைய இணைப்பைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்.',
+                aiPrompt: (goal) => `ஒரு பயனர் தங்கள் ஆரோக்கிய இலக்கை "${goal}" என்று குறிப்பிட்டுள்ளார். இந்த இலக்கை அடைய உதவும் ஒரு தனிப்பயனாக்கப்பட்ட, சுருக்கமான, ஊக்கமளிக்கும் ஆரோக்கிய உதவிக்குறிப்பை தமிழில் வழங்குங்கள். உதவிக்குறிப்பு செயல்முறைக்குரியதாகவும், எளிதில் பின்பற்றக்கூடியதாகவும் இருக்க வேண்டும்.`
+            },
+            en: {
+                mainTitle: 'What is your wellness goal?',
+                descriptionText: 'Enter your goal here to get a personalized wellness tip.',
+                goalPlaceholder: 'e.g., Reduce stress, Lose weight, Gain more energy...',
+                generateButton: 'Get Tip',
+                loadingText: 'Generating tip...',
+                initialTip: 'Your personalized wellness tip will appear here.',
+                emptyGoalError: 'Please enter your wellness goal.',
+                apiError: 'Could not generate tip. Please try again.',
+                fetchError: 'An error occurred while generating the tip. Please check your internet connection and try again.',
+                aiPrompt: (goal) => `A user has stated their wellness goal as "${goal}". Provide a personalized, concise, and encouraging wellness tip in English to help them achieve this goal. The tip should be actionable and easy to follow.`
+            }
+        };
+
+        // Get references to DOM elements
+        const goalInput = document.getElementById('goalInput');
+        const generateBtn = document.getElementById('generateBtn');
+        const loadingIndicator = document.getElementById('loading');
+        const tipOutput = document.getElementById('tipOutput');
+        const languageSelect = document.getElementById('languageSelect');
+        const mainTitle = document.getElementById('mainTitle');
+        const descriptionText = document.getElementById('descriptionText');
+        const loadingText = document.getElementById('loadingText');
+
+        let currentLanguage = 'ta'; // Default language is Tamil
+
+        // Function to update all UI text based on the selected language
+        function updateUI() {
+            const t = translations[currentLanguage];
+            mainTitle.textContent = t.mainTitle;
+            descriptionText.textContent = t.descriptionText;
+            goalInput.placeholder = t.goalPlaceholder;
+            generateBtn.textContent = t.generateButton;
+            loadingText.textContent = t.loadingText;
+            tipOutput.innerHTML = `<p>${t.initialTip}</p>`;
+            tipOutput.style.fontStyle = 'italic';
+            // Set input direction for Tamil (or other RTL/LTR languages if needed)
+            if (currentLanguage === 'ta') {
+                goalInput.style.direction = 'ltr'; /* Ensure input direction is left-to-right for consistency */
+            } else {
+                goalInput.style.direction = 'ltr';
+            }
+        }
+
+        // Event listener for language selection change
+        languageSelect.addEventListener('change', (event) => {
+            currentLanguage = event.target.value;
+            updateUI(); /* Update UI immediately when language changes */
+        });
+
+        // Initial UI update when the page loads
+        updateUI();
+
+        // Event listener for the generate button click
+        generateBtn.addEventListener('click', async () => {
+            const userGoal = goalInput.value.trim();
+            const t = translations[currentLanguage]; /* Get current language translations */
+
+            // Basic input validation
+            if (!userGoal) {
+                tipOutput.innerHTML = `<p class="text-red-600">${t.emptyGoalError}</p>`;
+                tipOutput.style.fontStyle = 'normal'; /* Reset font style for error */
+                return;
+            }
+
+            // Show loading indicator and clear previous tip
+            loadingIndicator.style.display = 'flex'; /* Use flex to display spinner and text */
+            tipOutput.innerHTML = '';
+            tipOutput.style.fontStyle = 'italic'; /* Keep italic for initial state/loading */
+
+            try {
+                // Construct the prompt for the AI model based on the selected language
+                const prompt = t.aiPrompt(userGoal);
+
+                // IMPORTANT: We'll now call our own backend endpoint
+                const backendUrl = '/.netlify/functions/generate-tip'; // Netlify Functions endpoint
+
+                // Make the API call to our backend
+                const response = await fetch(backendUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: prompt }) // Send the prompt to the backend
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.tip) {
+                    tipOutput.innerHTML = `<p>${result.tip}</p>`;
+                    tipOutput.style.fontStyle = 'normal'; /* Reset font style after receiving tip */
+                } else {
+                    // Handle cases where the backend response is unexpected or an error occurred
+                    tipOutput.innerHTML = `<p class="text-red-600">${result.error || t.apiError}</p>`;
+                    tipOutput.style.fontStyle = 'normal';
+                    console.error('Backend response error:', result.error || 'Unknown error');
+                }
+
+            } catch (error) {
+                // Handle any errors during the fetch to our backend
+                tipOutput.innerHTML = `<p class="text-red-600">${t.fetchError}</p>`;
+                tipOutput.style.fontStyle = 'normal';
+                console.error('Error connecting to backend:', error);
+            } finally {
+                // Hide loading indicator regardless of success or failure
+                loadingIndicator.style.display = 'none';
+            }
+        });
+    </script>
+  </body>
+</html>
