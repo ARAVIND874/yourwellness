@@ -1,0 +1,8 @@
+[build]
+  publish = "public" # Specifies the directory to publish (your frontend)
+  functions = "netlify/functions" # Specifies the directory where your functions are located
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

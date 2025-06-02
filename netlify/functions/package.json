@@ -1,0 +1,8 @@
+{
+  "name": "generate-tip-function",
+  "version": "1.0.0",
+  "main": "generate-tip.js",
+  "dependencies": {
+    "@google/generative-ai": "^0.11.0"
+  }
+}
