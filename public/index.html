@@ -14,7 +14,7 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #FDFBF6; /* Very light, warm off-white for a soft, inviting base */
+            background-color: #E6F7FF; /* Changed from #FDFBF6 to a very light blue */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -38,13 +38,18 @@
             top: 1.5rem;
             right: 1.5rem;
         }
+        .input-group { /* Added for input and mic button layout */
+            display: flex;
+            align-items: center;
+            gap: 0.75rem; /* Space between input and button */
+            margin-bottom: 1.5rem;
+        }
         .input-field {
-            width: 100%;
+            flex-grow: 1; /* Allows input to take available space */
             padding: 1rem 1.25rem;
             border: 1px solid #D1D5DB; /* Light gray border */
             border-radius: 0.875rem;
             font-size: 1.05rem;
-            margin-bottom: 1.5rem;
             box-sizing: border-box;
             outline: none;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
@@ -53,25 +58,58 @@
             border-color: #87CEEB; /* Sky Blue on focus */
             box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.4); /* Subtle blue focus ring */
         }
+        .mic-button {
+            background-color: #87CEEB; /* Sky Blue - Secondary accent, for mic button */
+            color: #ffffff;
+            padding: 0.8rem 1rem;
+            border-radius: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 10px rgba(135, 206, 235, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none; /* Remove default button border */
+        }
+        .mic-button:hover {
+            background-color: #6AABD4; /* Darker Sky Blue on hover */
+            transform: translateY(-1px);
+            box-shadow: 0 6px 15px rgba(135, 206, 235, 0.4);
+        }
+        .mic-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(135, 206, 235, 0.2);
+        }
+        .mic-button.recording { /* Style when recording */
+            background-color: #DC2626; /* Red to indicate recording */
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+        }
+
         .generate-button {
-            background-color: #6B8E23; /* Olive Green - Primary accent, natural and calming */
+            background-color: #6A0DAD; /* Changed from #6B8E23 (Olive Green) to Deep Purple */
             color: #ffffff;
             padding: 1rem 2rem;
             border-radius: 0.875rem;
             font-weight: 600;
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
-            box-shadow: 0 6px 15px rgba(107, 142, 35, 0.4); /* Stronger button shadow */
+            box-shadow: 0 6px 15px rgba(106, 13, 173, 0.4); /* Updated shadow to match new button color */
             letter-spacing: 0.025em;
         }
         .generate-button:hover {
-            background-color: #556B2F; /* Darker Olive Green on hover */
+            background-color: #4B0A7B; /* Darker Deep Purple on hover */
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(107, 142, 35, 0.5);
+            box-shadow: 0 8px 20px rgba(106, 13, 173, 0.5);
         }
         .generate-button:active {
             transform: translateY(0);
-            box-shadow: 0 4px 10px rgba(107, 142, 35, 0.3);
+            box-shadow: 0 4px 10px rgba(106, 13, 173, 0.3);
         }
         .loading-indicator {
             display: none; /* Managed by JS, starts hidden */
@@ -85,7 +123,7 @@
         }
         .loading-spinner {
             border: 4px solid #f3f3f3;
-            border-top: 4px solid #6B8E23; /* Olive Green spinner */
+            border-top: 4px solid #6A0DAD; /* Changed spinner color to Deep Purple */
             border-radius: 50%;
             width: 24px;
             height: 24px;
@@ -96,8 +134,8 @@
             100% { transform: rotate(360deg); }
         }
         .tip-box {
-            background-color: #E0F2F7; /* Very light Sky Blue for tip box, calming */
-            border: 1px solid #B0D9E8; /* Slightly darker Sky Blue border */
+            background-color: #FFFFAA; /* Changed from #E0F2F7 to light yellow */
+            border: 1px solid #CCCC88; /* Adjusted border to match light yellow */
             border-radius: 1.25rem;
             padding: 2rem;
             margin-top: 2rem;
@@ -135,6 +173,14 @@
                 top: 0.75rem;
                 right: 0.75rem;
             }
+            .input-group {
+                flex-direction: column; /* Stack input and mic button on small screens */
+                gap: 1rem;
+            }
+            .mic-button {
+                width: 100%; /* Full width mic button on small screens */
+                padding: 0.9rem 1.5rem;
+            }
         }
     </style>
 </head>
@@ -149,8 +195,15 @@
         <h1 id="mainTitle" class="text-3xl font-bold text-gray-800 mb-4 lg:text-4xl"></h1>
         <p id="descriptionText" class="text-gray-600 mb-8 text-lg"></p>
 
-        <div class="mb-4">
-            <input type="text" id="goalInput" class="input-field">
+        <div class="input-group"> <input type="text" id="goalInput" class="input-field">
+            <button id="micBtn" class="mic-button" title="Speak your goal">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mic">
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                    <line x1="12" y1="19" x2="12" y2="23"></line>
+                    <line x1="8" y1="23" x2="16" y2="23"></line>
+                </svg>
+            </button>
         </div>
 
         <button id="generateBtn" class="generate-button"></button>
@@ -176,6 +229,9 @@
                 emptyGoalError: 'தயவுசெய்து உங்கள் ஆரோக்கிய இலக்கை உள்ளிடவும்.',
                 apiError: 'உதவிக்குறிப்பை உருவாக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.',
                 fetchError: 'உதவிக்குறிப்பை உருவாக்கும்போது ஒரு பிழை ஏற்பட்டது. உங்கள் இணைய இணைப்பைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்.',
+                microphoneUnsupported: 'உங்கள் உலாவி மைக்ரோஃபோன் உள்ளீட்டை ஆதரிக்கவில்லை.',
+                microphonePermissionDenied: 'மைக்ரோஃபோன் அணுகல் மறுக்கப்பட்டது. அமைப்புகளில் அனுமதிகளை சரிபார்க்கவும்.',
+                microphoneListening: 'கேட்கிறது...',
                 aiPrompt: (goal) => `ஒரு பயனர் தங்கள் ஆரோக்கிய இலக்கை "${goal}" என்று குறிப்பிட்டுள்ளார். இந்த இலக்கை அடைய உதவும் ஒரு தனிப்பயனாக்கப்பட்ட, சுருக்கமான, ஊக்கமளிக்கும் ஆரோக்கிய உதவிக்குறிப்பை தமிழில் வழங்குங்கள். உதவிக்குறிப்பு செயல்முறைக்குரியதாகவும், எளிதில் பின்பற்றக்கூடியதாகவும் இருக்க வேண்டும்.`
             },
             en: {
@@ -188,6 +244,9 @@
                 emptyGoalError: 'Please enter your wellness goal.',
                 apiError: 'Could not generate tip. Please try again.',
                 fetchError: 'An error occurred while generating the tip. Please check your internet connection and try again.',
+                microphoneUnsupported: 'Your browser does not support microphone input.',
+                microphonePermissionDenied: 'Microphone access denied. Please check permissions in settings.',
+                microphoneListening: 'Listening...',
                 aiPrompt: (goal) => `A user has stated their wellness goal as "${goal}". Provide a personalized, concise, and encouraging wellness tip in English to help them achieve this goal. The tip should be actionable and easy to follow.`
             }
         };
@@ -201,8 +260,71 @@
         const mainTitle = document.getElementById('mainTitle');
         const descriptionText = document.getElementById('descriptionText');
         const loadingText = document.getElementById('loadingText');
+        const micBtn = document.getElementById('micBtn'); // New: Mic button
 
         let currentLanguage = 'ta'; // Default language is Tamil
+
+        // Web Speech API configuration
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition; // Will be initialized if API is supported
+
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = currentLanguage;
+
+            recognition.onresult = (event) => {
+                const speechResult = event.results[0][0].transcript;
+                goalInput.value = speechResult;
+                micBtn.classList.remove('recording');
+                loadingIndicator.style.display = 'none'; // Hide listening indicator
+            };
+
+            recognition.onerror = (event) => {
+                micBtn.classList.remove('recording');
+                loadingIndicator.style.display = 'none'; // Hide listening indicator
+                const t = translations[currentLanguage];
+                if (event.error === 'not-allowed') {
+                    tipOutput.innerHTML = `<p class="text-red-600">${t.microphonePermissionDenied}</p>`;
+                } else {
+                    tipOutput.innerHTML = `<p class="text-red-600">${t.apiError}</p>`;
+                }
+                tipOutput.style.fontStyle = 'normal';
+                console.error('Speech recognition error:', event.error);
+            };
+
+            recognition.onend = () => {
+                micBtn.classList.remove('recording');
+                loadingIndicator.style.display = 'none'; // Hide listening indicator
+                tipOutput.innerHTML = `<p>${translations[currentLanguage].initialTip}</p>`; // Reset tip display after recognition
+                tipOutput.style.fontStyle = 'italic';
+            };
+
+            micBtn.addEventListener('click', () => {
+                const t = translations[currentLanguage];
+                micBtn.classList.add('recording');
+                tipOutput.innerHTML = '';
+                tipOutput.style.fontStyle = 'italic';
+                loadingIndicator.style.display = 'flex';
+                loadingText.textContent = t.microphoneListening;
+
+                try {
+                    recognition.lang = currentLanguage;
+                    recognition.start();
+                } catch (e) {
+                    console.warn("Speech recognition could not start:", e);
+                    micBtn.classList.remove('recording');
+                    loadingIndicator.style.display = 'none';
+                    tipOutput.innerHTML = `<p class="text-red-600">${t.apiError}</p>`;
+                    tipOutput.style.fontStyle = 'normal';
+                }
+            });
+
+        } else {
+            micBtn.style.display = 'none';
+            console.warn('Web Speech API not supported in this browser.');
+        }
 
         // Function to update all UI text based on the selected language
         function updateUI() {
@@ -214,18 +336,21 @@
             loadingText.textContent = t.loadingText;
             tipOutput.innerHTML = `<p>${t.initialTip}</p>`;
             tipOutput.style.fontStyle = 'italic';
-            // Set input direction for Tamil (or other RTL/LTR languages if needed)
+
             if (currentLanguage === 'ta') {
-                goalInput.style.direction = 'ltr'; /* Ensure input direction is left-to-right for consistency */
+                goalInput.style.direction = 'ltr';
             } else {
                 goalInput.style.direction = 'ltr';
+            }
+            if (recognition) {
+                recognition.lang = currentLanguage;
             }
         }
 
         // Event listener for language selection change
         languageSelect.addEventListener('change', (event) => {
             currentLanguage = event.target.value;
-            updateUI(); /* Update UI immediately when language changes */
+            updateUI();
         });
 
         // Initial UI update when the page loads
@@ -234,53 +359,45 @@
         // Event listener for the generate button click
         generateBtn.addEventListener('click', async () => {
             const userGoal = goalInput.value.trim();
-            const t = translations[currentLanguage]; /* Get current language translations */
+            const t = translations[currentLanguage];
 
-            // Basic input validation
             if (!userGoal) {
                 tipOutput.innerHTML = `<p class="text-red-600">${t.emptyGoalError}</p>`;
-                tipOutput.style.fontStyle = 'normal'; /* Reset font style for error */
+                tipOutput.style.fontStyle = 'normal';
                 return;
             }
 
-            // Show loading indicator and clear previous tip
-            loadingIndicator.style.display = 'flex'; /* Use flex to display spinner and text */
+            loadingIndicator.style.display = 'flex';
+            loadingText.textContent = t.loadingText;
             tipOutput.innerHTML = '';
-            tipOutput.style.fontStyle = 'italic'; /* Keep italic for initial state/loading */
+            tipOutput.style.fontStyle = 'italic';
 
             try {
-                // Construct the prompt for the AI model based on the selected language
                 const prompt = t.aiPrompt(userGoal);
+                const backendUrl = '/.netlify/functions/generate-tip';
 
-                // IMPORTANT: We'll now call our own backend endpoint
-                const backendUrl = '/.netlify/functions/generate-tip'; // Netlify Functions endpoint
-
-                // Make the API call to our backend
                 const response = await fetch(backendUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: prompt }) // Send the prompt to the backend
+                    body: JSON.stringify({ prompt: prompt })
                 });
 
                 const result = await response.json();
 
                 if (response.ok && result.tip) {
                     tipOutput.innerHTML = `<p>${result.tip}</p>`;
-                    tipOutput.style.fontStyle = 'normal'; /* Reset font style after receiving tip */
+                    tipOutput.style.fontStyle = 'normal';
                 } else {
-                    // Handle cases where the backend response is unexpected or an error occurred
                     tipOutput.innerHTML = `<p class="text-red-600">${result.error || t.apiError}</p>`;
                     tipOutput.style.fontStyle = 'normal';
                     console.error('Backend response error:', result.error || 'Unknown error');
                 }
 
             } catch (error) {
-                // Handle any errors during the fetch to our backend
                 tipOutput.innerHTML = `<p class="text-red-600">${t.fetchError}</p>`;
                 tipOutput.style.fontStyle = 'normal';
                 console.error('Error connecting to backend:', error);
             } finally {
-                // Hide loading indicator regardless of success or failure
                 loadingIndicator.style.display = 'none';
             }
         });
