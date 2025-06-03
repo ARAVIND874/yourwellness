@@ -38,15 +38,16 @@
             top: 1.5rem;
             right: 1.5rem;
         }
-        .input-group { /* Added for input and mic button layout */
-            display: flex;
-            align-items: center;
-            gap: 0.75rem; /* Space between input and button */
+        .input-wrapper { /* New: Wrapper for input and mic button for "mic in search box" */
+            position: relative;
             margin-bottom: 1.5rem;
+            display: flex; /* Ensures button aligns with input */
+            align-items: center; /* Vertically centers items */
         }
         .input-field {
             flex-grow: 1; /* Allows input to take available space */
             padding: 1rem 1.25rem;
+            padding-right: 3.5rem; /* Added padding to make space for mic icon */
             border: 1px solid #D1D5DB; /* Light gray border */
             border-radius: 0.875rem;
             font-size: 1.05rem;
@@ -59,37 +60,30 @@
             box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.4); /* Subtle blue focus ring */
         }
         .mic-button {
-            background-color: #87CEEB; /* Sky Blue - Secondary accent, for mic button */
-            color: #ffffff;
-            padding: 0.8rem 1rem;
-            border-radius: 0.875rem;
-            font-weight: 600;
+            position: absolute; /* Position mic button inside the input-wrapper */
+            right: 1rem; /* Adjust positioning as needed */
+            background: none; /* No background */
+            border: none; /* No border */
+            color: #0000FF; /* Changed mic icon default color to Blue */
+            padding: 0.5rem; /* Small padding for click area */
+            border-radius: 50%; /* Make it circular */
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
-            box-shadow: 0 4px 10px rgba(135, 206, 235, 0.3);
+            transition: color 0.3s ease, background-color 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: none; /* Remove default button border */
+            z-index: 10; /* Ensure it's above the input field */
         }
         .mic-button:hover {
-            background-color: #6AABD4; /* Darker Sky Blue on hover */
-            transform: translateY(-1px);
-            box-shadow: 0 6px 15px rgba(135, 206, 235, 0.4);
-        }
-        .mic-button:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 8px rgba(135, 206, 235, 0.2);
+            color: #DC2626; /* Changed mic icon color to Red on hover */
+            background-color: rgba(220, 38, 38, 0.1); /* Slight red background on hover */
         }
         .mic-button.recording { /* Style when recording */
-            background-color: #DC2626; /* Red to indicate recording */
-            animation: pulse 1s infinite;
+            color: #DC2626; /* Red for recording icon (already red, kept for clarity) */
+            animation: none; /* Remove pulse animation as it might interfere visually here */
         }
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
-        }
+        /* No pulse animation for the mic icon when it's inside the search box,
+           as it might look too distracting. The color change is sufficient. */
 
         .generate-button {
             background-color: #6A0DAD; /* Changed from #6B8E23 (Olive Green) to Deep Purple */
@@ -173,13 +167,15 @@
                 top: 0.75rem;
                 right: 0.75rem;
             }
-            .input-group {
-                flex-direction: column; /* Stack input and mic button on small screens */
-                gap: 1rem;
+            /* .input-group is no longer needed in its previous form,
+               replaced by .input-wrapper for mic inside input */
+            .input-wrapper {
+                flex-direction: row; /* Keep as row, adjust internal positioning */
+                justify-content: center;
             }
             .mic-button {
-                width: 100%; /* Full width mic button on small screens */
-                padding: 0.9rem 1.5rem;
+                position: absolute; /* Maintain absolute positioning */
+                right: 0.5rem; /* Adjust for smaller screens */
             }
         }
     </style>
@@ -195,7 +191,7 @@
         <h1 id="mainTitle" class="text-3xl font-bold text-gray-800 mb-4 lg:text-4xl"></h1>
         <p id="descriptionText" class="text-gray-600 mb-8 text-lg"></p>
 
-        <div class="input-group"> <input type="text" id="goalInput" class="input-field">
+        <div class="input-wrapper"> <input type="text" id="goalInput" class="input-field">
             <button id="micBtn" class="mic-button" title="Speak your goal">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mic">
                     <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
@@ -260,13 +256,13 @@
         const mainTitle = document.getElementById('mainTitle');
         const descriptionText = document.getElementById('descriptionText');
         const loadingText = document.getElementById('loadingText');
-        const micBtn = document.getElementById('micBtn'); // New: Mic button
+        const micBtn = document.getElementById('micBtn');
 
-        let currentLanguage = 'ta'; // Default language is Tamil
+        let currentLanguage = 'ta';
 
         // Web Speech API configuration
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        let recognition; // Will be initialized if API is supported
+        let recognition;
 
         if (SpeechRecognition) {
             recognition = new SpeechRecognition();
@@ -278,12 +274,12 @@
                 const speechResult = event.results[0][0].transcript;
                 goalInput.value = speechResult;
                 micBtn.classList.remove('recording');
-                loadingIndicator.style.display = 'none'; // Hide listening indicator
+                loadingIndicator.style.display = 'none';
             };
 
             recognition.onerror = (event) => {
                 micBtn.classList.remove('recording');
-                loadingIndicator.style.display = 'none'; // Hide listening indicator
+                loadingIndicator.style.display = 'none';
                 const t = translations[currentLanguage];
                 if (event.error === 'not-allowed') {
                     tipOutput.innerHTML = `<p class="text-red-600">${t.microphonePermissionDenied}</p>`;
@@ -296,8 +292,8 @@
 
             recognition.onend = () => {
                 micBtn.classList.remove('recording');
-                loadingIndicator.style.display = 'none'; // Hide listening indicator
-                tipOutput.innerHTML = `<p>${translations[currentLanguage].initialTip}</p>`; // Reset tip display after recognition
+                loadingIndicator.style.display = 'none';
+                tipOutput.innerHTML = `<p>${translations[currentLanguage].initialTip}</p>`;
                 tipOutput.style.fontStyle = 'italic';
             };
 
