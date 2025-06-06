@@ -5,31 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personalized Wellness Tip Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lato:wght=300;400;700&display=swap" rel="stylesheet">
     <style>
-        /* Chosen Palette: Serene Horizon (Background: #FDFBF6, Card: #FFFFFF, Primary Accent: #6B8E23 (Olive Green), Secondary Accent: #87CEEB (Sky Blue), Text: #333333, Light Text: #6B7280, Error: #DC2626, Tip Box: #E0F2F7) */
-        /* Application Structure Plan: The SPA maintains a single-page, centered card layout for simplicity and direct interaction. The core interaction is user input for a wellness goal, followed by an AI-generated tip. The updated design focuses on a calming aesthetic with improved visual hierarchy and user feedback (loading state, multilingual support). The structure prioritizes a clear call-to-action and prominent display of the AI-generated solution, making it intuitive for users to achieve their immediate goal of getting a personalized tip. */
-        /* Visualization & Content Choices: The primary "visualization" is the AI-generated text tip itself, which is dynamically updated. The interaction is direct input and button click. The design aims to make this textual output feel like a valuable, personalized insight. No complex charts are used as the core function is text generation. The multilingual support allows for broader user understanding. */
-        /* CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. */
-
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #E6F7FF; /* Changed from #FDFBF6 to a very light blue */
+            background-color: #E6F7FF;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
             padding: 1.5rem;
-            color: #333333; /* Darker text for better readability */
-            overflow: hidden; /* Prevent scrollbar during splash screen */
+            color: #333333;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased; /* For smoother fonts on macOS/iOS */
+            -moz-osx-font-smoothing: grayscale; /* For smoother fonts on Firefox */
         }
         .container {
             max-width: 640px;
             width: 100%;
             background-color: #ffffff;
             border-radius: 1.75rem;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08); /* Softer, larger shadow */
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
             padding: 2.5rem;
             text-align: center;
             position: relative;
@@ -39,17 +36,17 @@
             top: 1.5rem;
             right: 1.5rem;
         }
-        .input-wrapper { /* Wrapper for input and mic button for "mic in search box" */
+        .input-wrapper {
             position: relative;
             margin-bottom: 1.5rem;
-            display: flex; /* Ensures button aligns with input */
-            align-items: center; /* Vertically centers items */
+            display: flex;
+            align-items: center;
         }
         .input-field {
-            flex-grow: 1; /* Allows input to take available space */
+            flex-grow: 1;
             padding: 1rem 1.25rem;
-            padding-right: 3.5rem; /* Added padding to make space for mic icon */
-            border: 1px solid #D1D5DB; /* Light gray border */
+            padding-right: 3.5rem;
+            border: 1px solid #D1D5DB;
             border-radius: 0.875rem;
             font-size: 1.05rem;
             box-sizing: border-box;
@@ -57,49 +54,46 @@
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
         .input-field:focus {
-            border-color: #87CEEB; /* Sky Blue on focus */
-            box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.4); /* Subtle blue focus ring */
+            border-color: #87CEEB;
+            box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.4);
         }
         .mic-button {
-            position: absolute; /* Position mic button inside the input-wrapper */
-            right: 1rem; /* Adjust positioning as needed */
-            background: none; /* No background */
-            border: none; /* No border */
-            color: #0000FF; /* Changed mic icon default color to Blue */
-            padding: 0.5rem; /* Small padding for click area */
-            border-radius: 50%; /* Make it circular */
+            position: absolute;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: #0000FF;
+            padding: 0.5rem;
+            border-radius: 50%;
             cursor: pointer;
             transition: color 0.3s ease, background-color 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 10; /* Ensure it's above the input field */
+            z-index: 10;
         }
         .mic-button:hover {
-            color: #DC2626; /* Changed mic icon color to Red on hover */
-            background-color: rgba(220, 38, 38, 0.1); /* Slight red background on hover */
+            color: #DC2626;
+            background-color: rgba(220, 38, 38, 0.1);
         }
-        .mic-button.recording { /* Style when recording */
-            color: #DC2626; /* Red for recording icon (already red, kept for clarity) */
-            animation: none; /* Remove pulse animation as it might interfere visually here */
+        .mic-button.recording {
+            color: #DC2626;
+            animation: none;
         }
-        /* No pulse animation for the mic icon when it's inside the search box,
-            as it might look too distracting. The color change is sufficient. */
-
-        .generate-button, .action-button, .open-tracker-button { /* Apply similar styles to all buttons */
-            background-color: #6A0DAD; /* Changed from #6B8E23 (Olive Green) to Deep Purple */
+        .generate-button, .action-button, .open-tracker-button {
+            background-color: #6A0DAD;
             color: #ffffff;
             padding: 1rem 2rem;
             border-radius: 0.875rem;
             font-weight: 600;
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
-            box-shadow: 0 6px 15px rgba(106, 13, 173, 0.4); /* Updated shadow to match new button color */
+            box-shadow: 0 6px 15px rgba(106, 13, 173, 0.4);
             letter-spacing: 0.025em;
-            margin-top: 1rem; /* Added margin for spacing between buttons */
+            margin-top: 1rem;
         }
         .generate-button:hover, .action-button:hover, .open-tracker-button:hover {
-            background-color: #4B0A7B; /* Darker Deep Purple on hover */
+            background-color: #4B0A7B;
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(106, 13, 173, 0.5);
         }
@@ -108,18 +102,18 @@
             box-shadow: 0 4px 10px rgba(106, 13, 173, 0.3);
         }
         .loading-indicator {
-            display: none; /* Managed by JS, starts hidden */
+            display: none;
             margin-top: 2rem;
             font-size: 1.15rem;
-            color: #6B7280; /* Gray-500 */
-            display: flex; /* Use flex when visible */
+            color: #6B7280;
+            display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.75rem;
         }
         .loading-spinner {
             border: 4px solid #f3f3f3;
-            border-top: 4px solid #6A0DAD; /* Changed spinner color to Deep Purple */
+            border-top: 4px solid #6A0DAD;
             border-radius: 50%;
             width: 24px;
             height: 24px;
@@ -129,9 +123,9 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        .tip-box, .step-result-box { /* Apply similar styles to both output boxes */
-            background-color: #FFFFAA; /* Changed from #E0F2F7 to light yellow */
-            border: 1px solid #CCCC88; /* Adjusted border to match light yellow */
+        .tip-box, .step-result-box {
+            background-color: #FFFFAA;
+            border: 1px solid #CCCC88;
             border-radius: 1.25rem;
             padding: 2rem;
             margin-top: 2rem;
@@ -150,7 +144,7 @@
             margin: 0;
         }
         .text-red-600 {
-            color: #DC2626; /* Tailwind's red-600 for errors */
+            color: #DC2626;
         }
         /* Responsive adjustments */
         @media (max-width: 640px) {
@@ -170,48 +164,47 @@
                 right: 0.75rem;
             }
             .input-wrapper {
-                flex-direction: row; /* Keep as row, adjust internal positioning */
+                flex-direction: row;
                 justify-content: center;
             }
             .mic-button {
-                position: absolute; /* Maintain absolute positioning */
-                right: 0.5rem; /* Adjust for smaller screens */
+                position: absolute;
+                right: 0.5rem;
             }
         }
-
-        /* Splash Screen Styles */
         .splash-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: #E6F7FF; /* Match body background */
+            background-color: #E6F7FF;
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 1000; /* Ensure it's on top of everything */
+            z-index: 1000;
             opacity: 1;
-            transition: opacity 1s ease-out; /* Smooth fade-out effect */
+            transition: opacity 1s ease-out;
         }
-
+        .splash-screen.fade-out {
+            opacity: 0;
+            pointer-events: none; /* Disable interaction during fade-out */
+        }
         .splash-screen img {
-            max-width: 80%; /* Adjust logo size */
+            max-width: 80%;
             max-height: 80%;
-            object-fit: contain; /* Ensure the image fits within its bounds */
+            object-fit: contain;
         }
     </style>
 </head>
 <body>
-    <!-- Splash Screen -->
     <div id="splashScreen" class="splash-screen">
-        <img src="http://googleusercontent.com/image_generation_content/0" alt="App Logo">
+        <img src="http://googleusercontent.com/image_generation_content/0" alt="Serene Horizon App Logo">
     </div>
 
-    <!-- Main Content Container -->
     <div class="container" id="mainContent" style="display: none;">
         <div class="language-selector-wrapper">
-            <select id="languageSelect" class="p-2 border border-gray-300 rounded-md text-sm bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
+            <select id="languageSelect" aria-label="Select Language" class="p-2 border border-gray-300 rounded-md text-sm bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
                 <option value="ta">தமிழ்</option>
                 <option value="en">English</option>
             </select>
@@ -219,11 +212,10 @@
         <h1 id="mainTitle" class="text-3xl font-bold text-gray-800 mb-4 lg:text-4xl"></h1>
         <p id="descriptionText" class="text-gray-600 mb-8 text-lg"></p>
 
-        <!-- Wellness Tip Generator Section -->
         <h2 id="tipSectionTitle" class="text-2xl font-semibold text-gray-700 mb-4"></h2>
         <div class="input-wrapper">
-            <input type="text" id="goalInput" class="input-field">
-            <button id="micBtn" class="mic-button" title="Speak your goal">
+            <input type="text" id="goalInput" class="input-field" aria-label="Enter your wellness goal">
+            <button id="micBtn" class="mic-button" title="Speak your goal" aria-label="Record your wellness goal">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mic">
                     <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
                     <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
@@ -233,27 +225,26 @@
             </button>
         </div>
         <button id="generateBtn" class="generate-button"></button>
-        <div id="loading" class="loading-indicator">
+        <div id="loading" class="loading-indicator" aria-live="polite">
             <div class="loading-spinner"></div>
             <p id="loadingText"></p>
         </div>
-        <div id="tipOutput" class="tip-box"></div>
+        <div id="tipOutput" class="tip-box" aria-live="polite"></div>
 
-        <!-- Button to open Step Tracker -->
         <button id="openStepTrackerBtn" class="open-tracker-button mt-8"></button>
 
-        <!-- Daily Step Tracker Section (Initially hidden) -->
         <div id="stepTrackerSection" style="display: none;">
             <h2 id="stepSectionTitle" class="text-2xl font-semibold text-gray-700 mt-10 mb-4"></h2>
             <div class="input-wrapper">
-                <input type="text" id="currentStepsDisplay" class="input-field" value="0" readonly>
+                <label for="currentStepsDisplay" class="sr-only">Current Steps</label>
+                <input type="text" id="currentStepsDisplay" class="input-field" value="0" readonly aria-atomic="true">
             </div>
-            <div class="flex justify-center gap-4 mt-4">
-                <button id="addOneStepBtn" class="action-button"></button> <!-- New: Add 1 Step button -->
-                <button id="toggleTrackingBtn" class="action-button"></button> <!-- Renamed for clarity -->
+            <div class="flex flex-wrap justify-center gap-4 mt-4">
+                <button id="addOneStepBtn" class="action-button"></button>
+                <button id="toggleTrackingBtn" class="action-button"></button>
                 <button id="resetStepsBtn" class="action-button"></button>
             </div>
-            <div id="stepResultOutput" class="step-result-box"></div>
+            <div id="stepResultOutput" class="step-result-box" aria-live="polite"></div>
         </div>
     </div>
 
@@ -279,7 +270,7 @@
                 tipSectionTitle: 'ஆரோக்கிய உதவிக்குறிப்பு',
                 stepSectionTitle: 'தினசரி படி டிராக்கர்',
                 openStepTrackerButton: 'படி டிராக்கரைத் திற',
-                addOneStepButton: '1 படி சேர்', // New translation
+                addOneStepButton: '1 படி சேர்',
                 startTrackingButton: 'டிராக்கிங்கை தொடங்கு',
                 stopTrackingButton: 'டிராக்கிங்கை நிறுத்து',
                 resetStepsButton: 'படிகளை மீட்டமை',
@@ -309,7 +300,7 @@
                 tipSectionTitle: 'Wellness Tip Generator',
                 stepSectionTitle: 'Daily Step Tracker',
                 openStepTrackerButton: 'Open Step Tracker',
-                addOneStepButton: 'Add 1 Step', // New translation
+                addOneStepButton: 'Add 1 Step',
                 startTrackingButton: 'Start Tracking',
                 stopTrackingButton: 'Stop Tracking',
                 resetStepsButton: 'Reset Steps',
@@ -341,20 +332,22 @@
         const tipSectionTitle = document.getElementById('tipSectionTitle');
         const stepSectionTitle = document.getElementById('stepSectionTitle');
         const currentStepsDisplay = document.getElementById('currentStepsDisplay');
-        const addOneStepBtn = document.getElementById('addOneStepBtn'); // New: Add 1 Step button
-        const toggleTrackingBtn = document.getElementById('toggleTrackingBtn'); // Renamed for clarity
+        const addOneStepBtn = document.getElementById('addOneStepBtn');
+        const toggleTrackingBtn = document.getElementById('toggleTrackingBtn');
         const resetStepsBtn = document.getElementById('resetStepsBtn');
         const stepResultOutput = document.getElementById('stepResultOutput');
         const stepTrackerSection = document.getElementById('stepTrackerSection');
         const openStepTrackerBtn = document.getElementById('openStepTrackerBtn');
 
-        let currentLanguage = 'ta'; // Default language is Tamil
+        // Initial language setting (try to load from localStorage, otherwise default to Tamil)
+        let currentLanguage = localStorage.getItem('wellnessAppLanguage') || 'ta';
+        languageSelect.value = currentLanguage; // Set the select box to the current language
 
         // Step tracking state variables
-        let currentSteps = 0;
+        let currentSteps = parseInt(localStorage.getItem('currentSteps')) || 0; // Load steps from localStorage
         let trackingInterval = null; // Will hold the setInterval ID
         const stepsGoal = 10000; // Common daily step goal
-        const stepsPerIncrement = 1; // Steps to add per second in simulation (changed to 1)
+        const stepsPerIncrement = 1; // Steps to add per second in simulation
         const stepsPerKm = 1312.33; // Average steps per kilometer (approx. 1312 steps/km)
 
         // Web Speech API configuration
@@ -390,8 +383,11 @@
             recognition.onend = () => {
                 micBtn.classList.remove('recording');
                 loadingIndicator.style.display = 'none';
-                tipOutput.innerHTML = `<p>${translations[currentLanguage].initialTip}</p>`;
-                tipOutput.style.fontStyle = 'italic';
+                // Only reset tipOutput if it's not showing an error or a generated tip
+                if (!tipOutput.innerHTML.includes('text-red-600') && tipOutput.innerHTML === '') {
+                    tipOutput.innerHTML = `<p>${translations[currentLanguage].initialTip}</p>`;
+                    tipOutput.style.fontStyle = 'italic';
+                }
             };
 
             micBtn.addEventListener('click', () => {
@@ -424,6 +420,7 @@
             const t = translations[currentLanguage];
             const distanceKm = (currentSteps / stepsPerKm).toFixed(2);
             currentStepsDisplay.value = currentSteps;
+            localStorage.setItem('currentSteps', currentSteps); // Save steps to localStorage
 
             if (currentSteps >= stepsGoal) {
                 stepResultOutput.innerHTML = `<p>${t.stepsGoalReached(currentSteps, distanceKm)}</p>`;
@@ -444,8 +441,8 @@
 
         // Function to start step tracking simulation
         function startTrackingSimulation() {
-            // Only start if not already tracking
-            if (!trackingInterval) {
+            // Only start if not already tracking and goal not reached
+            if (!trackingInterval && currentSteps < stepsGoal) {
                 const t = translations[currentLanguage];
                 toggleTrackingBtn.textContent = t.stopTrackingButton; // Update button text
                 stepResultOutput.style.fontStyle = 'normal'; // Reset font style for live updates
@@ -455,6 +452,9 @@
                     currentSteps += stepsPerIncrement;
                     updateStepTrackerDisplay();
                 }, 1000); // Increment steps every second
+            } else if (currentSteps >= stepsGoal) {
+                // If goal already reached, just update display and keep button text as 'Start Tracking'
+                updateStepTrackerDisplay();
             }
         }
 
@@ -486,28 +486,18 @@
             tipSectionTitle.textContent = t.tipSectionTitle;
             stepSectionTitle.textContent = t.stepSectionTitle;
             openStepTrackerBtn.textContent = t.openStepTrackerButton;
-            addOneStepBtn.textContent = t.addOneStepButton; // Set text for Add 1 Step button
-            toggleTrackingBtn.textContent = trackingInterval ? t.stopTrackingButton : t.startTrackingButton; // Correctly reflect state
+            addOneStepBtn.textContent = t.addOneStepButton;
+            toggleTrackingBtn.textContent = trackingInterval ? t.stopTrackingButton : t.startTrackingButton;
             resetStepsBtn.textContent = t.resetStepsButton;
             
-            currentStepsDisplay.value = currentSteps; // Ensure display is updated on language change
-            // Only update initial message if tracker is hidden
+            currentStepsDisplay.value = currentSteps;
             if (stepTrackerSection.style.display === 'none') {
                 stepResultOutput.innerHTML = `<p>${t.stepsResultInitial}</p>`;
                 stepResultOutput.style.fontStyle = 'italic';
             } else {
-                updateStepTrackerDisplay(); // Update with current tracking status if visible
+                updateStepTrackerDisplay();
             }
 
-
-            // Set input direction for Tamil (or other RTL/LTR languages if needed)
-            if (currentLanguage === 'ta') {
-                goalInput.style.direction = 'ltr'; /* Ensure input direction is left-to-right for consistency */
-                currentStepsDisplay.style.direction = 'ltr';
-            } else {
-                goalInput.style.direction = 'ltr';
-                currentStepsDisplay.style.direction = 'ltr';
-            }
             if (recognition) {
                 recognition.lang = currentLanguage;
             }
@@ -516,72 +506,60 @@
         // Event listener for language selection change
         languageSelect.addEventListener('change', (event) => {
             currentLanguage = event.target.value;
-            updateUI(); /* Update UI immediately when language changes */
+            localStorage.setItem('wellnessAppLanguage', currentLanguage); // Save language to localStorage
+            updateUI();
         });
-
-        // Initial UI update when the page loads
-        updateUI();
 
         // Event listener for the generate button click (Wellness Tip)
         generateBtn.addEventListener('click', async () => {
             const userGoal = goalInput.value.trim();
-            const t = translations[currentLanguage]; /* Get current language translations */
+            const t = translations[currentLanguage];
 
-            // Basic input validation
             if (!userGoal) {
                 tipOutput.innerHTML = `<p class="text-red-600">${t.emptyGoalError}</p>`;
-                tipOutput.style.fontStyle = 'normal'; /* Reset font style for error */
+                tipOutput.style.fontStyle = 'normal';
                 return;
             }
 
-            // Show loading indicator and clear previous tip
-            loadingIndicator.style.display = 'flex'; /* Use flex to display spinner and text */
-            loadingText.textContent = t.loadingText; // Ensure loading text is correct for tip generation
+            loadingIndicator.style.display = 'flex';
+            loadingText.textContent = t.loadingText;
             tipOutput.innerHTML = '';
-            tipOutput.style.fontStyle = 'italic'; /* Keep italic for initial state/loading */
+            tipOutput.style.fontStyle = 'italic';
 
             try {
-                // Construct the prompt for the AI model based on the selected language
                 const prompt = t.aiPrompt(userGoal);
+                const backendUrl = '/.netlify/functions/generate-tip';
 
-                // IMPORTANT: We'll now call our own backend endpoint
-                const backendUrl = '/.netlify/functions/generate-tip'; // Netlify Functions endpoint
-
-                // Make the API call to our backend
                 const response = await fetch(backendUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: prompt, model: 'gemini-pro-vision' }) // Send prompt and model name to backend
+                    body: JSON.stringify({ prompt: prompt, model: 'gemini-pro-vision' })
                 });
 
                 const result = await response.json();
 
                 if (response.ok && result.tip) {
                     tipOutput.innerHTML = `<p>${result.tip}</p>`;
-                    tipOutput.style.fontStyle = 'normal'; /* Reset font style after receiving tip */
+                    tipOutput.style.fontStyle = 'normal';
                 } else {
-                    // Handle cases where the backend response is unexpected or an error occurred
                     tipOutput.innerHTML = `<p class="text-red-600">${result.error || t.apiError}</p>`;
                     tipOutput.style.fontStyle = 'normal';
                     console.error('Backend response error:', result.error || 'Unknown error', result);
                 }
 
             } catch (error) {
-                // Handle any errors during the fetch to our backend
                 tipOutput.innerHTML = `<p class="text-red-600">${t.fetchError}</p>`;
                 tipOutput.style.fontStyle = 'normal';
                 console.error('Error connecting to backend:', error);
             } finally {
-                // Hide loading indicator regardless of success or failure
                 loadingIndicator.style.display = 'none';
             }
         });
 
         // Event listener for the "Add 1 Step" button
         addOneStepBtn.addEventListener('click', () => {
-            currentSteps += 1; // Add only 1 step
+            currentSteps += 1;
             updateStepTrackerDisplay();
-            // This ensures the toggle button reflects the current state if steps are added manually
             if (!trackingInterval && currentSteps < stepsGoal) {
                 toggleTrackingBtn.textContent = translations[currentLanguage].startTrackingButton;
             }
@@ -598,39 +576,41 @@
 
         // Event listener for the "Reset Steps" button
         resetStepsBtn.addEventListener('click', () => {
-            stopTrackingSimulation(); // Stop any active tracking
+            stopTrackingSimulation();
             currentSteps = 0;
             updateStepTrackerDisplay();
             stepResultOutput.innerHTML = `<p>${translations[currentLanguage].stepsResultInitial}</p>`;
             stepResultOutput.style.fontStyle = 'italic';
         });
 
-        // Event listener for opening/closing the step tracker section
+        // Event listener for the "Open Step Tracker" button
         openStepTrackerBtn.addEventListener('click', () => {
-            if (stepTrackerSection.style.display === 'none') {
-                stepTrackerSection.style.display = 'block'; // Show the section
-                startTrackingSimulation(); // Start tracking when opened
+            const isHidden = stepTrackerSection.style.display === 'none';
+            stepTrackerSection.style.display = isHidden ? 'block' : 'none';
+            openStepTrackerBtn.textContent = isHidden ? translations[currentLanguage].openStepTrackerButton.replace('Open', 'Close') : translations[currentLanguage].openStepTrackerButton;
+            if (isHidden) {
+                updateStepTrackerDisplay(); // Ensure tracker state is updated when opened
             } else {
-                stepTrackerSection.style.display = 'none'; // Hide the section
-                stopTrackingSimulation(); // Stop tracking when hidden
+                stopTrackingSimulation(); // Stop tracking when tracker is closed
+                stepResultOutput.innerHTML = `<p>${translations[currentLanguage].stepsResultInitial}</p>`;
+                stepResultOutput.style.fontStyle = 'italic';
             }
         });
 
-        // Splash screen logic: Show for 3 seconds, then fade out and show main content
-        window.addEventListener('load', () => {
-            // Set language to Tamil by default on load
-            languageSelect.value = 'ta';
-            currentLanguage = 'ta';
-            updateUI();
+        // Initial UI update when the page loads
+        updateUI();
+        updateStepTrackerDisplay(); // Ensure steps display is loaded correctly on initial render
 
+        // Splash screen fade-out logic
+        window.addEventListener('load', () => {
             setTimeout(() => {
-                splashScreen.style.opacity = '0'; // Start fade out
-                setTimeout(() => {
-                    splashScreen.style.display = 'none'; // Hide completely after fade
-                    mainContent.style.display = 'block'; // Show main content
-                    document.body.style.overflow = 'auto'; // Re-enable scrolling if necessary
-                }, 1000); // Duration of the CSS transition (1 second)
-            }, 3000); // Show splash screen for 3 seconds
+                splashScreen.classList.add('fade-out');
+                // Remove splash screen after transition to prevent it from blocking interactions
+                splashScreen.addEventListener('transitionend', () => {
+                    splashScreen.remove();
+                });
+                mainContent.style.display = 'block'; // Show main content
+            }, 1000); // Display splash screen for 1 second
         });
     </script>
 </body>
