@@ -17,10 +17,22 @@
             margin: 0;
             padding: 1.5rem;
             color: #333333;
-            overflow: hidden;
-            -webkit-font-smoothing: antialiased; /* For smoother fonts on macOS/iOS */
-            -moz-osx-font-smoothing: grayscale; /* For smoother fonts on Firefox */
+            /* Removed overflow: hidden from here directly, handled by splash screen class */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            box-sizing: border-box; /* Ensure padding is included in width/height */
         }
+
+        /* Adjust body for scrolling when splash screen is gone */
+        body.main-content-active {
+            min-height: auto; /* Allow content to dictate height */
+            align-items: flex-start; /* Align content to top for scrolling */
+            padding-top: 2rem; /* Add some top padding */
+            padding-bottom: 2rem; /* Add some bottom padding */
+            overflow-y: auto; /* Enable vertical scrolling */
+        }
+
+
         .container {
             max-width: 640px;
             width: 100%;
@@ -91,6 +103,7 @@
             box-shadow: 0 6px 15px rgba(106, 13, 173, 0.4);
             letter-spacing: 0.025em;
             margin-top: 1rem;
+            border: none; /* Ensure no default button border */
         }
         .generate-button:hover, .action-button:hover, .open-tracker-button:hover {
             background-color: #4B0A7B;
@@ -159,6 +172,11 @@
                 width: 100%;
                 padding: 0.9rem 1.5rem;
             }
+            /* Adjust button group on small screens */
+            .flex.flex-wrap.justify-center.gap-4 {
+                flex-direction: column; /* Stack buttons vertically */
+                gap: 0.75rem; /* Reduce gap between stacked buttons */
+            }
             .language-selector-wrapper {
                 top: 0.75rem;
                 right: 0.75rem;
@@ -185,6 +203,7 @@
             z-index: 1000;
             opacity: 1;
             transition: opacity 1s ease-out;
+            overflow: hidden; /* Keep splash screen hidden */
         }
         .splash-screen.fade-out {
             opacity: 0;
@@ -270,6 +289,7 @@
                 tipSectionTitle: 'ஆரோக்கிய உதவிக்குறிப்பு',
                 stepSectionTitle: 'தினசரி படி டிராக்கர்',
                 openStepTrackerButton: 'படி டிராக்கரைத் திற',
+                closeStepTrackerButton: 'படி டிராக்கரை மூடு', // New string for toggle
                 addOneStepButton: '1 படி சேர்',
                 startTrackingButton: 'டிராக்கிங்கை தொடங்கு',
                 stopTrackingButton: 'டிராக்கிங்கை நிறுத்து',
@@ -300,6 +320,7 @@
                 tipSectionTitle: 'Wellness Tip Generator',
                 stepSectionTitle: 'Daily Step Tracker',
                 openStepTrackerButton: 'Open Step Tracker',
+                closeStepTrackerButton: 'Close Step Tracker', // New string for toggle
                 addOneStepButton: 'Add 1 Step',
                 startTrackingButton: 'Start Tracking',
                 stopTrackingButton: 'Stop Tracking',
@@ -485,17 +506,21 @@
             // Update step tracking elements
             tipSectionTitle.textContent = t.tipSectionTitle;
             stepSectionTitle.textContent = t.stepSectionTitle;
-            openStepTrackerBtn.textContent = t.openStepTrackerButton;
+            
+            // Set the open/close button text dynamically
+            const isTrackerOpen = stepTrackerSection.style.display !== 'none';
+            openStepTrackerBtn.textContent = isTrackerOpen ? t.closeStepTrackerButton : t.openStepTrackerButton;
+
             addOneStepBtn.textContent = t.addOneStepButton;
             toggleTrackingBtn.textContent = trackingInterval ? t.stopTrackingButton : t.startTrackingButton;
             resetStepsBtn.textContent = t.resetStepsButton;
             
             currentStepsDisplay.value = currentSteps;
-            if (stepTrackerSection.style.display === 'none') {
+            if (!isTrackerOpen) { // Only set initial message if tracker is closed
                 stepResultOutput.innerHTML = `<p>${t.stepsResultInitial}</p>`;
                 stepResultOutput.style.fontStyle = 'italic';
             } else {
-                updateStepTrackerDisplay();
+                updateStepTrackerDisplay(); // Update with current tracking status if visible
             }
 
             if (recognition) {
@@ -560,6 +585,8 @@
         addOneStepBtn.addEventListener('click', () => {
             currentSteps += 1;
             updateStepTrackerDisplay();
+            // This ensures the toggle button reflects the current state if steps are added manually
+            // and tracking was not active and goal is not yet reached
             if (!trackingInterval && currentSteps < stepsGoal) {
                 toggleTrackingBtn.textContent = translations[currentLanguage].startTrackingButton;
             }
@@ -583,15 +610,20 @@
             stepResultOutput.style.fontStyle = 'italic';
         });
 
-        // Event listener for the "Open Step Tracker" button
+        // Event listener for the "Open/Close Step Tracker" button
         openStepTrackerBtn.addEventListener('click', () => {
             const isHidden = stepTrackerSection.style.display === 'none';
             stepTrackerSection.style.display = isHidden ? 'block' : 'none';
-            openStepTrackerBtn.textContent = isHidden ? translations[currentLanguage].openStepTrackerButton.replace('Open', 'Close') : translations[currentLanguage].openStepTrackerButton;
+            
+            // Update button text
+            openStepTrackerBtn.textContent = isHidden ? translations[currentLanguage].closeStepTrackerButton : translations[currentLanguage].openStepTrackerButton;
+
             if (isHidden) {
-                updateStepTrackerDisplay(); // Ensure tracker state is updated when opened
+                // If opening, ensure display is updated
+                updateStepTrackerDisplay();
             } else {
-                stopTrackingSimulation(); // Stop tracking when tracker is closed
+                // If closing, stop tracking and reset output message
+                stopTrackingSimulation();
                 stepResultOutput.innerHTML = `<p>${translations[currentLanguage].stepsResultInitial}</p>`;
                 stepResultOutput.style.fontStyle = 'italic';
             }
@@ -608,6 +640,8 @@
                 // Remove splash screen after transition to prevent it from blocking interactions
                 splashScreen.addEventListener('transitionend', () => {
                     splashScreen.remove();
+                    // Once splash screen is gone, enable body scrolling and adjust layout
+                    document.body.classList.add('main-content-active');
                 });
                 mainContent.style.display = 'block'; // Show main content
             }, 1000); // Display splash screen for 1 second
