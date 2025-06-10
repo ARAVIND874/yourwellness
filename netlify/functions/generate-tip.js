@@ -16,8 +16,9 @@ exports.handler = async (event, context) => {
     }
 
     try {
-        const { prompt } = JSON.parse(event.body);
+        const { prompt, model: requestedModel } = JSON.parse(event.body); // model ஐப் பெறுகிறோம்
         console.log('Received prompt:', prompt); // உள்வரும் ப்ராம்ப்ட்டைப் பதிவு செய்கிறோம்
+        console.log('Requested AI Model:', requestedModel || 'Not Specified (defaulting to gemini-1.5-flash)'); // கோரப்பட்ட மாதிரியைப் பதிவு செய்கிறோம்
 
         if (!prompt) {
             console.log('Error: Prompt is required');
@@ -47,10 +48,15 @@ exports.handler = async (event, context) => {
 
         // Google Generative AI ஐ துவக்கவும்
         const genAI = new GoogleGenerativeAI(API_KEY);
-       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        // HTML இல் நீங்கள் gemini-pro-vision ஐ அனுப்பியிருந்தாலும்,
+        // உரை உருவாக்கத்திற்கு gemini-1.5-flash அல்லது gemini-pro பொதுவாகப் பொருத்தமானது.
+        // இங்கு, அனுப்பப்பட்ட மாதிரியைப் பயன்படுத்தலாம் அல்லது ஒரு இயல்புநிலையை அமைக்கலாம்.
+        const modelToUse = requestedModel === 'gemini-pro-vision' ? 'gemini-1.5-flash' : (requestedModel || 'gemini-1.5-flash'); // vision க்கு flash ஐ மாற்றுகிறோம்
 
-        console.log('Calling Gemini API with model:',"gemini-1.5-flash");
-        const result = await model.generateContent(prompt);
+        const geminiModel = genAI.getGenerativeModel({ model: modelToUse });
+
+        console.log('Calling Gemini API with model:', modelToUse);
+        const result = await geminiModel.generateContent(prompt);
         const response = await result.response;
         const text = response.text();
         console.log('Gemini API அழைப்பு வெற்றிகரமாக முடிந்தது. உருவாக்கப்பட்ட உரையின் நீளம்:', text.length);
@@ -64,14 +70,24 @@ exports.handler = async (event, context) => {
     } catch (error) {
         console.error('Netlify Function இல் பிழை:', error); // முழு பிழைப் பொருளையும் பதிவு செய்கிறோம்
         console.error('பிழைச் செய்தி:', error.message); // பிழைச் செய்தியைப் பதிவு செய்கிறோம்
-        // ஒருவேளை இது API Key சம்பந்தமான பிழையாக இருந்தால், அதன் செய்தி இங்கு வரலாம்.
+        
+        let errorMessage = 'உதவிக்குறிப்பை உருவாக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.';
+        
+        // API key சம்பந்தமான குறிப்பிட்ட பிழைகளைக் கண்டறியவும்
         if (error.message && error.message.includes('API key not valid')) {
-            console.error('Google Gemini இலிருந்து API Key சரிபார்ப்பு பிழையாக இருக்கலாம்.');
+            console.error('Google Gemini இலிருந்து API Key சரிபார்ப்பு பிழையாக இருக்கலாம். உங்கள் API Key சரியானதா என சரிபார்க்கவும்.');
+            errorMessage = 'API Key சரிபார்ப்பு பிழை: உங்கள் API Key சரியானதா என்பதை உறுதிப்படுத்தவும்.';
+        } else if (error.message && error.message.includes('permission denied')) {
+            console.error('Google Gemini API அணுகல் மறுக்கப்பட்டது. உங்கள் API Key க்கு தேவையான அனுமதிகள் உள்ளதா என சரிபார்க்கவும்.');
+            errorMessage = 'API அணுகல் மறுக்கப்பட்டது: உங்கள் API Key க்கு தேவையான அனுமதிகள் இல்லை.';
+        } else if (error.message && error.message.includes('Unsupported model')) {
+            console.error('தேர்ந்தெடுக்கப்பட்ட AI மாதிரி ஆதரிக்கப்படவில்லை. சரியான மாதிரி பெயரைப் பயன்படுத்தவும்.');
+            errorMessage = `மாதிரி பிழை: தேர்ந்தெடுக்கப்பட்ட AI மாதிரி ஆதரிக்கப்படவில்லை. (${error.message})`;
         }
-
+        
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: 'உதவிக்குறிப்பை உருவாக்க முடியவில்லை', details: error.message }),
+            body: JSON.stringify({ error: errorMessage, details: error.message }),
             headers: { 'Content-Type': 'application/json' },
         };
     }
