@@ -214,7 +214,7 @@
 </head>
 <body>
     <div id="splashScreen" class="splash-screen">
-        <img src="healthcare.png">
+        <img src="healthcare.png" alt="Healthcare related image">
     </div>
 
     <div class="container" id="mainContent" style="display: none;">
@@ -336,8 +336,7 @@
                 stepsTracking: (steps, distanceKm) => `Tracking: ${steps} steps (${distanceKm} km)`,
                 stepsGoalReached: (steps, distanceKm) => `Goal Reached! You walked ${steps} steps, which is approximately ${distanceKm} km. Congratulations!`,
                 stepsGoalNear: (steps, remainingSteps, distanceKm) => `Well done! You walked ${steps} steps, which is approximately ${distanceKm} km. You're just ${remainingSteps} steps away from your goal.`,
-                stepsGoalFar: (steps, distanceKm) => `Keep going! You walked ${steps} steps, which is approximately ${distanceKm} km. You have ${10000 - steps} steps left to reach your 10,000 steps goal.`,
-                stepsStopped: (steps, distanceKm) => `Tracking stopped. You walked ${steps} steps, which is approximately ${distanceKm} km.`
+                stepsGoalFar: (steps, distanceKm) => `Keep going! You walked ${steps} steps, which is approximately ${distanceKm} km. You have ${10000 - steps} steps left to reach your 10,000 steps goal.`
             }
         };
 
@@ -382,7 +381,7 @@
             recognition = new SpeechRecognition();
             recognition.continuous = false;
             recognition.interimResults = false;
-            recognition.lang = currentLanguage;
+            recognition.lang = currentLanguage; // Set initial language
 
             recognition.onresult = (event) => {
                 const speechResult = event.results[0][0].transcript;
@@ -416,13 +415,13 @@
             micBtn.addEventListener('click', () => {
                 const t = translations[currentLanguage];
                 micBtn.classList.add('recording');
-                tipOutput.innerHTML = '';
+                tipOutput.innerHTML = ''; // Clear previous tip/error
                 tipOutput.style.fontStyle = 'italic';
                 loadingIndicator.style.display = 'flex';
                 loadingText.textContent = t.microphoneListening;
 
                 try {
-                    recognition.lang = currentLanguage;
+                    recognition.lang = currentLanguage; // Ensure language is set before starting
                     recognition.start();
                 } catch (e) {
                     console.warn("Speech recognition could not start:", e);
@@ -446,14 +445,16 @@
         function populateVoiceList() {
             if (SpeechSynthesis) {
                 const voices = SpeechSynthesis.getVoices();
+                // Find Tamil voice, prioritizing ta-IN
                 tamilVoice = voices.find(voice => voice.lang === 'ta-IN' || voice.lang.startsWith('ta'));
+                // Find English voice, prioritizing en-US
                 englishVoice = voices.find(voice => voice.lang === 'en-US' || voice.lang.startsWith('en'));
             }
         }
 
-        populateVoiceList();
+        populateVoiceList(); // Call initially to get available voices
         if (SpeechSynthesis) {
-            SpeechSynthesis.onvoiceschanged = populateVoiceList;
+            SpeechSynthesis.onvoiceschanged = populateVoiceList; // Update voices when they load/change
         }
 
         aiVoiceBtn.addEventListener('click', () => {
@@ -466,29 +467,29 @@
                 return;
             }
 
-            if (!tipText || tipText === t.initialTip || tipText.includes(t.emptyGoalError) || tipText.includes(t.apiError) || tipText.includes(t.fetchError)) {
+            if (!tipText || tipText === t.initialTip || tipText.includes(t.emptyGoalError) || tipText.includes(t.apiError) || tipText.includes(t.fetchError) || tipText.includes(t.noTipToSpeak)) {
                 tipOutput.innerHTML = `<p class="text-red-600">${t.noTipToSpeak}</p>`;
                 tipOutput.style.fontStyle = 'normal';
                 return;
             }
 
             if (SpeechSynthesis.speaking) {
-                SpeechSynthesis.cancel();
+                SpeechSynthesis.cancel(); // Stop any ongoing speech
                 aiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path></svg>`;
                 return;
             }
 
             const utterance = new SpeechSynthesisUtterance(tipText);
-            utterance.lang = currentLanguage;
-            utterance.rate = 1; // Adjust speech rate if needed (1 is normal)
-            utterance.pitch = 1; // Adjust speech pitch if needed (1 is normal)
+            utterance.lang = currentLanguage; // Set the language for the utterance
 
+            // Assign the specific voice if found for the current language
             if (currentLanguage === 'ta' && tamilVoice) {
                 utterance.voice = tamilVoice;
             } else if (currentLanguage === 'en' && englishVoice) {
                 utterance.voice = englishVoice;
             } else {
-                // Fallback to browser's default voice for the language if specific voice not found
+                // Fallback: If a specific voice isn't found, the browser will try to use a default
+                // voice that matches utterance.lang. This warning is for debugging.
                 console.warn(`Specific voice for ${currentLanguage} not found, falling back to default.`);
             }
             
@@ -581,7 +582,10 @@
                 updateStepTrackerDisplay();
             }
 
+            // Update AI voice button text as well
             aiVoiceBtn.textContent = t.aiVoiceButton;
+            // Reset voice button icon in case it was stuck on 'speaking'
+            aiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path></svg>`;
 
             if (recognition) {
                 recognition.lang = currentLanguage;
@@ -607,16 +611,17 @@
             if (!userGoal) {
                 tipOutput.innerHTML = `<p class="text-red-600">${t.emptyGoalError}</p>`;
                 tipOutput.style.fontStyle = 'normal';
-                aiVoiceBtn.style.display = 'none';
+                aiVoiceBtn.style.display = 'none'; // Hide voice button if no goal
                 return;
             }
 
             loadingIndicator.style.display = 'flex';
             loadingText.textContent = t.loadingText;
-            tipOutput.innerHTML = '';
+            tipOutput.innerHTML = ''; // Clear previous tip
             tipOutput.style.fontStyle = 'italic';
-            aiVoiceBtn.style.display = 'none';
+            aiVoiceBtn.style.display = 'none'; // Hide voice button while loading
 
+            // Stop any ongoing speech when generating a new tip
             if (SpeechSynthesis && SpeechSynthesis.speaking) {
                 SpeechSynthesis.cancel();
                 aiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path></svg>`;
@@ -624,12 +629,15 @@
 
             try {
                 const prompt = t.aiPrompt(userGoal);
-                const backendUrl = '/.netlify/functions/generate-tip';
+                // Note: This URL (/.netlify/functions/generate-tip) is for a Netlify Function.
+                // If you are not deploying to Netlify, you'll need to replace this with your
+                // actual backend endpoint for the Gemini API call.
+                const backendUrl = '/.netlify/functions/generate-tip'; 
 
                 const response = await fetch(backendUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: prompt, model: 'gemini-pro-vision' })
+                    body: JSON.stringify({ prompt: prompt, model: 'gemini-pro-vision' }) // Using gemini-pro-vision as specified, ensure your backend handles this.
                 });
 
                 const result = await response.json();
@@ -637,18 +645,18 @@
                 if (response.ok && result.tip) {
                     tipOutput.innerHTML = `<p>${result.tip}</p>`;
                     tipOutput.style.fontStyle = 'normal';
-                    aiVoiceBtn.style.display = 'inline-flex';
+                    aiVoiceBtn.style.display = 'inline-flex'; // Show voice button on success
                 } else {
                     tipOutput.innerHTML = `<p class="text-red-600">${result.error || t.apiError}</p>`;
                     tipOutput.style.fontStyle = 'normal';
-                    aiVoiceBtn.style.display = 'none';
+                    aiVoiceBtn.style.display = 'none'; // Hide voice button on error
                     console.error('Backend response error:', result.error || 'Unknown error', result);
                 }
 
             } catch (error) {
                 tipOutput.innerHTML = `<p class="text-red-600">${t.fetchError}</p>`;
                 tipOutput.style.fontStyle = 'normal';
-                aiVoiceBtn.style.display = 'none';
+                aiVoiceBtn.style.display = 'none'; // Hide voice button on fetch error
                 console.error('Error connecting to backend:', error);
             } finally {
                 loadingIndicator.style.display = 'none';
@@ -658,6 +666,7 @@
         addOneStepBtn.addEventListener('click', () => {
             currentSteps += 1;
             updateStepTrackerDisplay();
+            // If manual steps are added and not currently tracking, ensure button says 'Start Tracking'
             if (!trackingInterval && currentSteps < stepsGoal) {
                 toggleTrackingBtn.textContent = translations[currentLanguage].startTrackingButton;
             }
@@ -686,17 +695,19 @@
             openStepTrackerBtn.textContent = isHidden ? translations[currentLanguage].closeStepTrackerButton : translations[currentLanguage].openStepTrackerButton;
 
             if (isHidden) {
-                updateStepTrackerDisplay();
+                updateStepTrackerDisplay(); // Update display when opened
             } else {
-                stopTrackingSimulation();
+                stopTrackingSimulation(); // Stop tracking when closed
                 stepResultOutput.innerHTML = `<p>${translations[currentLanguage].stepsResultInitial}</p>`;
                 stepResultOutput.style.fontStyle = 'italic';
             }
         });
 
+        // Initial UI setup and step tracker display
         updateUI();
         updateStepTrackerDisplay();
 
+        // Splash screen logic
         window.addEventListener('load', () => {
             setTimeout(() => {
                 splashScreen.classList.add('fade-out');
@@ -704,8 +715,8 @@
                     splashScreen.remove();
                     document.body.classList.add('main-content-active');
                 });
-                mainContent.style.display = 'block';
-            }, 1000);
+                mainContent.style.display = 'block'; // Show main content after splash
+            }, 1000); // 1-second display
         });
     </script>
 </body>
