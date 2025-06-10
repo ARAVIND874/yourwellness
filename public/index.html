@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personalized Wellness Tip Generator</title>
+    <title>தனிப்பயனாக்கப்பட்ட ஆரோக்கிய குறிப்பு உருவாக்குனர்</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
@@ -229,8 +229,8 @@
 
         <h2 id="tipSectionTitle" class="text-2xl font-semibold text-gray-700 mb-4"></h2>
         <div class="input-wrapper">
-            <input type="text" id="goalInput" class="input-field" aria-label="Enter your wellness goal">
-            <button id="micBtn" class="mic-button" title="Speak your goal" aria-label="Record your wellness goal">
+            <input type="text" id="goalInput" class="input-field" aria-label="உங்கள் ஆரோக்கிய இலக்கை உள்ளிடவும்">
+            <button id="micBtn" class="mic-button" title="உங்கள் இலக்கைப் பேசுங்கள்" aria-label="உங்கள் ஆரோக்கிய இலக்கைப் பதிவு செய்யவும்">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mic">
                     <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
                     <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
@@ -259,7 +259,7 @@
         <div id="stepTrackerSection" style="display: none;">
             <h2 id="stepSectionTitle" class="text-2xl font-semibold text-gray-700 mt-10 mb-4"></h2>
             <div class="input-wrapper">
-                <label for="currentStepsDisplay" class="sr-only">Current Steps</label>
+                <label for="currentStepsDisplay" class="sr-only">தற்போதைய படிகள்</label>
                 <input type="text" id="currentStepsDisplay" class="input-field" value="0" readonly aria-atomic="true">
             </div>
             <div class="flex flex-wrap justify-center gap-4 mt-4">
@@ -382,7 +382,7 @@
             recognition = new SpeechRecognition();
             recognition.continuous = false;
             recognition.interimResults = false;
-            recognition.lang = currentLanguage; // Set initial language
+            recognition.lang = currentLanguage === 'ta' ? 'ta-IN' : currentLanguage; // Set initial language, specifically ta-IN for Tamil
 
             recognition.onresult = (event) => {
                 const speechResult = event.results[0][0].transcript;
@@ -422,7 +422,7 @@
                 loadingText.textContent = t.microphoneListening;
 
                 try {
-                    recognition.lang = currentLanguage; // Ensure language is set before starting
+                    recognition.lang = currentLanguage === 'ta' ? 'ta-IN' : currentLanguage; // Ensure language is set before starting
                     recognition.start();
                 } catch (e) {
                     console.warn("Speech recognition could not start:", e);
@@ -446,10 +446,17 @@
         function populateVoiceList() {
             if (SpeechSynthesis) {
                 const voices = SpeechSynthesis.getVoices();
-                // Find Tamil voice, prioritizing ta-IN
-                tamilVoice = voices.find(voice => voice.lang === 'ta-IN' || voice.lang.startsWith('ta'));
-                // Find English voice, prioritizing en-US
-                englishVoice = voices.find(voice => voice.lang === 'en-US' || voice.lang.startsWith('en'));
+                // Prioritize finding a high-quality Tamil voice
+                tamilVoice = voices.find(voice => voice.lang === 'ta-IN' && (voice.name.includes('Google') || voice.name.includes('Android') || voice.name.includes('Enhanced'))) ||
+                             voices.find(voice => voice.lang.startsWith('ta'));
+
+                // Prioritize finding a high-quality English voice
+                englishVoice = voices.find(voice => voice.lang === 'en-US' && (voice.name.includes('Google') || voice.name.includes('Enhanced'))) ||
+                               voices.find(voice => voice.lang.startsWith('en'));
+                
+                // Log available Tamil voices for debugging
+                console.log("Available Tamil voices:");
+                voices.filter(voice => voice.lang.startsWith('ta')).forEach(voice => console.log(voice.name, voice.lang));
             }
         }
 
@@ -481,17 +488,17 @@
             }
 
             const utterance = new SpeechSynthesisUtterance(tipText);
-            utterance.lang = currentLanguage; // Set the language for the utterance
+            utterance.lang = currentLanguage === 'ta' ? 'ta-IN' : currentLanguage; // Set the language for the utterance
 
             // Assign the specific voice if found for the current language
             if (currentLanguage === 'ta' && tamilVoice) {
                 utterance.voice = tamilVoice;
+                console.log("Using Tamil voice:", tamilVoice.name);
             } else if (currentLanguage === 'en' && englishVoice) {
                 utterance.voice = englishVoice;
+                console.log("Using English voice:", englishVoice.name);
             } else {
-                // Fallback: If a specific voice isn't found, the browser will try to use a default
-                // voice that matches utterance.lang. This warning is for debugging.
-                console.warn(`Specific voice for ${currentLanguage} not found, falling back to default.`);
+                console.warn(`Specific voice for ${currentLanguage} not found, falling back to browser default.`);
             }
             
             utterance.onstart = () => {
@@ -568,7 +575,7 @@
             tipSectionTitle.textContent = t.tipSectionTitle;
             stepSectionTitle.textContent = t.stepSectionTitle;
             
-            const isTrackerOpen = stepTrackerSection.style.display === 'none';
+            const isTrackerOpen = stepTrackerSection.style.display !== 'none';
             openStepTrackerBtn.textContent = isTrackerOpen ? t.closeStepTrackerButton : t.openStepTrackerButton;
 
             addOneStepBtn.textContent = t.addOneStepButton;
@@ -583,13 +590,13 @@
                 updateStepTrackerDisplay();
             }
 
-            // Update AI voice button text as well
+            // AI குரல் பொத்தான் உரையையும் புதுப்பிக்கவும்
             aiVoiceBtn.textContent = t.aiVoiceButton;
-            // Reset voice button icon in case it was stuck on 'speaking'
+            // 'பேசுகிறது' நிலையில் சிக்கியிருந்தால் குரல் பொத்தான் ஐகானை மீட்டமைக்கவும்
             aiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path></svg>`;
 
             if (recognition) {
-                recognition.lang = currentLanguage;
+                recognition.lang = currentLanguage === 'ta' ? 'ta-IN' : currentLanguage;
             }
         }
 
@@ -597,8 +604,8 @@
             currentLanguage = event.target.value;
             localStorage.setItem('wellnessAppLanguage', currentLanguage);
             updateUI();
-            populateVoiceList(); // Re-populate voices for the new language
-             // Stop any ongoing speech when language changes
+            populateVoiceList(); // புதிய மொழிக்கான குரல்களை மீண்டும் நிரப்பவும்
+             // மொழி மாறும்போது நடந்துகொண்டிருக்கும் எந்த பேச்சையும் நிறுத்தவும்
             if (SpeechSynthesis && SpeechSynthesis.speaking) {
                 SpeechSynthesis.cancel();
                 aiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path></svg>`;
@@ -612,17 +619,17 @@
             if (!userGoal) {
                 tipOutput.innerHTML = `<p class="text-red-600">${t.emptyGoalError}</p>`;
                 tipOutput.style.fontStyle = 'normal';
-                aiVoiceBtn.style.display = 'none'; // Hide voice button if no goal
+                aiVoiceBtn.style.display = 'none'; // இலக்கு இல்லையென்றால் குரல் பொத்தானை மறைக்கவும்
                 return;
             }
 
             loadingIndicator.style.display = 'flex';
             loadingText.textContent = t.loadingText;
-            tipOutput.innerHTML = ''; // Clear previous tip
+            tipOutput.innerHTML = ''; // முந்தைய குறிப்பை அழிக்கவும்
             tipOutput.style.fontStyle = 'italic';
-            aiVoiceBtn.style.display = 'none'; // Hide voice button while loading
+            aiVoiceBtn.style.display = 'none'; // ஏற்றும்போது குரல் பொத்தானை மறைக்கவும்
 
-            // Stop any ongoing speech when generating a new tip
+            // புதிய குறிப்பை உருவாக்கும்போது நடந்துகொண்டிருக்கும் எந்த பேச்சையும் நிறுத்தவும்
             if (SpeechSynthesis && SpeechSynthesis.speaking) {
                 SpeechSynthesis.cancel();
                 aiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path></svg>`;
@@ -630,15 +637,15 @@
 
             try {
                 const prompt = t.aiPrompt(userGoal);
-                // Note: This URL (/.netlify/functions/generate-tip) is for a Netlify Function.
-                // If you are not deploying to Netlify, you'll need to replace this with your
-                // actual backend endpoint for the Gemini API call.
+                // குறிப்பு: இந்த URL (/.netlify/functions/generate-tip) ஒரு நெட்லிஃபை செயல்பாட்டிற்கானது.
+                // நீங்கள் நெட்லிஃபையில் பயன்படுத்தவில்லை என்றால், இந்த இடத்தை உங்கள்
+                // ஜெமினி API அழைப்பிற்கான உண்மையான பின்தள இறுதிப்புள்ளியுடன் மாற்ற வேண்டும்.
                 const backendUrl = '/.netlify/functions/generate-tip'; 
 
                 const response = await fetch(backendUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: prompt, model: 'gemini-pro-vision' }) // Using gemini-pro-vision as specified, ensure your backend handles this.
+                    body: JSON.stringify({ prompt: prompt, model: 'gemini-pro-vision' }) // குறிப்பிட்டபடி gemini-pro-vision ஐப் பயன்படுத்துதல், உங்கள் பின்தளம் இதை கையாளுகிறது என்பதை உறுதிப்படுத்தவும்.
                 });
 
                 const result = await response.json();
@@ -646,19 +653,19 @@
                 if (response.ok && result.tip) {
                     tipOutput.innerHTML = `<p>${result.tip}</p>`;
                     tipOutput.style.fontStyle = 'normal';
-                    aiVoiceBtn.style.display = 'inline-flex'; // Show voice button on success
+                    aiVoiceBtn.style.display = 'inline-flex'; // வெற்றி பெற்றால் குரல் பொத்தானைக் காட்டவும்
                 } else {
                     tipOutput.innerHTML = `<p class="text-red-600">${result.error || t.apiError}</p>`;
                     tipOutput.style.fontStyle = 'normal';
-                    aiVoiceBtn.style.display = 'none'; // Hide voice button on error
-                    console.error('Backend response error:', result.error || 'Unknown error', result);
+                    aiVoiceBtn.style.display = 'none'; // பிழை ஏற்பட்டால் குரல் பொத்தானை மறைக்கவும்
+                    console.error('பின்தள பதில் பிழை:', result.error || 'தெரியாத பிழை', result);
                 }
 
             } catch (error) {
                 tipOutput.innerHTML = `<p class="text-red-600">${t.fetchError}</p>`;
                 tipOutput.style.fontStyle = 'normal';
-                aiVoiceBtn.style.display = 'none'; // Hide voice button on fetch error
-                console.error('Error connecting to backend:', error);
+                aiVoiceBtn.style.display = 'none'; // fetch பிழையில் குரல் பொத்தானை மறைக்கவும்
+                console.error('பின்தளத்துடன் இணைப்பதில் பிழை:', error);
             } finally {
                 loadingIndicator.style.display = 'none';
             }
@@ -667,7 +674,7 @@
         addOneStepBtn.addEventListener('click', () => {
             currentSteps += 1;
             updateStepTrackerDisplay();
-            // If manual steps are added and not currently tracking, ensure button says 'Start Tracking'
+            // படிகள் கைமுறையாக சேர்க்கப்பட்டால் மற்றும் தற்போது கண்காணிக்கப்படாவிட்டால், பொத்தானில் 'கண்காணிப்பைத் தொடங்கு' என்று இருப்பதை உறுதிப்படுத்தவும்
             if (!trackingInterval && currentSteps < stepsGoal) {
                 toggleTrackingBtn.textContent = translations[currentLanguage].startTrackingButton;
             }
@@ -696,19 +703,19 @@
             openStepTrackerBtn.textContent = isHidden ? translations[currentLanguage].closeStepTrackerButton : translations[currentLanguage].openStepTrackerButton;
 
             if (isHidden) {
-                updateStepTrackerDisplay(); // Update display when opened
+                updateStepTrackerDisplay(); // திறக்கும்போது காட்சியைப் புதுப்பிக்கவும்
             } else {
-                stopTrackingSimulation(); // Stop tracking when closed
-                stepResultOutput.innerHTML = `<p>${translations[currentLanguage].stepsResultInitial}</p爐`;
+                stopTrackingSimulation(); // மூடும்போது கண்காணிப்பை நிறுத்தவும்
+                stepResultOutput.innerHTML = `<p>${translations[currentLanguage].stepsResultInitial}</p>`;
                 stepResultOutput.style.fontStyle = 'italic';
             }
         });
 
-        // Initial UI setup and step tracker display
+        // ஆரம்ப UI அமைப்பு மற்றும் படி டிராக்கர் காட்சி
         updateUI();
         updateStepTrackerDisplay();
 
-        // Splash screen logic
+        // Splash திரை தர்க்கம்
         window.addEventListener('load', () => {
             setTimeout(() => {
                 splashScreen.classList.add('fade-out');
@@ -716,8 +723,8 @@
                     splashScreen.remove();
                     document.body.classList.add('main-content-active');
                 });
-                mainContent.style.display = 'block'; // Show main content after splash
-            }, 1000); // 1-second display
+                mainContent.style.display = 'block'; // ஸ்பிளாஷுக்குப் பிறகு முக்கிய உள்ளடக்கத்தைக் காட்டவும்
+            }, 1000); // 1-வினாடி காட்சி
         });
     </script>
 </body>
