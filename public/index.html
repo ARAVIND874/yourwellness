@@ -286,7 +286,8 @@
                 microphoneUnsupported: 'உங்கள் உலாவி மைக்ரோஃபோன் உள்ளீட்டை ஆதரிக்கவில்லை.',
                 microphonePermissionDenied: 'மைக்ரோஃபோன் அணுகல் மறுக்கப்பட்டது. அமைப்புகளில் அனுமதிகளை சரிபார்க்கவும்.',
                 microphoneListening: 'கேட்கிறது...',
-                aiPrompt: (goal) => `ஒரு பயனர் தங்கள் ஆரோக்கிய இலக்கை "${goal}" என்று குறிப்பிட்டுள்ளார். இந்த இலக்கை அடைய உதவும் ஒரு தனிப்பயனாக்கப்பட்ட, சுருக்கமான, **மிகவும் நேர்மறையான, ஊக்கமளிக்கும் மற்றும் உற்சாகப்படுத்தும்** ஆரோக்கிய உதவிக்குறிப்பை தமிழில் வழங்குங்கள். உதவிக்குறிப்பு செயல்முறைக்குரியதாகவும், எளிதில் பின்பற்றக்கூடியதாகவும் இருக்க வேண்டும்.`,
+                // இந்த AI Prompt தான் முக்கியம். இது AI-க்கு குறிப்பை தமிழிலேயே உருவாக்கச் சொல்கிறது.
+                aiPrompt: (goal) => `பயனரின் ஆரோக்கிய இலக்கு "${goal}" என்பதாகும். இந்த இலக்கை அடைய உதவும் ஒரு தனிப்பயனாக்கப்பட்ட, சுருக்கமான, **மிகவும் நேர்மறையான, ஊக்கமளிக்கும் மற்றும் உற்சாகப்படுத்தும்** ஆரோக்கிய உதவிக்குறிப்பை **தமிழில்** வழங்குங்கள். உதவிக்குறிப்பு செயல்முறைக்குரியதாகவும், எளிதில் பின்பற்றக்கூடியதாகவும் இருக்க வேண்டும்.`,
                 aiVoiceButton: 'உதவிக்குறிப்பைப் படிக்கவும்',
                 speechSynthesisUnsupported: 'உங்கள் உலாவி குரல் வெளியீட்டை ஆதரிக்கவில்லை.',
                 noTipToSpeak: 'பேசுவதற்கு உதவிக்குறிப்பு இல்லை.',
@@ -382,7 +383,8 @@
             recognition = new SpeechRecognition();
             recognition.continuous = false;
             recognition.interimResults = false;
-            recognition.lang = currentLanguage === 'ta' ? 'ta-IN' : currentLanguage; // Set initial language, specifically ta-IN for Tamil
+            // தமிழ் மொழிக்கு ta-IN பயன்படுத்துகிறது
+            recognition.lang = currentLanguage === 'ta' ? 'ta-IN' : currentLanguage;
 
             recognition.onresult = (event) => {
                 const speechResult = event.results[0][0].transcript;
@@ -416,13 +418,14 @@
             micBtn.addEventListener('click', () => {
                 const t = translations[currentLanguage];
                 micBtn.classList.add('recording');
-                tipOutput.innerHTML = ''; // Clear previous tip/error
+                tipOutput.innerHTML = ''; // முந்தைய குறிப்பு/பிழையை அழிக்கவும்
                 tipOutput.style.fontStyle = 'italic';
                 loadingIndicator.style.display = 'flex';
                 loadingText.textContent = t.microphoneListening;
 
                 try {
-                    recognition.lang = currentLanguage === 'ta' ? 'ta-IN' : currentLanguage; // Ensure language is set before starting
+                    // தமிழுக்கு ta-IN பயன்படுத்துகிறது
+                    recognition.lang = currentLanguage === 'ta' ? 'ta-IN' : currentLanguage;
                     recognition.start();
                 } catch (e) {
                     console.warn("Speech recognition could not start:", e);
@@ -441,28 +444,28 @@
         // Web Speech API (Speech Synthesis for AI Voice)
         const SpeechSynthesis = window.speechSynthesis;
         let tamilVoice = null;
-        let englishVoice = null; // Store English voice as well
+        let englishVoice = null; // ஆங்கில குரலையும் சேமிக்கவும்
 
         function populateVoiceList() {
             if (SpeechSynthesis) {
                 const voices = SpeechSynthesis.getVoices();
-                // Prioritize finding a high-quality Tamil voice
+                // உயர்தர தமிழ் குரலைக் கண்டறிய முன்னுரிமை
                 tamilVoice = voices.find(voice => voice.lang === 'ta-IN' && (voice.name.includes('Google') || voice.name.includes('Android') || voice.name.includes('Enhanced'))) ||
                              voices.find(voice => voice.lang.startsWith('ta'));
 
-                // Prioritize finding a high-quality English voice
+                // உயர்தர ஆங்கில குரலைக் கண்டறிய முன்னுரிமை
                 englishVoice = voices.find(voice => voice.lang === 'en-US' && (voice.name.includes('Google') || voice.name.includes('Enhanced'))) ||
                                voices.find(voice => voice.lang.startsWith('en'));
                 
-                // Log available Tamil voices for debugging
+                // பிழைதிருத்தத்திற்காக கிடைக்கும் தமிழ் குரல்களைப் பதிவு செய்யவும்
                 console.log("Available Tamil voices:");
                 voices.filter(voice => voice.lang.startsWith('ta')).forEach(voice => console.log(voice.name, voice.lang));
             }
         }
 
-        populateVoiceList(); // Call initially to get available voices
+        populateVoiceList(); // ஆரம்பத்தில் கிடைக்கும் குரல்களைப் பெற அழைக்கவும்
         if (SpeechSynthesis) {
-            SpeechSynthesis.onvoiceschanged = populateVoiceList; // Update voices when they load/change
+            SpeechSynthesis.onvoiceschanged = populateVoiceList; // குரல்கள் ஏற்றப்படும்/மாறும்போது புதுப்பிக்கவும்
         }
 
         aiVoiceBtn.addEventListener('click', () => {
@@ -482,15 +485,16 @@
             }
 
             if (SpeechSynthesis.speaking) {
-                SpeechSynthesis.cancel(); // Stop any ongoing speech
+                SpeechSynthesis.cancel(); // நடந்துகொண்டிருக்கும் எந்த பேச்சையும் நிறுத்தவும்
                 aiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path></svg>`;
                 return;
             }
 
             const utterance = new SpeechSynthesisUtterance(tipText);
-            utterance.lang = currentLanguage === 'ta' ? 'ta-IN' : currentLanguage; // Set the language for the utterance
+            // தமிழுக்கு ta-IN பயன்படுத்துகிறது
+            utterance.lang = currentLanguage === 'ta' ? 'ta-IN' : currentLanguage; 
 
-            // Assign the specific voice if found for the current language
+            // தற்போதைய மொழிக்கு ஒரு குறிப்பிட்ட குரல் கண்டறியப்பட்டால் அதை ஒதுக்குங்கள்
             if (currentLanguage === 'ta' && tamilVoice) {
                 utterance.voice = tamilVoice;
                 console.log("Using Tamil voice:", tamilVoice.name);
@@ -498,6 +502,7 @@
                 utterance.voice = englishVoice;
                 console.log("Using English voice:", englishVoice.name);
             } else {
+                // ஒரு குறிப்பிட்ட குரல் கண்டறியப்படவில்லை என்றால், உலாவி தானாகவே ஒரு இயல்புநிலையை முயற்சிக்கும்
                 console.warn(`Specific voice for ${currentLanguage} not found, falling back to browser default.`);
             }
             
@@ -596,6 +601,7 @@
             aiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path></svg>`;
 
             if (recognition) {
+                // தமிழுக்கு ta-IN பயன்படுத்துகிறது
                 recognition.lang = currentLanguage === 'ta' ? 'ta-IN' : currentLanguage;
             }
         }
@@ -645,7 +651,7 @@
                 const response = await fetch(backendUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: prompt, model: 'gemini-pro-vision' }) // குறிப்பிட்டபடி gemini-pro-vision ஐப் பயன்படுத்துதல், உங்கள் பின்தளம் இதை கையாளுகிறது என்பதை உறுதிப்படுத்தவும்.
+                    body: JSON.stringify({ prompt: prompt, model: 'gemini-pro-vision' }) // குறிப்பிட்டபடி gemini-pro-vision ஐப் பயன்படுத்துதல்
                 });
 
                 const result = await response.json();
