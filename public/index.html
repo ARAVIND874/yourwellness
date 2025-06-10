@@ -17,21 +17,18 @@
             margin: 0;
             padding: 1.5rem;
             color: #333333;
-            /* Removed overflow: hidden from here directly, handled by splash screen class */
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            box-sizing: border-box; /* Ensure padding is included in width/height */
+            box-sizing: border-box;
         }
 
-        /* Adjust body for scrolling when splash screen is gone */
         body.main-content-active {
-            min-height: auto; /* Allow content to dictate height */
-            align-items: flex-start; /* Align content to top for scrolling */
-            padding-top: 2rem; /* Add some top padding */
-            padding-bottom: 2rem; /* Add some bottom padding */
-            overflow-y: auto; /* Enable vertical scrolling */
+            min-height: auto;
+            align-items: flex-start;
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+            overflow-y: auto;
         }
-
 
         .container {
             max-width: 640px;
@@ -103,7 +100,7 @@
             box-shadow: 0 6px 15px rgba(106, 13, 173, 0.4);
             letter-spacing: 0.025em;
             margin-top: 1rem;
-            border: none; /* Ensure no default button border */
+            border: none;
         }
         .generate-button:hover, .action-button:hover, .open-tracker-button:hover, .ai-voice-button:hover {
             background-color: #4B0A7B;
@@ -172,10 +169,9 @@
                 width: 100%;
                 padding: 0.9rem 1.5rem;
             }
-            /* Adjust button group on small screens */
             .flex.flex-wrap.justify-center.gap-4 {
-                flex-direction: column; /* Stack buttons vertically */
-                gap: 0.75rem; /* Reduce gap between stacked buttons */
+                flex-direction: column;
+                gap: 0.75rem;
             }
             .language-selector-wrapper {
                 top: 0.75rem;
@@ -203,11 +199,11 @@
             z-index: 1000;
             opacity: 1;
             transition: opacity 1s ease-out;
-            overflow: hidden; /* Keep splash screen hidden */
+            overflow: hidden;
         }
         .splash-screen.fade-out {
             opacity: 0;
-            pointer-events: none; /* Disable interaction during fade-out */
+            pointer-events: none;
         }
         .splash-screen img {
             max-width: 40%;
@@ -276,7 +272,6 @@
     </div>
 
     <script>
-        // Translations object for multilingual support
         const translations = {
             ta: {
                 mainTitle: 'உங்கள் ஆரோக்கிய இலக்கு என்ன?',
@@ -292,7 +287,7 @@
                 microphonePermissionDenied: 'மைக்ரோஃபோன் அணுகல் மறுக்கப்பட்டது. அமைப்புகளில் அனுமதிகளை சரிபார்க்கவும்.',
                 microphoneListening: 'கேட்கிறது...',
                 aiPrompt: (goal) => `ஒரு பயனர் தங்கள் ஆரோக்கிய இலக்கை "${goal}" என்று குறிப்பிட்டுள்ளார். இந்த இலக்கை அடைய உதவும் ஒரு தனிப்பயனாக்கப்பட்ட, சுருக்கமான, **மிகவும் நேர்மறையான, ஊக்கமளிக்கும் மற்றும் உற்சாகப்படுத்தும்** ஆரோக்கிய உதவிக்குறிப்பை தமிழில் வழங்குங்கள். உதவிக்குறிப்பு செயல்முறைக்குரியதாகவும், எளிதில் பின்பற்றக்கூடியதாகவும் இருக்க வேண்டும்.`,
-                aiVoiceButton: 'உதவிக்குறிப்பைப் படிக்கவும்', // New translation for AI voice button
+                aiVoiceButton: 'உதவிக்குறிப்பைப் படிக்கவும்',
                 speechSynthesisUnsupported: 'உங்கள் உலாவி குரல் வெளியீட்டை ஆதரிக்கவில்லை.',
                 noTipToSpeak: 'பேசுவதற்கு உதவிக்குறிப்பு இல்லை.',
                 tipSpeaking: 'உதவிக்குறிப்பு பேசப்படுகிறது...',
@@ -309,7 +304,7 @@
                 stepsGoalReached: (steps, distanceKm) => `இலக்கை அடைந்தது! நீங்கள் ${steps} படிகள் நடந்துள்ளீர்கள், இது தோராயமாக ${distanceKm} கி.மீ. ஆகும். வாழ்த்துக்கள்!`,
                 stepsGoalNear: (steps, remainingSteps, distanceKm) => `நன்றாகச் செய்தீர்கள்! நீங்கள் ${steps} படிகள் நடந்துள்ளீர்கள், இது தோராயமாக ${distanceKm} கி.மீ. ஆகும். இன்னும் ${remainingSteps} படிகள் தூரத்தில் உள்ளீர்கள்.`,
                 stepsGoalFar: (steps, distanceKm) => `தொடர்ந்து முயற்சி செய்யுங்கள்! நீங்கள் ${steps} படிகள் நடந்துள்ளீர்கள், இது தோராயமாக ${distanceKm} கி.மீ. ஆகும். உங்கள் 10,000 படிகள் இலக்கை அடைய இன்னும் ${10000 - steps} படிகள் உள்ளன.`,
-                stepsStopped: (steps, distanceKm) => `டிராக்கிங் நிறுத்தப்பட்டது. நீங்கள் ${steps} படிகள் நடந்துள்ளீர்கள், இது தோராயமாக ${distanceKm} கி.மீ. ஆகும்.`
+                stepsStopped: (steps, distanceKm) => `டிராக்கிங் நிறுத்தப்பட்டது. நீங்கள் ${steps} படிகள் நடந்துள்ளீர்கள், இது தோராயமாக ${distanceKm} கி.மீ.`
             },
             en: {
                 mainTitle: 'What is your wellness goal?',
@@ -325,7 +320,7 @@
                 microphonePermissionDenied: 'Microphone access denied. Please check permissions in settings.',
                 microphoneListening: 'Listening...',
                 aiPrompt: (goal) => `A user has stated their wellness goal as "${goal}". Provide a personalized, concise, **highly positive, encouraging, and motivating** wellness tip in English to help them achieve this goal. The tip should be actionable and easy to follow.`,
-                aiVoiceButton: 'Read Tip Aloud', // New translation for AI voice button
+                aiVoiceButton: 'Read Tip Aloud',
                 speechSynthesisUnsupported: 'Your browser does not support voice output.',
                 noTipToSpeak: 'No tip to speak.',
                 tipSpeaking: 'Speaking tip...',
@@ -346,7 +341,6 @@
             }
         };
 
-        // Get references to DOM elements
         const goalInput = document.getElementById('goalInput');
         const generateBtn = document.getElementById('generateBtn');
         const loadingIndicator = document.getElementById('loading');
@@ -356,13 +350,11 @@
         const descriptionText = document.getElementById('descriptionText');
         const loadingText = document.getElementById('loadingText');
         const micBtn = document.getElementById('micBtn');
-        const aiVoiceBtn = document.getElementById('aiVoiceBtn'); // New AI voice button
+        const aiVoiceBtn = document.getElementById('aiVoiceBtn');
 
-        // Splash screen elements
         const splashScreen = document.getElementById('splashScreen');
         const mainContent = document.getElementById('mainContent');
 
-        // Step tracking elements
         const tipSectionTitle = document.getElementById('tipSectionTitle');
         const stepSectionTitle = document.getElementById('stepSectionTitle');
         const currentStepsDisplay = document.getElementById('currentStepsDisplay');
@@ -373,18 +365,16 @@
         const stepTrackerSection = document.getElementById('stepTrackerSection');
         const openStepTrackerBtn = document.getElementById('openStepTrackerBtn');
 
-        // Initial language setting (try to load from localStorage, otherwise default to Tamil)
         let currentLanguage = localStorage.getItem('wellnessAppLanguage') || 'ta';
-        languageSelect.value = currentLanguage; // Set the select box to the current language
+        languageSelect.value = currentLanguage;
 
-        // Step tracking state variables
-        let currentSteps = parseInt(localStorage.getItem('currentSteps')) || 0; // Load steps from localStorage
-        let trackingInterval = null; // Will hold the setInterval ID
-        const stepsGoal = 10000; // Common daily step goal
-        const stepsPerIncrement = 1; // Steps to add per second in simulation
-        const stepsPerKm = 1312.33; // Average steps per kilometer (approx. 1312 steps/km)
+        let currentSteps = parseInt(localStorage.getItem('currentSteps')) || 0;
+        let trackingInterval = null;
+        const stepsGoal = 10000;
+        const stepsPerIncrement = 1;
+        const stepsPerKm = 1312.33;
 
-        // Web Speech API configuration (Speech Recognition)
+        // Web Speech API (Speech Recognition)
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         let recognition;
 
@@ -417,7 +407,6 @@
             recognition.onend = () => {
                 micBtn.classList.remove('recording');
                 loadingIndicator.style.display = 'none';
-                // Only reset tipOutput if it's not showing an error or a generated tip
                 if (!tipOutput.innerHTML.includes('text-red-600') && tipOutput.innerHTML === '') {
                     tipOutput.innerHTML = `<p>${translations[currentLanguage].initialTip}</p>`;
                     tipOutput.style.fontStyle = 'italic';
@@ -449,26 +438,27 @@
             console.warn('Web Speech API (SpeechRecognition) not supported in this browser.');
         }
 
-        // Web Speech API configuration (Speech Synthesis for AI Voice)
+        // Web Speech API (Speech Synthesis for AI Voice)
         const SpeechSynthesis = window.speechSynthesis;
         let tamilVoice = null;
+        let englishVoice = null; // Store English voice as well
 
         function populateVoiceList() {
             if (SpeechSynthesis) {
                 const voices = SpeechSynthesis.getVoices();
                 tamilVoice = voices.find(voice => voice.lang === 'ta-IN' || voice.lang.startsWith('ta'));
+                englishVoice = voices.find(voice => voice.lang === 'en-US' || voice.lang.startsWith('en'));
             }
         }
 
         populateVoiceList();
         if (SpeechSynthesis) {
-            SpeechSynthesis.onvoiceschanged = populateVoiceList; // Update voices when they load
+            SpeechSynthesis.onvoiceschanged = populateVoiceList;
         }
-
 
         aiVoiceBtn.addEventListener('click', () => {
             const t = translations[currentLanguage];
-            const tipText = tipOutput.textContent.trim(); // Get the plain text from the tip box
+            const tipText = tipOutput.textContent.trim();
 
             if (!SpeechSynthesis) {
                 tipOutput.innerHTML = `<p class="text-red-600">${t.speechSynthesisUnsupported}</p>`;
@@ -483,93 +473,86 @@
             }
 
             if (SpeechSynthesis.speaking) {
-                SpeechSynthesis.cancel(); // Stop any ongoing speech
+                SpeechSynthesis.cancel();
                 aiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path></svg>`;
                 return;
             }
 
             const utterance = new SpeechSynthesisUtterance(tipText);
             utterance.lang = currentLanguage;
+            utterance.rate = 1; // Adjust speech rate if needed (1 is normal)
+            utterance.pitch = 1; // Adjust speech pitch if needed (1 is normal)
 
-            // Try to find a suitable voice
             if (currentLanguage === 'ta' && tamilVoice) {
                 utterance.voice = tamilVoice;
-            } else if (currentLanguage === 'en') {
-                const englishVoice = SpeechSynthesis.getVoices().find(voice => voice.lang === 'en-US' || voice.lang.startsWith('en'));
-                if (englishVoice) {
-                    utterance.voice = englishVoice;
-                }
+            } else if (currentLanguage === 'en' && englishVoice) {
+                utterance.voice = englishVoice;
+            } else {
+                // Fallback to browser's default voice for the language if specific voice not found
+                console.warn(`Specific voice for ${currentLanguage} not found, falling back to default.`);
             }
             
             utterance.onstart = () => {
-                aiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-x"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="22" y1="9" x2="16" y2="15"></line><line x1="16" y1="9" x2="22" y2="15"></line></svg>`; // Volume-x icon for stop
+                aiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-x"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="22" y1="9" x2="16" y2="15"></line><line x1="16" y1="9" x2="22" y2="15"></line></svg>`;
             };
 
             utterance.onend = () => {
-                aiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path></svg>`; // Volume-2 icon for play
+                aiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path></svg>`;
             };
 
             SpeechSynthesis.speak(utterance);
         });
 
-
-        // Function to update step tracker display and messages
         function updateStepTrackerDisplay() {
             const t = translations[currentLanguage];
             const distanceKm = (currentSteps / stepsPerKm).toFixed(2);
             currentStepsDisplay.value = currentSteps;
-            localStorage.setItem('currentSteps', currentSteps); // Save steps to localStorage
+            localStorage.setItem('currentSteps', currentSteps);
 
             if (currentSteps >= stepsGoal) {
                 stepResultOutput.innerHTML = `<p>${t.stepsGoalReached(currentSteps, distanceKm)}</p>`;
-                // Stop tracking automatically once goal is reached
                 if (trackingInterval) {
                     clearInterval(trackingInterval);
                     trackingInterval = null;
-                    toggleTrackingBtn.textContent = t.startTrackingButton; // Update button text
+                    toggleTrackingBtn.textContent = t.startTrackingButton;
                 }
             } else if (currentSteps >= stepsGoal * 0.75) {
                 const remainingSteps = stepsGoal - currentSteps;
-                stepResultOutput.innerHTML = `<p>${t.stepsGoalNear(currentSteps, remainingKm, distanceKm)}</p>`;
+                stepResultOutput.innerHTML = `<p>${t.stepsGoalNear(currentSteps, remainingSteps, distanceKm)}</p>`;
             } else {
                 stepResultOutput.innerHTML = `<p>${t.stepsGoalFar(currentSteps, distanceKm)}</p>`;
             }
             stepResultOutput.style.fontStyle = 'normal';
         }
 
-        // Function to start step tracking simulation
         function startTrackingSimulation() {
-            // Only start if not already tracking and goal not reached
             if (!trackingInterval && currentSteps < stepsGoal) {
                 const t = translations[currentLanguage];
-                toggleTrackingBtn.textContent = t.stopTrackingButton; // Update button text
-                stepResultOutput.style.fontStyle = 'normal'; // Reset font style for live updates
+                toggleTrackingBtn.textContent = t.stopTrackingButton;
+                stepResultOutput.style.fontStyle = 'normal';
                 stepResultOutput.innerHTML = `<p>${t.stepsTracking(currentSteps, (currentSteps / stepsPerKm).toFixed(2))}</p>`;
 
                 trackingInterval = setInterval(() => {
                     currentSteps += stepsPerIncrement;
                     updateStepTrackerDisplay();
-                }, 1000); // Increment steps every second
+                }, 1000);
             } else if (currentSteps >= stepsGoal) {
-                // If goal already reached, just update display and keep button text as 'Start Tracking'
                 updateStepTrackerDisplay();
             }
         }
 
-        // Function to stop step tracking simulation
         function stopTrackingSimulation() {
             if (trackingInterval) {
                 clearInterval(trackingInterval);
                 trackingInterval = null;
                 const t = translations[currentLanguage];
-                toggleTrackingBtn.textContent = t.startTrackingButton; // Update button text
+                toggleTrackingBtn.textContent = t.startTrackingButton;
                 const distanceKm = (currentSteps / stepsPerKm).toFixed(2);
                 stepResultOutput.innerHTML = `<p>${t.stepsStopped(currentSteps, distanceKm)}</p>`;
                 stepResultOutput.style.fontStyle = 'normal';
             }
         }
 
-        // Function to update all UI text based on the selected language
         function updateUI() {
             const t = translations[currentLanguage];
             mainTitle.textContent = t.mainTitle;
@@ -580,11 +563,9 @@
             tipOutput.innerHTML = `<p>${t.initialTip}</p>`;
             tipOutput.style.fontStyle = 'italic';
 
-            // Update step tracking elements
             tipSectionTitle.textContent = t.tipSectionTitle;
             stepSectionTitle.textContent = t.stepSectionTitle;
             
-            // Set the open/close button text dynamically
             const isTrackerOpen = stepTrackerSection.style.display !== 'none';
             openStepTrackerBtn.textContent = isTrackerOpen ? t.closeStepTrackerButton : t.openStepTrackerButton;
 
@@ -593,14 +574,13 @@
             resetStepsBtn.textContent = t.resetStepsButton;
             
             currentStepsDisplay.value = currentSteps;
-            if (!isTrackerOpen) { // Only set initial message if tracker is closed
+            if (!isTrackerOpen) {
                 stepResultOutput.innerHTML = `<p>${t.stepsResultInitial}</p>`;
                 stepResultOutput.style.fontStyle = 'italic';
             } else {
-                updateStepTrackerDisplay(); // Update with current tracking status if visible
+                updateStepTrackerDisplay();
             }
 
-            // Update AI voice button text
             aiVoiceBtn.textContent = t.aiVoiceButton;
 
             if (recognition) {
@@ -608,15 +588,18 @@
             }
         }
 
-        // Event listener for language selection change
         languageSelect.addEventListener('change', (event) => {
             currentLanguage = event.target.value;
-            localStorage.setItem('wellnessAppLanguage', currentLanguage); // Save language to localStorage
+            localStorage.setItem('wellnessAppLanguage', currentLanguage);
             updateUI();
             populateVoiceList(); // Re-populate voices for the new language
+             // Stop any ongoing speech when language changes
+            if (SpeechSynthesis && SpeechSynthesis.speaking) {
+                SpeechSynthesis.cancel();
+                aiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path></svg>`;
+            }
         });
 
-        // Event listener for the generate button click (Wellness Tip)
         generateBtn.addEventListener('click', async () => {
             const userGoal = goalInput.value.trim();
             const t = translations[currentLanguage];
@@ -624,7 +607,7 @@
             if (!userGoal) {
                 tipOutput.innerHTML = `<p class="text-red-600">${t.emptyGoalError}</p>`;
                 tipOutput.style.fontStyle = 'normal';
-                aiVoiceBtn.style.display = 'none'; // Hide AI voice button on error
+                aiVoiceBtn.style.display = 'none';
                 return;
             }
 
@@ -632,9 +615,8 @@
             loadingText.textContent = t.loadingText;
             tipOutput.innerHTML = '';
             tipOutput.style.fontStyle = 'italic';
-            aiVoiceBtn.style.display = 'none'; // Hide AI voice button while generating
+            aiVoiceBtn.style.display = 'none';
 
-            // Stop any ongoing speech when generating a new tip
             if (SpeechSynthesis && SpeechSynthesis.speaking) {
                 SpeechSynthesis.cancel();
                 aiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path></svg>`;
@@ -655,36 +637,32 @@
                 if (response.ok && result.tip) {
                     tipOutput.innerHTML = `<p>${result.tip}</p>`;
                     tipOutput.style.fontStyle = 'normal';
-                    aiVoiceBtn.style.display = 'inline-flex'; // Show AI voice button after successful tip generation
+                    aiVoiceBtn.style.display = 'inline-flex';
                 } else {
                     tipOutput.innerHTML = `<p class="text-red-600">${result.error || t.apiError}</p>`;
                     tipOutput.style.fontStyle = 'normal';
-                    aiVoiceBtn.style.display = 'none'; // Hide AI voice button on error
+                    aiVoiceBtn.style.display = 'none';
                     console.error('Backend response error:', result.error || 'Unknown error', result);
                 }
 
             } catch (error) {
                 tipOutput.innerHTML = `<p class="text-red-600">${t.fetchError}</p>`;
                 tipOutput.style.fontStyle = 'normal';
-                aiVoiceBtn.style.display = 'none'; // Hide AI voice button on error
+                aiVoiceBtn.style.display = 'none';
                 console.error('Error connecting to backend:', error);
             } finally {
                 loadingIndicator.style.display = 'none';
             }
         });
 
-        // Event listener for the "Add 1 Step" button
         addOneStepBtn.addEventListener('click', () => {
             currentSteps += 1;
             updateStepTrackerDisplay();
-            // This ensures the toggle button reflects the current state if steps are added manually
-            // and tracking was not active and goal is not yet reached
             if (!trackingInterval && currentSteps < stepsGoal) {
                 toggleTrackingBtn.textContent = translations[currentLanguage].startTrackingButton;
             }
         });
 
-        // Event listener for the "Start/Stop Tracking" button
         toggleTrackingBtn.addEventListener('click', () => {
             if (trackingInterval) {
                 stopTrackingSimulation();
@@ -693,7 +671,6 @@
             }
         });
 
-        // Event listener for the "Reset Steps" button
         resetStepsBtn.addEventListener('click', () => {
             stopTrackingSimulation();
             currentSteps = 0;
@@ -702,41 +679,33 @@
             stepResultOutput.style.fontStyle = 'italic';
         });
 
-        // Event listener for the "Open/Close Step Tracker" button
         openStepTrackerBtn.addEventListener('click', () => {
             const isHidden = stepTrackerSection.style.display === 'none';
             stepTrackerSection.style.display = isHidden ? 'block' : 'none';
             
-            // Update button text
             openStepTrackerBtn.textContent = isHidden ? translations[currentLanguage].closeStepTrackerButton : translations[currentLanguage].openStepTrackerButton;
 
             if (isHidden) {
-                // If opening, ensure display is updated
                 updateStepTrackerDisplay();
             } else {
-                // If closing, stop tracking and reset output message
                 stopTrackingSimulation();
                 stepResultOutput.innerHTML = `<p>${translations[currentLanguage].stepsResultInitial}</p>`;
                 stepResultOutput.style.fontStyle = 'italic';
             }
         });
 
-        // Initial UI update when the page loads
         updateUI();
-        updateStepTrackerDisplay(); // Ensure steps display is loaded correctly on initial render
+        updateStepTrackerDisplay();
 
-        // Splash screen fade-out logic
         window.addEventListener('load', () => {
             setTimeout(() => {
                 splashScreen.classList.add('fade-out');
-                // Remove splash screen after transition to prevent it from blocking interactions
                 splashScreen.addEventListener('transitionend', () => {
                     splashScreen.remove();
-                    // Once splash screen is gone, enable body scrolling and adjust layout
                     document.body.classList.add('main-content-active');
                 });
-                mainContent.style.display = 'block'; // Show main content
-            }, 1000); // Display splash screen for 1 second
+                mainContent.style.display = 'block';
+            }, 1000);
         });
     </script>
 </body>
