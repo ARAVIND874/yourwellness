@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personalized Wellness Tip Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lato:wght=300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -92,7 +92,7 @@
             color: #DC2626;
             animation: none;
         }
-        .generate-button, .action-button, .open-tracker-button {
+        .generate-button, .action-button, .open-tracker-button, .ai-voice-button {
             background-color: #6A0DAD;
             color: #ffffff;
             padding: 1rem 2rem;
@@ -105,12 +105,12 @@
             margin-top: 1rem;
             border: none; /* Ensure no default button border */
         }
-        .generate-button:hover, .action-button:hover, .open-tracker-button:hover {
+        .generate-button:hover, .action-button:hover, .open-tracker-button:hover, .ai-voice-button:hover {
             background-color: #4B0A7B;
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(106, 13, 173, 0.5);
         }
-        .generate-button:active, .action-button:active, .open-tracker-button:active {
+        .generate-button:active, .action-button:active, .open-tracker-button:active, .ai-voice-button:active {
             transform: translateY(0);
             box-shadow: 0 4px 10px rgba(106, 13, 173, 0.3);
         }
@@ -168,7 +168,7 @@
                 padding: 1.5rem;
                 border-radius: 1.25rem;
             }
-            .generate-button, .action-button, .open-tracker-button {
+            .generate-button, .action-button, .open-tracker-button, .ai-voice-button {
                 width: 100%;
                 padding: 0.9rem 1.5rem;
             }
@@ -243,7 +243,15 @@
                 </svg>
             </button>
         </div>
-        <button id="generateBtn" class="generate-button"></button>
+        <div class="flex flex-wrap justify-center gap-4 mt-4">
+            <button id="generateBtn" class="generate-button"></button>
+            <button id="aiVoiceBtn" class="ai-voice-button" style="display: none;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path>
+                </svg>
+            </button>
+        </div>
         <div id="loading" class="loading-indicator" aria-live="polite">
             <div class="loading-spinner"></div>
             <p id="loadingText"></p>
@@ -283,13 +291,15 @@
                 microphoneUnsupported: 'உங்கள் உலாவி மைக்ரோஃபோன் உள்ளீட்டை ஆதரிக்கவில்லை.',
                 microphonePermissionDenied: 'மைக்ரோஃபோன் அணுகல் மறுக்கப்பட்டது. அமைப்புகளில் அனுமதிகளை சரிபார்க்கவும்.',
                 microphoneListening: 'கேட்கிறது...',
-                // Modified aiPrompt to ensure positive tone
                 aiPrompt: (goal) => `ஒரு பயனர் தங்கள் ஆரோக்கிய இலக்கை "${goal}" என்று குறிப்பிட்டுள்ளார். இந்த இலக்கை அடைய உதவும் ஒரு தனிப்பயனாக்கப்பட்ட, சுருக்கமான, **மிகவும் நேர்மறையான, ஊக்கமளிக்கும் மற்றும் உற்சாகப்படுத்தும்** ஆரோக்கிய உதவிக்குறிப்பை தமிழில் வழங்குங்கள். உதவிக்குறிப்பு செயல்முறைக்குரியதாகவும், எளிதில் பின்பற்றக்கூடியதாகவும் இருக்க வேண்டும்.`,
-                // New step tracking strings
+                aiVoiceButton: 'உதவிக்குறிப்பைப் படிக்கவும்', // New translation for AI voice button
+                speechSynthesisUnsupported: 'உங்கள் உலாவி குரல் வெளியீட்டை ஆதரிக்கவில்லை.',
+                noTipToSpeak: 'பேசுவதற்கு உதவிக்குறிப்பு இல்லை.',
+                tipSpeaking: 'உதவிக்குறிப்பு பேசப்படுகிறது...',
                 tipSectionTitle: 'ஆரோக்கிய உதவிக்குறிப்பு',
                 stepSectionTitle: 'தினசரி படி டிராக்கர்',
                 openStepTrackerButton: 'படி டிராக்கரைத் திற',
-                closeStepTrackerButton: 'படி டிராக்கரை மூடு', // New string for toggle
+                closeStepTrackerButton: 'படி டிராக்கரை மூடு',
                 addOneStepButton: '1 படி சேர்',
                 startTrackingButton: 'டிராக்கிங்கை தொடங்கு',
                 stopTrackingButton: 'டிராக்கிங்கை நிறுத்து',
@@ -314,13 +324,15 @@
                 microphoneUnsupported: 'Your browser does not support microphone input.',
                 microphonePermissionDenied: 'Microphone access denied. Please check permissions in settings.',
                 microphoneListening: 'Listening...',
-                // Modified aiPrompt to ensure positive tone
                 aiPrompt: (goal) => `A user has stated their wellness goal as "${goal}". Provide a personalized, concise, **highly positive, encouraging, and motivating** wellness tip in English to help them achieve this goal. The tip should be actionable and easy to follow.`,
-                // New step tracking strings
+                aiVoiceButton: 'Read Tip Aloud', // New translation for AI voice button
+                speechSynthesisUnsupported: 'Your browser does not support voice output.',
+                noTipToSpeak: 'No tip to speak.',
+                tipSpeaking: 'Speaking tip...',
                 tipSectionTitle: 'Wellness Tip Generator',
                 stepSectionTitle: 'Daily Step Tracker',
                 openStepTrackerButton: 'Open Step Tracker',
-                closeStepTrackerButton: 'Close Step Tracker', // New string for toggle
+                closeStepTrackerButton: 'Close Step Tracker',
                 addOneStepButton: 'Add 1 Step',
                 startTrackingButton: 'Start Tracking',
                 stopTrackingButton: 'Stop Tracking',
@@ -344,6 +356,7 @@
         const descriptionText = document.getElementById('descriptionText');
         const loadingText = document.getElementById('loadingText');
         const micBtn = document.getElementById('micBtn');
+        const aiVoiceBtn = document.getElementById('aiVoiceBtn'); // New AI voice button
 
         // Splash screen elements
         const splashScreen = document.getElementById('splashScreen');
@@ -371,7 +384,7 @@
         const stepsPerIncrement = 1; // Steps to add per second in simulation
         const stepsPerKm = 1312.33; // Average steps per kilometer (approx. 1312 steps/km)
 
-        // Web Speech API configuration
+        // Web Speech API configuration (Speech Recognition)
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         let recognition;
 
@@ -433,8 +446,72 @@
 
         } else {
             micBtn.style.display = 'none';
-            console.warn('Web Speech API not supported in this browser.');
+            console.warn('Web Speech API (SpeechRecognition) not supported in this browser.');
         }
+
+        // Web Speech API configuration (Speech Synthesis for AI Voice)
+        const SpeechSynthesis = window.speechSynthesis;
+        let tamilVoice = null;
+
+        function populateVoiceList() {
+            if (SpeechSynthesis) {
+                const voices = SpeechSynthesis.getVoices();
+                tamilVoice = voices.find(voice => voice.lang === 'ta-IN' || voice.lang.startsWith('ta'));
+            }
+        }
+
+        populateVoiceList();
+        if (SpeechSynthesis) {
+            SpeechSynthesis.onvoiceschanged = populateVoiceList; // Update voices when they load
+        }
+
+
+        aiVoiceBtn.addEventListener('click', () => {
+            const t = translations[currentLanguage];
+            const tipText = tipOutput.textContent.trim(); // Get the plain text from the tip box
+
+            if (!SpeechSynthesis) {
+                tipOutput.innerHTML = `<p class="text-red-600">${t.speechSynthesisUnsupported}</p>`;
+                tipOutput.style.fontStyle = 'normal';
+                return;
+            }
+
+            if (!tipText || tipText === t.initialTip || tipText.includes(t.emptyGoalError) || tipText.includes(t.apiError) || tipText.includes(t.fetchError)) {
+                tipOutput.innerHTML = `<p class="text-red-600">${t.noTipToSpeak}</p>`;
+                tipOutput.style.fontStyle = 'normal';
+                return;
+            }
+
+            if (SpeechSynthesis.speaking) {
+                SpeechSynthesis.cancel(); // Stop any ongoing speech
+                aiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path></svg>`;
+                return;
+            }
+
+            const utterance = new SpeechSynthesisUtterance(tipText);
+            utterance.lang = currentLanguage;
+
+            // Try to find a suitable voice
+            if (currentLanguage === 'ta' && tamilVoice) {
+                utterance.voice = tamilVoice;
+            } else if (currentLanguage === 'en') {
+                const englishVoice = SpeechSynthesis.getVoices().find(voice => voice.lang === 'en-US' || voice.lang.startsWith('en'));
+                if (englishVoice) {
+                    utterance.voice = englishVoice;
+                }
+            }
+            
+            utterance.onstart = () => {
+                aiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-x"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="22" y1="9" x2="16" y2="15"></line><line x1="16" y1="9" x2="22" y2="15"></line></svg>`; // Volume-x icon for stop
+            };
+
+            utterance.onend = () => {
+                aiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path></svg>`; // Volume-2 icon for play
+            };
+
+            SpeechSynthesis.speak(utterance);
+        });
+
 
         // Function to update step tracker display and messages
         function updateStepTrackerDisplay() {
@@ -453,7 +530,7 @@
                 }
             } else if (currentSteps >= stepsGoal * 0.75) {
                 const remainingSteps = stepsGoal - currentSteps;
-                stepResultOutput.innerHTML = `<p>${t.stepsGoalNear(currentSteps, remainingSteps, distanceKm)}</p>`;
+                stepResultOutput.innerHTML = `<p>${t.stepsGoalNear(currentSteps, remainingKm, distanceKm)}</p>`;
             } else {
                 stepResultOutput.innerHTML = `<p>${t.stepsGoalFar(currentSteps, distanceKm)}</p>`;
             }
@@ -523,6 +600,9 @@
                 updateStepTrackerDisplay(); // Update with current tracking status if visible
             }
 
+            // Update AI voice button text
+            aiVoiceBtn.textContent = t.aiVoiceButton;
+
             if (recognition) {
                 recognition.lang = currentLanguage;
             }
@@ -533,6 +613,7 @@
             currentLanguage = event.target.value;
             localStorage.setItem('wellnessAppLanguage', currentLanguage); // Save language to localStorage
             updateUI();
+            populateVoiceList(); // Re-populate voices for the new language
         });
 
         // Event listener for the generate button click (Wellness Tip)
@@ -543,6 +624,7 @@
             if (!userGoal) {
                 tipOutput.innerHTML = `<p class="text-red-600">${t.emptyGoalError}</p>`;
                 tipOutput.style.fontStyle = 'normal';
+                aiVoiceBtn.style.display = 'none'; // Hide AI voice button on error
                 return;
             }
 
@@ -550,6 +632,13 @@
             loadingText.textContent = t.loadingText;
             tipOutput.innerHTML = '';
             tipOutput.style.fontStyle = 'italic';
+            aiVoiceBtn.style.display = 'none'; // Hide AI voice button while generating
+
+            // Stop any ongoing speech when generating a new tip
+            if (SpeechSynthesis && SpeechSynthesis.speaking) {
+                SpeechSynthesis.cancel();
+                aiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path></svg>`;
+            }
 
             try {
                 const prompt = t.aiPrompt(userGoal);
@@ -566,15 +655,18 @@
                 if (response.ok && result.tip) {
                     tipOutput.innerHTML = `<p>${result.tip}</p>`;
                     tipOutput.style.fontStyle = 'normal';
+                    aiVoiceBtn.style.display = 'inline-flex'; // Show AI voice button after successful tip generation
                 } else {
                     tipOutput.innerHTML = `<p class="text-red-600">${result.error || t.apiError}</p>`;
                     tipOutput.style.fontStyle = 'normal';
+                    aiVoiceBtn.style.display = 'none'; // Hide AI voice button on error
                     console.error('Backend response error:', result.error || 'Unknown error', result);
                 }
 
             } catch (error) {
                 tipOutput.innerHTML = `<p class="text-red-600">${t.fetchError}</p>`;
                 tipOutput.style.fontStyle = 'normal';
+                aiVoiceBtn.style.display = 'none'; // Hide AI voice button on error
                 console.error('Error connecting to backend:', error);
             } finally {
                 loadingIndicator.style.display = 'none';
