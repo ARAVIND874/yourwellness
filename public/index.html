@@ -50,11 +50,11 @@
             top: 1.5rem;
             right: 1.5rem;
         }
-        .language-selector-wrapper select {
-            font-size: 1.1rem; /* எழுத்துரு அளவு அதிகரிப்பு */
-            padding: 0.6rem 0.8rem; /* பேடிங் சரிசெய்தல் */
+        .language-selector-wrapper select { /* மொழி தேர்வு டிராப் டவுன் எழுத்துரு மற்றும் பேடிங் அதிகரிப்பு */
+            font-size: 1.15rem; 
+            padding: 0.7rem 0.9rem; 
             border: 1px solid #D1D5DB;
-            border-radius: 0.5rem; /* வட்டமான மூலைகள் */
+            border-radius: 0.5rem; 
             background-color: #ffffff;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
             transition: all 0.2s ease;
@@ -72,20 +72,25 @@
             display: flex;
             align-items: center;
         }
-        .input-field {
+        .input-field { /* உள்ளீட்டுப் புலம் எழுத்துரு மற்றும் பேடிங் அதிகரிப்பு */
             flex-grow: 1;
-            padding: 1.1rem 1.25rem; /* பேடிங் அதிகரிப்பு */
-            padding-right: 3.8rem; /* மைக் பட்டனுக்கான சரிசெய்யப்பட்ட பேடிங் */
-            border: 1px solid #D1D5DB; /* எல்லை */
-            border-radius: 0.875rem; /* வட்டமான மூலைகள் */
-            font-size: 1.15rem; /* உள்ளீட்டுப் புலம் எழுத்துரு அளவு அதிகரிப்பு */
+            padding: 1.2rem 1.25rem; 
+            padding-right: 3.8rem; 
+            border: 1px solid #D1D5DB; 
+            border-radius: 0.875rem; 
+            font-size: 1.2rem; 
             box-sizing: border-box;
             outline: none;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, border 0.3s ease; /* பிழைக்கான எல்லை மாற்றத்தை சேர்க்கவும் */
         }
         .input-field:focus {
-            border-color: #87CEEB; /* நீல நிற எல்லை */
-            box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.4); /* மென்மையான நீல நிழல் */
+            border-color: #87CEEB; 
+            box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.4); 
+        }
+        /* புதிய CSS: மைக்ரோஃபோன் பிழைக்கான சிவப்பு எல்லை */
+        .input-field.error-border {
+            border-color: #DC2626; /* சிவப்பு நிற எல்லை */
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.4); /* சிவப்பு நிழல் */
         }
 
         /* மைக்ரோஃபோன் பட்டன் ஸ்டைல்கள் */
@@ -94,9 +99,9 @@
             right: 1rem;
             background: none;
             border: none;
-            color: #0000FF; /* நீல நிற ஐகான் */
+            color: #0000FF; 
             padding: 0.5rem;
-            border-radius: 50%; /* வட்ட வடிவம் */
+            border-radius: 50%; 
             cursor: pointer;
             transition: color 0.3s ease, background-color 0.3s ease;
             display: flex;
@@ -105,57 +110,57 @@
             z-index: 10;
         }
         .mic-button:hover {
-            color: #DC2626; /* சிவப்பு நிற ஐகான் */
-            background-color: rgba(220, 38, 38, 0.1); /* மென்மையான சிவப்பு பின்னணி */
+            color: #DC2626; 
+            background-color: rgba(220, 38, 38, 0.1); 
         }
         .mic-button.recording {
-            color: #DC2626; /* பதிவு செய்யும் போது சிவப்பு */
+            color: #DC2626; 
             animation: none;
         }
 
         /* பொத்தான் ஸ்டைல்கள் */
-        .generate-button, .action-button, .open-tracker-button, .ai-voice-button {
-            background-color: #6A0DAD; /* அடர் ஊதா பின்னணி */
-            color: #ffffff; /* வெள்ளையர் உரை */
-            padding: 1.1rem 2.2rem; /* பேடிங் அதிகரிப்பு */
-            border-radius: 0.875rem; /* வட்டமான மூலைகள் */
-            font-weight: 600; /* தடித்த எழுத்து */
-            font-size: 1.1rem; /* பொத்தான் எழுத்துரு அளவு அதிகரிப்பு */
+        .generate-button, .action-button, .open-tracker-button, .ai-voice-button { /* பொத்தான் எழுத்துரு மற்றும் பேடிங் அதிகரிப்பு */
+            background-color: #6A0DAD; 
+            color: #ffffff; 
+            padding: 1.2rem 2.4rem; 
+            border-radius: 0.875rem; 
+            font-weight: 600; 
+            font-size: 1.15rem; 
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
-            box-shadow: 0 6px 15px rgba(106, 13, 173, 0.4); /* ஊதா நிழல் */
-            letter-spacing: 0.025em; /* எழுத்து இடைவெளி */
+            box-shadow: 0 6px 15px rgba(106, 13, 173, 0.4); 
+            letter-spacing: 0.025em; 
             margin-top: 1rem;
             border: none;
         }
         .generate-button:hover, .action-button:hover, .open-tracker-button:hover, .ai-voice-button:hover {
-            background-color: #4B0A7B; /* ஹோவர் நிலையில் அடர் ஊதா */
-            transform: translateY(-2px); /* மென்மையான மேல் நகர்வு */
+            background-color: #4B0A7B; 
+            transform: translateY(-2px); 
             box-shadow: 0 8px 20px rgba(106, 13, 173, 0.5);
         }
         .generate-button:active, .action-button:active, .open-tracker-button:active, .ai-voice-button:active {
-            transform: translateY(0); /* கிளிக் செய்யும் போது அசல் நிலைக்கு */
+            transform: translateY(0); 
             box-shadow: 0 4px 10px rgba(106, 13, 173, 0.3);
         }
 
         /* சுமை காட்டி ஸ்டைல்கள் */
         .loading-indicator {
-            display: none; /* இயல்புநிலையாக மறைக்கப்பட்டிருக்கும் */
+            display: none; 
             margin-top: 2rem;
-            font-size: 1.25rem; /* சுமை ஏற்றும் உரை எழுத்துரு அளவு அதிகரிப்பு */
-            color: #6B7280; /* சாம்பல் நிற உரை */
+            font-size: 1.35rem; /* சுமை ஏற்றும் உரை எழுத்துரு அளவு அதிகரிப்பு */
+            color: #6B7280; 
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.75rem;
         }
         .loading-spinner {
-            border: 4px solid #f3f3f3; /* சுழலியின் அடிப்படை நிறம் */
-            border-top: 4px solid #6A0DAD; /* சுழலியின் முதன்மை நிறம் */
+            border: 4px solid #f3f3f3; 
+            border-top: 4px solid #6A0DAD; 
             border-radius: 50%;
             width: 24px;
             height: 24px;
-            animation: spin 1s linear infinite; /* சுழற்சி அனிமேஷன் */
+            animation: spin 1s linear infinite; 
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
@@ -163,39 +168,39 @@
         }
 
         /* குறிப்பு/முடிவுப் பெட்டி ஸ்டைல்கள் */
-        .tip-box, .step-result-box {
-            background-color: #FFFFAA; /* வெளிர் மஞ்சள் பின்னணி */
-            border: 1px solid #CCCC88; /* மஞ்சள் எல்லை */
+        .tip-box, .step-result-box { /* குறிப்பு/முடிவு உரை எழுத்துரு மற்றும் வரி இடைவெளி அதிகரிப்பு */
+            background-color: #FFFFAA; 
+            border: 1px solid #CCCC88; 
             border-radius: 1.25rem;
-            padding: 2.2rem; /* பேடிங் அதிகரிப்பு */
+            padding: 2.4rem; 
             margin-top: 2rem;
             text-align: left;
             color: #333333;
-            line-height: 1.8; /* வரி இடைவெளி அதிகரிப்பு */
+            line-height: 1.9; 
             min-height: 100px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-style: italic; /* சாய்வு எழுத்து */
-            font-size: 1.15rem; /* குறிப்பு/முடிவு உரை எழுத்துரு அளவு அதிகரிப்பு */
+            font-style: italic; 
+            font-size: 1.25rem; 
             transition: all 0.5s ease-in-out;
         }
         .tip-box p, .step-result-box p {
             margin: 0;
         }
         .text-red-600 {
-            color: #DC2626; /* சிவப்பு உரை */
+            color: #DC2626; 
         }
 
         /* தலைப்புகளுக்கான சரிசெய்யப்பட்ட எழுத்துரு அளவுகள் */
         h1#mainTitle {
-            font-size: 2.2rem; /* மொபைலுக்காக சரிசெய்யப்பட்டது */
+            font-size: 2.5rem; 
         }
         p#descriptionText {
-            font-size: 1.15rem; /* மொபைலுக்காக சரிசெய்யப்பட்டது */
+            font-size: 1.25rem; 
         }
         h2#tipSectionTitle, h2#stepSectionTitle {
-            font-size: 1.75rem; /* மொபைலுக்காக சரிசெய்யப்பட்டது */
+            font-size: 2rem; 
         }
 
         /* Responsive adjustments */
@@ -209,8 +214,8 @@
             }
             .generate-button, .action-button, .open-tracker-button, .ai-voice-button {
                 width: 100%;
-                padding: 1rem 1.5rem; /* முழு அகல பொத்தான்களுக்கான பேடிங் சரிசெய்தல் */
-                font-size: 1.05rem; /* சிறிய திரைகளில் முழு அகல பொத்தான்களுக்கு சற்று சிறியது */
+                padding: 1.1rem 1.8rem; 
+                font-size: 1.1rem; 
             }
             .flex.flex-wrap.justify-center.gap-4 {
                 flex-direction: column;
@@ -221,37 +226,37 @@
                 right: 0.75rem;
             }
             .language-selector-wrapper select {
-                font-size: 1rem; /* மிகச் சிறிய திரைகளில் சற்று சிறியது */
-                padding: 0.5rem 0.6rem;
+                font-size: 1.05rem; 
+                padding: 0.6rem 0.7rem;
             }
             .input-wrapper {
                 flex-direction: row;
                 justify-content: center;
             }
             .input-field {
-                font-size: 1.1rem; /* மிகச் சிறிய திரைகளில் உள்ளீட்டுப் புலம் சற்று சிறியது */
-                padding: 1rem 1.2rem;
+                font-size: 1.15rem; 
+                padding: 1.1rem 1.2rem;
                 padding-right: 3.5rem;
             }
             .mic-button {
                 right: 0.5rem;
             }
             h1#mainTitle {
-                font-size: 2rem; /* மிகச் சிறிய திரைகளுக்கு மேலும் சரிசெய்யப்பட்டது */
+                font-size: 2.2rem; 
             }
             p#descriptionText {
-                font-size: 1.1rem; /* மிகச் சிறிய திரைகளுக்கு மேலும் சரிசெய்யப்பட்டது */
+                font-size: 1.15rem; 
             }
             h2#tipSectionTitle, h2#stepSectionTitle {
-                font-size: 1.6rem; /* மிகச் சிறிய திரைகளுக்கு மேலும் சரிசெய்யப்பட்டது */
+                font-size: 1.75rem; 
             }
             .tip-box, .step-result-box {
-                font-size: 1.1rem; /* மிகச் சிறிய திரைகளுக்கு மேலும் சரிசெய்யப்பட்டது */
-                padding: 1.8rem;
-                line-height: 1.6;
+                font-size: 1.15rem; 
+                padding: 2rem;
+                line-height: 1.7;
             }
             .loading-indicator {
-                font-size: 1.1rem; /* மிகச் சிறிய திரைகளுக்கு சரிசெய்யப்பட்டது */
+                font-size: 1.2rem; 
             }
         }
 
@@ -262,23 +267,23 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: #E6F7FF; /* ஸ்பிளாஷ் ஸ்கிரீன் பின்னணி நிறம் */
+            background-color: #E6F7FF; 
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 1000; /* மற்ற எல்லாவற்றையும் விட மேலே இருக்கும் */
+            z-index: 1000; 
             opacity: 1;
-            transition: opacity 1s ease-out; /* மறைவதற்கு மென்மையான அனிமேஷன் */
+            transition: opacity 1s ease-out; 
             overflow: hidden;
         }
         .splash-screen.fade-out {
-            opacity: 0; /* மறைந்துவிடும் */
-            pointer-events: none; /* மறைந்தவுடன் கிளிக் செய்ய முடியாது */
+            opacity: 0; 
+            pointer-events: none; 
         }
         .splash-screen img {
             max-width: 40%;
             max-height: 40%;
-            object-fit: contain; /* படத்தை விகிதத்தில் வைத்திருக்கும் */
+            object-fit: contain; 
         }
     </style>
 </head>
@@ -461,7 +466,7 @@
         const stepsPerIncrement = 1;
         const stepsPerKm = 1312.33;
 
-        // Web Speech API (குரல் அங்கீகாரம்)
+        // Web Speech API (குரல் அங்கீகாரம்) - மைக்ரோஃபோன் செயல்பாடு இங்கே உள்ளது
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         let recognition;
 
@@ -477,6 +482,7 @@
                 goalInput.value = speechResult; // உள்ளீட்டுப் புலத்தில் உரையை அமைக்கவும்
                 micBtn.classList.remove('recording'); // பதிவு செய்யும் நிலையிலிருந்து நீக்கவும்
                 loadingIndicator.style.display = 'none'; // சுமை காட்டி மறைக்கவும்
+                goalInput.classList.remove('error-border'); // வெற்றிகரமாக உள்ளீடு கிடைத்தவுடன் சிவப்பு எல்லையை அகற்றவும்
             };
 
             // அங்கீகாரத்தில் பிழை ஏற்படும்போது
@@ -484,17 +490,23 @@
                 micBtn.classList.remove('recording');
                 loadingIndicator.style.display = 'none';
                 const t = translations[currentLanguage];
+                tipOutput.style.fontStyle = 'normal';
+                goalInput.classList.add('error-border'); // பிழை ஏற்படும்போது உள்ளீட்டுப் புலத்திற்கு சிவப்பு எல்லை சேர்க்கவும்
+
                 if (event.error === 'not-allowed') {
                     // மைக்ரோஃபோன் அனுமதி மறுக்கப்பட்டால்
                     tipOutput.innerHTML = `<p class="text-red-600">${t.microphonePermissionDenied}</p>`;
                 } else if (event.error === 'no-speech') {
                     // பேச்சு கண்டறியப்படாவிட்டால்
                     tipOutput.innerHTML = `<p class="text-red-600">${t.noSpeechDetected}</p>`;
-                } else {
+                } else if (event.error === 'network') {
+                    // இணைய இணைப்பு சிக்கல்
+                    tipOutput.innerHTML = `<p class="text-red-600">${t.fetchError}</p>`;
+                }
+                else {
                     // பிற குரல் உள்ளீட்டுப் பிழைகள்
                     tipOutput.innerHTML = `<p class="text-red-600">${t.speechRecognitionError}</p>`;
                 }
-                tipOutput.style.fontStyle = 'normal';
                 console.error('Speech recognition error:', event.error);
             };
 
@@ -517,6 +529,7 @@
                 tipOutput.style.fontStyle = 'italic';
                 loadingIndicator.style.display = 'flex'; // சுமை காட்டி காட்டவும்
                 loadingText.textContent = t.microphoneListening; // "கேட்கிறது..." உரை
+                goalInput.classList.remove('error-border'); // புதிய முயற்சி தொடங்கும் முன் சிவப்பு எல்லையை அகற்றவும்
 
                 try {
                     // தற்போதைய மொழிக்கு ஏற்ப அங்கீகார மொழியை அமைக்கவும்
@@ -529,6 +542,7 @@
                     loadingIndicator.style.display = 'none';
                     tipOutput.innerHTML = `<p class="text-red-600">${t.speechRecognitionError}</p>`; // பொதுவான பிழைச் செய்தி
                     tipOutput.style.fontStyle = 'normal';
+                    goalInput.classList.add('error-border'); // பிழை ஏற்பட்டதால் சிவப்பு எல்லை சேர்க்கவும்
                 }
             });
 
@@ -602,7 +616,7 @@
             // Utterance பொருளை உருவாக்கிப் பேசவும்
             const utterance = new SpeechSynthesisUtterance(tipText);
             // தற்போதைய மொழிக்கு ஏற்ப மொழியை அமைக்கவும்
-            utterance.lang = currentLanguage === 'ta' ? 'ta-IN' : currentLanguage;
+            utterance.lang = currentLanguage === 'ta' ? 'ta-IN' : currentLanguage; 
 
             // தற்போதைய மொழிக்கு ஒரு குறிப்பிட்ட குரல் கண்டறியப்பட்டால் அதை ஒதுக்குங்கள்
             if (currentLanguage === 'ta' && tamilVoice) {
@@ -612,6 +626,7 @@
                 utterance.voice = englishVoice;
                 console.log("Using English voice:", englishVoice.name);
             } else {
+                // ஒரு குறிப்பிட்ட குரல் கண்டறியப்படவில்லை என்றால், உலாவி தானாகவே ஒரு இயல்புநிலையை முயற்சிக்கும்
                 console.warn(`Specific voice for ${currentLanguage} not found, falling back to browser default.`);
             }
             
@@ -752,6 +767,7 @@
             if (!userGoal) {
                 tipOutput.innerHTML = `<p class="text-red-600">${t.emptyGoalError}</p>`;
                 tipOutput.style.fontStyle = 'normal';
+                goalInput.classList.add('error-border'); // இலக்கு காலியாக இருக்கும்போது சிவப்பு எல்லை சேர்க்கவும்
                 return;
             }
 
@@ -759,6 +775,7 @@
             tipOutput.innerHTML = '';
             tipOutput.style.fontStyle = 'italic';
             aiVoiceBtn.style.display = 'none'; // AI குரல் பட்டனை உருவாக்கும்போது மறைக்கவும்
+            goalInput.classList.remove('error-border'); // புதிய உருவாக்கம் தொடங்கும் முன் சிவப்பு எல்லையை அகற்றவும்
 
             try {
                 // LLM ஐப் பயன்படுத்தி உரையை உருவாக்கவும் (Gemini API அழைப்பு)
