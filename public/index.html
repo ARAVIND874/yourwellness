@@ -45,6 +45,10 @@
             top: 1.5rem;
             right: 1.5rem;
         }
+        .language-selector-wrapper select { /* Added for better mobile font */
+            font-size: 1.1rem; /* Increased font size for select dropdown */
+            padding: 0.6rem 0.8rem; /* Adjusted padding */
+        }
         .input-wrapper {
             position: relative;
             margin-bottom: 1.5rem;
@@ -53,11 +57,11 @@
         }
         .input-field {
             flex-grow: 1;
-            padding: 1rem 1.25rem;
-            padding-right: 3.5rem;
+            padding: 1.1rem 1.25rem; /* Increased padding */
+            padding-right: 3.8rem; /* Adjusted padding for mic button */
             border: 1px solid #D1D5DB;
             border-radius: 0.875rem;
-            font-size: 1.05rem;
+            font-size: 1.15rem; /* Increased font size for input */
             box-sizing: border-box;
             outline: none;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
@@ -92,9 +96,10 @@
         .generate-button, .action-button, .open-tracker-button, .ai-voice-button {
             background-color: #6A0DAD;
             color: #ffffff;
-            padding: 1rem 2rem;
+            padding: 1.1rem 2.2rem; /* Increased padding */
             border-radius: 0.875rem;
             font-weight: 600;
+            font-size: 1.1rem; /* Increased font size for buttons */
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
             box-shadow: 0 6px 15px rgba(106, 13, 173, 0.4);
@@ -114,7 +119,7 @@
         .loading-indicator {
             display: none;
             margin-top: 2rem;
-            font-size: 1.15rem;
+            font-size: 1.25rem; /* Increased font size for loading text */
             color: #6B7280;
             display: flex;
             align-items: center;
@@ -137,17 +142,17 @@
             background-color: #FFFFAA;
             border: 1px solid #CCCC88;
             border-radius: 1.25rem;
-            padding: 2rem;
+            padding: 2.2rem; /* Increased padding */
             margin-top: 2rem;
             text-align: left;
             color: #333333;
-            line-height: 1.7;
+            line-height: 1.8; /* Increased line-height for readability */
             min-height: 100px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-style: italic;
-            font-size: 1.05rem;
+            font-size: 1.15rem; /* Increased font size for tip/result output */
             transition: all 0.5s ease-in-out;
         }
         .tip-box p, .step-result-box p {
@@ -156,6 +161,17 @@
         .text-red-600 {
             color: #DC2626;
         }
+        /* Adjusted font sizes for headings */
+        h1#mainTitle {
+            font-size: 2.2rem; /* Adjusted for mobile */
+        }
+        p#descriptionText {
+            font-size: 1.15rem; /* Adjusted for mobile */
+        }
+        h2#tipSectionTitle, h2#stepSectionTitle {
+            font-size: 1.75rem; /* Adjusted for mobile */
+        }
+
         /* Responsive adjustments */
         @media (max-width: 640px) {
             body {
@@ -167,7 +183,8 @@
             }
             .generate-button, .action-button, .open-tracker-button, .ai-voice-button {
                 width: 100%;
-                padding: 0.9rem 1.5rem;
+                padding: 1rem 1.5rem; /* Adjusted padding for full-width buttons */
+                font-size: 1.05rem; /* Slightly smaller for full-width buttons on small screens */
             }
             .flex.flex-wrap.justify-center.gap-4 {
                 flex-direction: column;
@@ -177,13 +194,38 @@
                 top: 0.75rem;
                 right: 0.75rem;
             }
+            .language-selector-wrapper select {
+                font-size: 1rem; /* Slightly smaller on very small screens */
+                padding: 0.5rem 0.6rem;
+            }
             .input-wrapper {
                 flex-direction: row;
                 justify-content: center;
             }
+            .input-field {
+                font-size: 1.1rem; /* Slightly smaller for input on very small screens */
+                padding: 1rem 1.2rem;
+                padding-right: 3.5rem;
+            }
             .mic-button {
-                position: absolute;
                 right: 0.5rem;
+            }
+            h1#mainTitle {
+                font-size: 2rem; /* Further adjusted for very small screens */
+            }
+            p#descriptionText {
+                font-size: 1.1rem; /* Further adjusted for very small screens */
+            }
+            h2#tipSectionTitle, h2#stepSectionTitle {
+                font-size: 1.6rem; /* Further adjusted for very small screens */
+            }
+            .tip-box, .step-result-box {
+                font-size: 1.1rem; /* Further adjusted for very small screens */
+                padding: 1.8rem;
+                line-height: 1.6;
+            }
+            .loading-indicator {
+                font-size: 1.1rem; /* Adjusted for very small screens */
             }
         }
         .splash-screen {
@@ -383,7 +425,6 @@
             recognition = new SpeechRecognition();
             recognition.continuous = false;
             recognition.interimResults = false;
-            // தமிழ் மொழிக்கு ta-IN பயன்படுத்துகிறது
             recognition.lang = currentLanguage === 'ta' ? 'ta-IN' : currentLanguage;
 
             recognition.onresult = (event) => {
@@ -418,13 +459,12 @@
             micBtn.addEventListener('click', () => {
                 const t = translations[currentLanguage];
                 micBtn.classList.add('recording');
-                tipOutput.innerHTML = ''; // முந்தைய குறிப்பு/பிழையை அழிக்கவும்
+                tipOutput.innerHTML = ''; 
                 tipOutput.style.fontStyle = 'italic';
                 loadingIndicator.style.display = 'flex';
                 loadingText.textContent = t.microphoneListening;
 
                 try {
-                    // தமிழுக்கு ta-IN பயன்படுத்துகிறது
                     recognition.lang = currentLanguage === 'ta' ? 'ta-IN' : currentLanguage;
                     recognition.start();
                 } catch (e) {
@@ -444,28 +484,25 @@
         // Web Speech API (Speech Synthesis for AI Voice)
         const SpeechSynthesis = window.speechSynthesis;
         let tamilVoice = null;
-        let englishVoice = null; // ஆங்கில குரலையும் சேமிக்கவும்
+        let englishVoice = null;
 
         function populateVoiceList() {
             if (SpeechSynthesis) {
                 const voices = SpeechSynthesis.getVoices();
-                // உயர்தர தமிழ் குரலைக் கண்டறிய முன்னுரிமை
                 tamilVoice = voices.find(voice => voice.lang === 'ta-IN' && (voice.name.includes('Google') || voice.name.includes('Android') || voice.name.includes('Enhanced'))) ||
-                             voices.find(voice => voice.lang.startsWith('ta'));
+                                 voices.find(voice => voice.lang.startsWith('ta'));
 
-                // உயர்தர ஆங்கில குரலைக் கண்டறிய முன்னுரிமை
                 englishVoice = voices.find(voice => voice.lang === 'en-US' && (voice.name.includes('Google') || voice.name.includes('Enhanced'))) ||
-                               voices.find(voice => voice.lang.startsWith('en'));
+                                 voices.find(voice => voice.lang.startsWith('en'));
                 
-                // பிழைதிருத்தத்திற்காக கிடைக்கும் தமிழ் குரல்களைப் பதிவு செய்யவும்
                 console.log("Available Tamil voices:");
                 voices.filter(voice => voice.lang.startsWith('ta')).forEach(voice => console.log(voice.name, voice.lang));
             }
         }
 
-        populateVoiceList(); // ஆரம்பத்தில் கிடைக்கும் குரல்களைப் பெற அழைக்கவும்
+        populateVoiceList();
         if (SpeechSynthesis) {
-            SpeechSynthesis.onvoiceschanged = populateVoiceList; // குரல்கள் ஏற்றப்படும்/மாறும்போது புதுப்பிக்கவும்
+            SpeechSynthesis.onvoiceschanged = populateVoiceList;
         }
 
         aiVoiceBtn.addEventListener('click', () => {
@@ -485,16 +522,14 @@
             }
 
             if (SpeechSynthesis.speaking) {
-                SpeechSynthesis.cancel(); // நடந்துகொண்டிருக்கும் எந்த பேச்சையும் நிறுத்தவும்
+                SpeechSynthesis.cancel(); 
                 aiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path></svg>`;
                 return;
             }
 
             const utterance = new SpeechSynthesisUtterance(tipText);
-            // தமிழுக்கு ta-IN பயன்படுத்துகிறது
-            utterance.lang = currentLanguage === 'ta' ? 'ta-IN' : currentLanguage; 
+            utterance.lang = currentLanguage === 'ta' ? 'ta-IN' : currentLanguage;
 
-            // தற்போதைய மொழிக்கு ஒரு குறிப்பிட்ட குரல் கண்டறியப்பட்டால் அதை ஒதுக்குங்கள்
             if (currentLanguage === 'ta' && tamilVoice) {
                 utterance.voice = tamilVoice;
                 console.log("Using Tamil voice:", tamilVoice.name);
@@ -502,7 +537,6 @@
                 utterance.voice = englishVoice;
                 console.log("Using English voice:", englishVoice.name);
             } else {
-                // ஒரு குறிப்பிட்ட குரல் கண்டறியப்படவில்லை என்றால், உலாவி தானாகவே ஒரு இயல்புநிலையை முயற்சிக்கும்
                 console.warn(`Specific voice for ${currentLanguage} not found, falling back to browser default.`);
             }
             
@@ -595,13 +629,10 @@
                 updateStepTrackerDisplay();
             }
 
-            // AI குரல் பொத்தான் உரையையும் புதுப்பிக்கவும்
             aiVoiceBtn.textContent = t.aiVoiceButton;
-            // 'பேசுகிறது' நிலையில் சிக்கியிருந்தால் குரல் பொத்தான் ஐகானை மீட்டமைக்கவும்
             aiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path></svg>`;
 
             if (recognition) {
-                // தமிழுக்கு ta-IN பயன்படுத்துகிறது
                 recognition.lang = currentLanguage === 'ta' ? 'ta-IN' : currentLanguage;
             }
         }
@@ -610,8 +641,7 @@
             currentLanguage = event.target.value;
             localStorage.setItem('wellnessAppLanguage', currentLanguage);
             updateUI();
-            populateVoiceList(); // புதிய மொழிக்கான குரல்களை மீண்டும் நிரப்பவும்
-             // மொழி மாறும்போது நடந்துகொண்டிருக்கும் எந்த பேச்சையும் நிறுத்தவும்
+            populateVoiceList(); 
             if (SpeechSynthesis && SpeechSynthesis.speaking) {
                 SpeechSynthesis.cancel();
                 aiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path></svg>`;
@@ -625,65 +655,54 @@
             if (!userGoal) {
                 tipOutput.innerHTML = `<p class="text-red-600">${t.emptyGoalError}</p>`;
                 tipOutput.style.fontStyle = 'normal';
-                aiVoiceBtn.style.display = 'none'; // இலக்கு இல்லையென்றால் குரல் பொத்தானை மறைக்கவும்
                 return;
             }
 
             loadingIndicator.style.display = 'flex';
-            loadingText.textContent = t.loadingText;
-            tipOutput.innerHTML = ''; // முந்தைய குறிப்பை அழிக்கவும்
+            tipOutput.innerHTML = '';
             tipOutput.style.fontStyle = 'italic';
-            aiVoiceBtn.style.display = 'none'; // ஏற்றும்போது குரல் பொத்தானை மறைக்கவும்
-
-            // புதிய குறிப்பை உருவாக்கும்போது நடந்துகொண்டிருக்கும் எந்த பேச்சையும் நிறுத்தவும்
-            if (SpeechSynthesis && SpeechSynthesis.speaking) {
-                SpeechSynthesis.cancel();
-                aiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path></svg>`;
-            }
+            aiVoiceBtn.style.display = 'none'; // Hide AI voice button during generation
 
             try {
-                const prompt = t.aiPrompt(userGoal);
-                // குறிப்பு: இந்த URL (/.netlify/functions/generate-tip) ஒரு நெட்லிஃபை செயல்பாட்டிற்கானது.
-                // நீங்கள் நெட்லிஃபையில் பயன்படுத்தவில்லை என்றால், இந்த இடத்தை உங்கள்
-                // ஜெமினி API அழைப்பிற்கான உண்மையான பின்தள இறுதிப்புள்ளியுடன் மாற்ற வேண்டும்.
-                const backendUrl = '/.netlify/functions/generate-tip'; 
-
-                const response = await fetch(backendUrl, {
+                // Placeholder for API call
+                // Replace this with your actual API endpoint and key if needed
+                const response = await fetch('YOUR_API_ENDPOINT_HERE', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: prompt, model: 'gemini-pro-vision' }) // குறிப்பிட்டபடி gemini-pro-vision ஐப் பயன்படுத்துதல்
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer YOUR_API_KEY_HERE' // Replace with your actual API Key
+                    },
+                    body: JSON.stringify({
+                        prompt: t.aiPrompt(userGoal),
+                        max_tokens: 150
+                    })
                 });
 
-                const result = await response.json();
-
-                if (response.ok && result.tip) {
-                    tipOutput.innerHTML = `<p>${result.tip}</p>`;
-                    tipOutput.style.fontStyle = 'normal';
-                    aiVoiceBtn.style.display = 'inline-flex'; // வெற்றி பெற்றால் குரல் பொத்தானைக் காட்டவும்
-                } else {
-                    tipOutput.innerHTML = `<p class="text-red-600">${result.error || t.apiError}</p>`;
-                    tipOutput.style.fontStyle = 'normal';
-                    aiVoiceBtn.style.display = 'none'; // பிழை ஏற்பட்டால் குரல் பொத்தானை மறைக்கவும்
-                    console.error('பின்தள பதில் பிழை:', result.error || 'தெரியாத பிழை', result);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
+                const data = await response.json();
+                const aiTip = data.choices[0].text.trim();
+                tipOutput.innerHTML = `<p>${aiTip}</p>`;
+                aiVoiceBtn.style.display = 'inline-flex'; // Show AI voice button after tip is generated
+
             } catch (error) {
-                tipOutput.innerHTML = `<p class="text-red-600">${t.fetchError}</p>`;
+                console.error('Error generating tip:', error);
+                if (error.message.includes('Failed to fetch')) {
+                    tipOutput.innerHTML = `<p class="text-red-600">${t.fetchError}</p>`;
+                } else {
+                    tipOutput.innerHTML = `<p class="text-red-600">${t.apiError}</p>`;
+                }
                 tipOutput.style.fontStyle = 'normal';
-                aiVoiceBtn.style.display = 'none'; // fetch பிழையில் குரல் பொத்தானை மறைக்கவும்
-                console.error('பின்தளத்துடன் இணைப்பதில் பிழை:', error);
             } finally {
                 loadingIndicator.style.display = 'none';
             }
         });
 
         addOneStepBtn.addEventListener('click', () => {
-            currentSteps += 1;
+            currentSteps += stepsPerIncrement;
             updateStepTrackerDisplay();
-            // படிகள் கைமுறையாக சேர்க்கப்பட்டால் மற்றும் தற்போது கண்காணிக்கப்படாவிட்டால், பொத்தானில் 'கண்காணிப்பைத் தொடங்கு' என்று இருப்பதை உறுதிப்படுத்தவும்
-            if (!trackingInterval && currentSteps < stepsGoal) {
-                toggleTrackingBtn.textContent = translations[currentLanguage].startTrackingButton;
-            }
         });
 
         toggleTrackingBtn.addEventListener('click', () => {
@@ -703,35 +722,36 @@
         });
 
         openStepTrackerBtn.addEventListener('click', () => {
-            const isHidden = stepTrackerSection.style.display === 'none';
-            stepTrackerSection.style.display = isHidden ? 'block' : 'none';
-            
-            openStepTrackerBtn.textContent = isHidden ? translations[currentLanguage].closeStepTrackerButton : translations[currentLanguage].openStepTrackerButton;
-
-            if (isHidden) {
-                updateStepTrackerDisplay(); // திறக்கும்போது காட்சியைப் புதுப்பிக்கவும்
+            const t = translations[currentLanguage];
+            if (stepTrackerSection.style.display === 'none') {
+                stepTrackerSection.style.display = 'block';
+                openStepTrackerBtn.textContent = t.closeStepTrackerButton;
+                body.classList.add('main-content-active'); // Adjust body styling
+                updateStepTrackerDisplay(); // Display initial state
             } else {
-                stopTrackingSimulation(); // மூடும்போது கண்காணிப்பை நிறுத்தவும்
-                stepResultOutput.innerHTML = `<p>${translations[currentLanguage].stepsResultInitial}</p>`;
-                stepResultOutput.style.fontStyle = 'italic';
+                stepTrackerSection.style.display = 'none';
+                openStepTrackerBtn.textContent = t.openStepTrackerButton;
+                body.classList.remove('main-content-active'); // Reset body styling
             }
         });
 
-        // ஆரம்ப UI அமைப்பு மற்றும் படி டிராக்கர் காட்சி
-        updateUI();
-        updateStepTrackerDisplay();
+        // Initial UI setup and splash screen logic
+        const body = document.body;
 
-        // Splash திரை தர்க்கம்
         window.addEventListener('load', () => {
+            // Simulate content loading time if desired
             setTimeout(() => {
                 splashScreen.classList.add('fade-out');
                 splashScreen.addEventListener('transitionend', () => {
-                    splashScreen.remove();
-                    document.body.classList.add('main-content-active');
-                });
-                mainContent.style.display = 'block'; // ஸ்பிளாஷுக்குப் பிறகு முக்கிய உள்ளடக்கத்தைக் காட்டவும்
-            }, 1000); // 1-வினாடி காட்சி
+                    splashScreen.style.display = 'none';
+                    mainContent.style.display = 'block';
+                    body.classList.add('main-content-active'); // Apply initial body class for scrolling
+                    updateUI();
+                }, { once: true });
+            }, 1000); // 1 second splash screen
         });
+
+        updateUI(); // Ensure UI is updated on initial load
     </script>
 </body>
 </html>
