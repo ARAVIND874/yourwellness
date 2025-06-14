@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>மைக்ரோஃபோன் ஆடியோ பதிவுச் செயலி</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            text-align: center; 
+            margin-top: 50px; 
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: inline-block; /* மையப்படுத்த */
+            margin: 0 auto; /* மையப்படுத்த */
+            max-width: 500px;
+            width: 90%;
+        }
+        button { 
+            padding: 12px 25px; 
+            font-size: 17px; 
+            margin: 10px; 
+            cursor: pointer; 
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        #startButton { background-color: #4CAF50; color: white; }
+        #startButton:hover { background-color: #45a049; }
+        #stopButton { background-color: #f44336; color: white; }
+        #stopButton:hover { background-color: #da190b; }
+        #downloadButton { background-color: #008CBA; color: white; }
+        #downloadButton:hover { background-color: #007bb5; }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        #status { 
+            margin-top: 25px; 
+            font-weight: bold; 
+            color: #555;
+            min-height: 25px; /* நிலை செய்திக்காக இடம் ஒதுக்கவும் */
+        }
+        #audioPlayback { 
+            margin-top: 25px; 
+            width: 100%; 
+            max-width: 400px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>மைக்ரோஃபோன் ஆடியோவைப் பதிவு செய்யுங்கள்</h1>
+
+        <button id="startButton">பதிவு செய்யத் தொடங்குங்கள்</button>
+        <button id="stopButton" disabled>பதிவு செய்வதை நிறுத்துங்கள்</button>
+        <button id="downloadButton" disabled>ஆடியோவைப் பதிவிறக்கவும்</button>
+
+        <div id="status">மைக்ரோஃபோன் அணுகல் அனுமதிக்கு தயாராக உள்ளது.</div>
+
+        <h2>பதிவு செய்யப்பட்ட ஆடியோ (பிளேபேக்):</h2>
+        <audio id="audioPlayback" controls></audio>
+    </div>
+
+    <script src="script.js" defer></script> 
+</body>
+</html>
