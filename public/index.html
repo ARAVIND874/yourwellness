@@ -89,7 +89,7 @@
             color: #DC2626;
             animation: none;
         }
-        .generate-button, .action-button, .open-tracker-button, .ai-voice-button {
+        .generate-button, .action-button, .ai-voice-button {
             background-color: #6A0DAD;
             color: #ffffff;
             padding: 1rem 2rem;
@@ -106,12 +106,12 @@
             justify-content: center;
             gap: 0.5rem; /* Space between icon and text */
         }
-        .generate-button:hover, .action-button:hover, .open-tracker-button:hover, .ai-voice-button:hover {
+        .generate-button:hover, .action-button:hover, .ai-voice-button:hover {
             background-color: #4B0A7B;
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(106, 13, 173, 0.5);
         }
-        .generate-button:active, .action-button:active, .open-tracker-button:active, .ai-voice-button:active {
+        .generate-button:active, .action-button:active, .ai-voice-button:active {
             transform: translateY(0);
             box-shadow: 0 4px 10px rgba(106, 13, 173, 0.3);
         }
@@ -169,7 +169,7 @@
                 padding: 1.5rem;
                 border-radius: 1.25rem;
             }
-            .generate-button, .action-button, .open-tracker-button, .ai-voice-button {
+            .generate-button, .action-button, .ai-voice-button {
                 width: 100%;
                 padding: 0.9rem 1.5rem;
             }
@@ -239,6 +239,42 @@
             background-color: #e0f2fe; /* light blue */
             font-weight: 500;
         }
+        .feature-icon-container {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem; /* Space between icons */
+            margin-top: 2rem;
+            flex-wrap: wrap; /* Allow icons to wrap on smaller screens */
+        }
+        .feature-icon {
+            font-size: 3rem; /* Larger emoji size */
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.75rem;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            line-height: 1;
+        }
+        .feature-icon:hover {
+            transform: translateY(-5px);
+            background-color: rgba(135, 206, 235, 0.1); /* Light blue hover */
+        }
+        .feature-icon span.label {
+            font-size: 0.8rem; /* Smaller text label */
+            margin-top: 0.5rem;
+            color: #555;
+            font-weight: 500;
+        }
+        /* Styles for feature sections (initially hidden) */
+        .feature-section {
+            display: none;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e5e7eb; /* Subtle separator */
+        }
     </style>
 </head>
 <body>
@@ -283,9 +319,21 @@
         </div>
         <div id="tipOutput" class="tip-box" aria-live="polite"></div>
 
-        <button id="openStepTrackerBtn" class="open-tracker-button mt-8"></button>
-        <div id="stepTrackerSection" style="display: none;">
-            <h2 id="stepSectionTitle" class="text-2xl font-semibold text-gray-700 mt-10 mb-4"></h2>
+        <hr class="border-t border-gray-300 my-8">
+
+        <h2 id="featuresTitle" class="text-2xl font-semibold text-gray-700 mb-4"></h2>
+        <div class="feature-icon-container">
+            <div id="iconStepTracker" class="feature-icon" title="படி டிராக்கர்">🚶‍♀️<span class="label" data-label-key="stepTrackerLabel"></span></div>
+            <div id="iconHeartRateTracker" class="feature-icon" title="இதயத் துடிப்பு டிராக்கர்">❤️‍🩹<span class="label" data-label-key="heartRateTrackerLabel"></span></div>
+            <div id="iconWaterTracker" class="feature-icon" title="தண்ணீர் டிராக்கர்">💧<span class="label" data-label-key="waterTrackerLabel"></span></div>
+            <div id="iconJournal" class="feature-icon" title="மனநிலை & நன்றியுணர்வு ஜர்னல்">✍️<span class="label" data-label-key="journalLabel"></span></div>
+            <div id="iconLocalTips" class="feature-icon" title="உள்ளூர் ஆரோக்கிய குறிப்புகள்">🌿<span class="label" data-label-key="localTipsLabel"></span></div>
+            <div id="iconQrCode" class="feature-icon" title="QR குறியீடு உருவாக்குனர்">📷<span class="label" data-label-key="qrCodeLabel"></span></div>
+        </div>
+
+
+        <div id="stepTrackerSection" class="feature-section">
+            <h2 id="stepSectionTitle" class="text-2xl font-semibold text-gray-700 mb-4"></h2>
             <div class="input-wrapper">
                 <label for="currentStepsDisplay" class="sr-only">தற்போதைய படிகள்</label>
                 <input type="text" id="currentStepsDisplay" class="input-field" value="0" readonly aria-atomic="true">
@@ -298,9 +346,8 @@
             <div id="stepResultOutput" class="result-box" aria-live="polite"></div>
         </div>
 
-        <button id="openHeartRateTrackerBtn" class="open-tracker-button mt-8"></button>
-        <div id="heartRateTrackerSection" style="display: none;">
-            <h2 id="heartRateSectionTitle" class="text-2xl font-semibold text-gray-700 mt-10 mb-4"></h2>
+        <div id="heartRateTrackerSection" class="feature-section">
+            <h2 id="heartRateSectionTitle" class="text-2xl font-semibold text-gray-700 mb-4"></h2>
             <div class="input-wrapper">
                 <label for="currentHeartRateDisplay" class="sr-only">தற்போதைய இதயத் துடிப்பு</label>
                 <input type="text" id="currentHeartRateDisplay" class="input-field" value="0" readonly aria-atomic="true">
@@ -312,9 +359,8 @@
             <div id="heartRateResultOutput" class="result-box" aria-live="polite"></div>
         </div>
 
-        <button id="openWaterTrackerBtn" class="open-tracker-button mt-8"></button>
-        <div id="waterTrackerSection" style="display: none;">
-            <h2 id="waterSectionTitle" class="text-2xl font-semibold text-gray-700 mt-10 mb-4"></h2>
+        <div id="waterTrackerSection" class="feature-section">
+            <h2 id="waterSectionTitle" class="text-2xl font-semibold text-gray-700 mb-4"></h2>
             <div class="input-wrapper">
                 <label for="waterIntakeDisplay" class="sr-only">தற்போதைய தண்ணீர் உட்கொள்ளல்</label>
                 <input type="text" id="waterIntakeDisplay" class="input-field" value="0 ml" readonly aria-atomic="true">
@@ -326,9 +372,8 @@
             <div id="waterResultOutput" class="result-box" aria-live="polite"></div>
         </div>
 
-        <button id="openJournalBtn" class="open-tracker-button mt-8"></button>
-        <div id="journalSection" style="display: none;">
-            <h2 id="journalSectionTitle" class="text-2xl font-semibold text-gray-700 mt-10 mb-4"></h2>
+        <div id="journalSection" class="feature-section">
+            <h2 id="journalSectionTitle" class="text-2xl font-semibold text-gray-700 mb-4"></h2>
             <p id="journalDescription" class="text-gray-600 mb-4 text-lg"></p>
             <div class="input-wrapper flex-col items-stretch">
                 <label for="moodSelect" class="sr-only">உங்கள் மனநிலையைத் தேர்ந்தெடுக்கவும்</label>
@@ -346,10 +391,9 @@
             <button id="saveJournalEntryBtn" class="action-button mt-4"></button>
             <div id="journalEntriesOutput" class="result-box mt-4 text-left"></div>
         </div>
-        
-        <button id="openLocalTipsBtn" class="open-tracker-button mt-8"></button>
-        <div id="localTipsSection" style="display: none;">
-            <h2 id="localTipsSectionTitle" class="text-2xl font-semibold text-gray-700 mt-10 mb-4"></h2>
+
+        <div id="localTipsSection" class="feature-section">
+            <h2 id="localTipsSectionTitle" class="text-2xl font-semibold text-gray-700 mb-4"></h2>
             <p id="localTipsDescription" class="text-gray-600 mb-4 text-lg"></p>
             <div class="input-wrapper mb-4">
                 <label for="localTipCategory" class="sr-only">வகை</label>
@@ -360,13 +404,15 @@
             <div id="localTipOutput" class="tip-box" aria-live="polite"></div>
         </div>
 
-        <h2 id="qrCodeSectionTitle" class="text-2xl font-semibold text-gray-700 mt-10 mb-4"></h2>
-        <p id="qrCodeDescription" class="text-gray-600 mb-4 text-lg"></p>
-        <div class="input-wrapper mb-4">
-            <input type="text" id="qrInput" class="input-field" aria-label="QR குறியீட்டிற்கான உள்ளீட்டை உள்ளிடவும்" placeholder="QR குறியீட்டிற்கான உரையை உள்ளிடவும்">
+        <div id="qrCodeSection" class="feature-section">
+            <h2 id="qrCodeSectionTitle" class="text-2xl font-semibold text-gray-700 mb-4"></h2>
+            <p id="qrCodeDescription" class="text-gray-600 mb-4 text-lg"></p>
+            <div class="input-wrapper mb-4">
+                <input type="text" id="qrInput" class="input-field" aria-label="QR குறியீட்டிற்கான உள்ளீட்டை உள்ளிடவும்" placeholder="QR குறியீட்டிற்கான உரையை உள்ளிடவும்">
+            </div>
+            <button id="generateQrBtn" class="generate-button"></button>
+            <div id="qrcode" class="mt-8 mx-auto p-4 border border-gray-300 rounded-lg" style="width:200px; height:200px; display: none;"></div>
         </div>
-        <button id="generateQrBtn" class="generate-button"></button>
-        <div id="qrcode" class="mt-8 mx-auto p-4 border border-gray-300 rounded-lg" style="width:200px; height:200px; display: none;"></div>
     </div>
 
     <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
@@ -393,10 +439,19 @@
                 tipSpeaking: 'உதவிக்குறிப்பு பேசப்படுகிறது...',
                 tipSectionTitle: 'ஆரோக்கிய உதவிக்குறிப்பு',
 
+                // New Features Section Title
+                featuresTitle: 'அம்சங்கள்',
+                stepTrackerLabel: 'படிகள்',
+                heartRateTrackerLabel: 'இதயத் துடிப்பு',
+                waterTrackerLabel: 'தண்ணீர்',
+                journalLabel: 'ஜர்னல்',
+                localTipsLabel: 'உள்ளூர் குறிப்புகள்',
+                qrCodeLabel: 'QR குறியீடு',
+
+
                 // Step Tracker
                 stepSectionTitle: 'தினசரி படி டிராக்கர்',
-                openStepTrackerButton: 'படி டிராக்கரைத் திற',
-                closeStepTrackerButton: 'படி டிராக்கரை மூடு',
+                closeButton: 'மூடு', // New button text for closing sections
                 addOneStepButton: '1 படி சேர்',
                 startTrackingButton: 'டிராக்கிங்கை தொடங்கு',
                 stopTrackingButton: 'டிராக்கிங்கை நிறுத்து',
@@ -410,8 +465,6 @@
 
                 // Heart Rate Tracker
                 heartRateSectionTitle: 'இதயத் துடிப்பு டிராக்கர்',
-                openHeartRateTrackerButton: 'இதயத் துடிப்பு டிராக்கரைத் திற',
-                closeHeartRateTrackerButton: 'இதயத் துடிப்பு டிராக்கரை மூடு',
                 simulateHeartRateButton: 'இதயத் துடிப்பை உருவகப்படுத்து',
                 resetHeartRateButton: 'இதயத் துடிப்பை மீட்டமை',
                 heartRateResultInitial: 'டிராக்கரைத் திறக்கவும் அல்லது இதயத் துடிப்பை உருவகப்படுத்தவும்.',
@@ -423,8 +476,6 @@
 
                 // Water Intake Tracker
                 waterSectionTitle: 'தினசரி தண்ணீர் உட்கொள்ளல்',
-                openWaterTrackerButton: 'தண்ணீர் டிராக்கரைத் திற',
-                closeWaterTrackerButton: 'தண்ணீர் டிராக்கரை மூடு',
                 addWaterButton: '200 மில்லி சேர்',
                 resetWaterButton: 'மீட்டமை',
                 waterResultInitial: 'டிராக்கரைத் திறக்கவும் அல்லது தண்ணீரைச் சேர்க்கவும்.',
@@ -434,8 +485,6 @@
 
                 // Mood & Gratitude Journal
                 journalSectionTitle: 'மனநிலை & நன்றியுணர்வு ஜர்னல்',
-                openJournalButton: 'ஜர்னலைத் திற',
-                closeJournalButton: 'ஜர்னலை மூடு',
                 journalDescription: 'உங்கள் மனநிலையைப் பதிவு செய்து, நீங்கள் நன்றியுள்ள விஷயங்களை எழுதுங்கள்.',
                 moodSelectPlaceholder: 'உங்கள் மனநிலையைத் தேர்ந்தெடுக்கவும்',
                 gratitudePlaceholder: 'நீங்கள் நன்றியுள்ள ஒரு விஷயத்தை எழுதுங்கள்...',
@@ -451,8 +500,6 @@
 
                 // Local & Traditional Wellness Tips
                 localTipsSectionTitle: 'உள்ளூர் ஆரோக்கிய குறிப்புகள்',
-                openLocalTipsButton: 'உள்ளூர் குறிப்புகளைத் திற',
-                closeLocalTipsButton: 'உள்ளூர் குறிப்புகளை மூடு',
                 localTipsDescription: 'தமிழகத்தில் எளிதாகக் கிடைக்கும் பொருட்கள் மற்றும் பாரம்பரிய முறைகளைப் பயன்படுத்தி ஆரோக்கிய குறிப்புகளைப் பெறுங்கள்.',
                 localTipCategoryPlaceholder: 'எ.கா. மஞ்சள், முருங்கை, தியானம்...',
                 getLocalTipButton: 'குறிப்பைப் பெறுங்கள்',
@@ -509,10 +556,19 @@
                 tipSpeaking: 'Speaking tip...',
                 tipSectionTitle: 'Wellness Tip Generator',
 
+                // New Features Section Title
+                featuresTitle: 'Features',
+                stepTrackerLabel: 'Steps',
+                heartRateTrackerLabel: 'Heart Rate',
+                waterTrackerLabel: 'Water',
+                journalLabel: 'Journal',
+                localTipsLabel: 'Local Tips',
+                qrCodeLabel: 'QR Code',
+
+
                 // Step Tracker
                 stepSectionTitle: 'Daily Step Tracker',
-                openStepTrackerButton: 'Open Step Tracker',
-                closeStepTrackerButton: 'Close Step Tracker',
+                closeButton: 'Close', // New button text for closing sections
                 addOneStepButton: 'Add 1 Step',
                 startTrackingButton: 'Start Tracking',
                 stopTrackingButton: 'Stop Tracking',
@@ -526,8 +582,6 @@
 
                 // Heart Rate Tracker
                 heartRateSectionTitle: 'Heart Rate Tracker',
-                openHeartRateTrackerButton: 'Open Heart Rate Tracker',
-                closeHeartRateTrackerButton: 'Close Heart Rate Tracker',
                 simulateHeartRateButton: 'Simulate Heart Rate',
                 resetHeartRateButton: 'Reset Heart Rate',
                 heartRateResultInitial: 'Open the tracker or simulate heart rate.',
@@ -539,8 +593,6 @@
 
                 // Water Intake Tracker
                 waterSectionTitle: 'Daily Water Intake',
-                openWaterTrackerButton: 'Open Water Tracker',
-                closeWaterTrackerButton: 'Close Water Tracker',
                 addWaterButton: 'Add 200 ml',
                 resetWaterButton: 'Reset',
                 waterResultInitial: 'Open the tracker or add water.',
@@ -550,8 +602,6 @@
 
                 // Mood & Gratitude Journal
                 journalSectionTitle: 'Mood & Gratitude Journal',
-                openJournalButton: 'Open Journal',
-                closeJournalButton: 'Close Journal',
                 journalDescription: 'Record your mood and write down things you are grateful for.',
                 moodSelectPlaceholder: 'Select your mood',
                 gratitudePlaceholder: 'Write something you are grateful for...',
@@ -567,8 +617,6 @@
 
                 // Local & Traditional Wellness Tips
                 localTipsSectionTitle: 'Local Wellness Tips',
-                openLocalTipsButton: 'Open Local Tips',
-                closeLocalTipsButton: 'Close Local Tips',
                 localTipsDescription: 'Get wellness tips using locally available ingredients and traditional practices from Tamil Nadu.',
                 localTipCategoryPlaceholder: 'e.g. Turmeric, Moringa, Meditation...',
                 getLocalTipButton: 'Get Tip',
@@ -592,7 +640,7 @@
                     'Meditation': 'Sit in a quiet place for 5 minutes daily and focus on your breath to meditate. This improves mental peace and focus.',
                     'Ayurveda': 'According to Ayurveda, eat foods suitable for your body type (dosha). You can consult an Ayurvedic expert for personalized advice.',
                     'Siddha Medicine': 'As per Siddha medicine, consuming Arugampul juice (Bermuda grass juice) or Amla juice can detoxify the body and provide rejuvenation.',
-                    'Traditional Food': 'Occasionally eat traditional Tamil foods like Kali, Koozh, Adai. These are prepared with healthy ingredients and benefit the body.',
+                    'Traditional Food': 'Occasionally eat traditional Tamil foods like Kali, Koozh, Adai. These are prepared with healthy ingredients and benefit the body.'
                 },
                 localTipNotFound: (category) => `No tip found for "${category}". Please try another category.`,
 
@@ -621,36 +669,48 @@
         const mainContent = document.getElementById('mainContent');
 
         const tipSectionTitle = document.getElementById('tipSectionTitle');
+        const featuresTitle = document.getElementById('featuresTitle'); // New element
+
+        // Feature Sections
+        const stepTrackerSection = document.getElementById('stepTrackerSection');
+        const heartRateTrackerSection = document.getElementById('heartRateTrackerSection');
+        const waterTrackerSection = document.getElementById('waterTrackerSection');
+        const journalSection = document.getElementById('journalSection');
+        const localTipsSection = document.getElementById('localTipsSection');
+        const qrCodeSection = document.getElementById('qrCodeSection'); // New element for QR Code section
+
+        // Emoji Icons
+        const iconStepTracker = document.getElementById('iconStepTracker');
+        const iconHeartRateTracker = document.getElementById('iconHeartRateTracker');
+        const iconWaterTracker = document.getElementById('iconWaterTracker');
+        const iconJournal = document.getElementById('iconJournal');
+        const iconLocalTips = document.getElementById('iconLocalTips');
+        const iconQrCode = document.getElementById('iconQrCode');
+
+
+        // Step Tracker elements
         const stepSectionTitle = document.getElementById('stepSectionTitle');
         const currentStepsDisplay = document.getElementById('currentStepsDisplay');
         const addOneStepBtn = document.getElementById('addOneStepBtn');
         const toggleTrackingBtn = document.getElementById('toggleTrackingBtn');
         const resetStepsBtn = document.getElementById('resetStepsBtn');
         const stepResultOutput = document.getElementById('stepResultOutput');
-        const stepTrackerSection = document.getElementById('stepTrackerSection');
-        const openStepTrackerBtn = document.getElementById('openStepTrackerBtn');
 
         // Heart Rate elements
-        const heartRateTrackerSection = document.getElementById('heartRateTrackerSection');
-        const openHeartRateTrackerBtn = document.getElementById('openHeartRateTrackerBtn');
+        const heartRateSectionTitle = document.getElementById('heartRateSectionTitle');
         const currentHeartRateDisplay = document.getElementById('currentHeartRateDisplay');
         const simulateHeartRateBtn = document.getElementById('simulateHeartRateBtn');
         const resetHeartRateBtn = document.getElementById('resetHeartRateBtn');
         const heartRateResultOutput = document.getElementById('heartRateResultOutput');
-        const heartRateSectionTitle = document.getElementById('heartRateSectionTitle');
 
         // Water Intake elements
-        const waterTrackerSection = document.getElementById('waterTrackerSection');
-        const openWaterTrackerBtn = document.getElementById('openWaterTrackerBtn');
+        const waterSectionTitle = document.getElementById('waterSectionTitle');
         const waterIntakeDisplay = document.getElementById('waterIntakeDisplay');
         const addWaterBtn = document.getElementById('addWaterBtn');
         const resetWaterBtn = document.getElementById('resetWaterBtn');
         const waterResultOutput = document.getElementById('waterResultOutput');
-        const waterSectionTitle = document.getElementById('waterSectionTitle');
 
         // Mood & Gratitude Journal elements
-        const journalSection = document.getElementById('journalSection');
-        const openJournalBtn = document.getElementById('openJournalBtn');
         const journalSectionTitle = document.getElementById('journalSectionTitle');
         const journalDescription = document.getElementById('journalDescription');
         const moodSelect = document.getElementById('moodSelect');
@@ -659,8 +719,6 @@
         const journalEntriesOutput = document.getElementById('journalEntriesOutput');
 
         // Local & Traditional Wellness Tips elements
-        const localTipsSection = document.getElementById('localTipsSection');
-        const openLocalTipsBtn = document.getElementById('openLocalTipsBtn');
         const localTipsSectionTitle = document.getElementById('localTipsSectionTitle');
         const localTipsDescription = document.getElementById('localTipsDescription');
         const localTipCategory = document.getElementById('localTipCategory');
@@ -827,6 +885,68 @@
 
             SpeechSynthesis.speak(utterance);
         });
+
+        // --- Feature Section Toggling Function ---
+        function toggleFeatureSection(sectionElement) {
+            const allSections = document.querySelectorAll('.feature-section');
+            allSections.forEach(sec => {
+                if (sec !== sectionElement) {
+                    sec.style.display = 'none'; // Hide other sections
+                }
+            });
+
+            const isOpen = sectionElement.style.display !== 'none';
+            sectionElement.style.display = isOpen ? 'none' : 'block';
+            document.body.classList.toggle('main-content-active', !isOpen); // Adjust body height for scrolling
+
+            // Stop relevant simulations/reminders when a section is closed
+            if (isOpen) {
+                if (sectionElement === stepTrackerSection) stopTrackingSimulation();
+                if (sectionElement === heartRateTrackerSection) stopHeartRateSimulation();
+                if (sectionElement === waterTrackerSection) stopWaterReminder();
+            } else {
+                // If a section is opened, ensure its initial state is correct
+                if (sectionElement === stepTrackerSection) {
+                    const t = translations[currentLanguage];
+                    stepResultOutput.innerHTML = `<p>${t.stepsResultInitial}</p>`;
+                    stepResultOutput.style.fontStyle = 'italic';
+                    updateStepTrackerDisplay();
+                }
+                if (sectionElement === heartRateTrackerSection) {
+                    const t = translations[currentLanguage];
+                    heartRateResultOutput.innerHTML = `<p>${t.heartRateResultInitial}</p>`;
+                    heartRateResultOutput.style.fontStyle = 'italic';
+                    updateHeartRateDisplay();
+                }
+                if (sectionElement === waterTrackerSection) {
+                    const t = translations[currentLanguage];
+                    waterResultOutput.innerHTML = `<p>${t.waterResultInitial}</p>`;
+                    waterResultOutput.style.fontStyle = 'italic';
+                    updateWaterIntakeDisplay();
+                    startWaterReminder();
+                }
+                if (sectionElement === journalSection) renderJournalEntries();
+                if (sectionElement === localTipsSection) {
+                    const t = translations[currentLanguage];
+                    localTipOutput.innerHTML = `<p>${t.localTipInitial}</p>`;
+                    localTipOutput.style.fontStyle = 'italic';
+                    localTipCategory.value = '';
+                    localTipCategoryDropdown.classList.add('hidden');
+                }
+                if (sectionElement === qrCodeSection) {
+                    if (qrcodeInstance) {
+                        qrcodeDiv.innerHTML = '';
+                        qrcodeDiv.style.display = 'none';
+                        qrcodeInstance = null;
+                    }
+                    qrInput.value = '';
+                    tipOutput.innerHTML = `<p>${translations[currentLanguage].initialTip}</p>`; // Reset main tip area
+                    tipOutput.style.fontStyle = 'italic';
+                    aiVoiceBtn.style.display = 'none'; // Hide voice button initially for QR section
+                }
+            }
+        }
+
 
         // --- Step Tracker Functions ---
         function updateStepTrackerDisplay() {
@@ -1060,59 +1180,63 @@
             tipOutput.style.fontStyle = 'italic';
 
             tipSectionTitle.textContent = t.tipSectionTitle;
+            featuresTitle.textContent = t.featuresTitle; // Update features section title
+
+            // Update emoji labels
+            document.querySelectorAll('.feature-icon .label').forEach(labelSpan => {
+                const labelKey = labelSpan.dataset.labelKey;
+                if (labelKey && t[labelKey]) {
+                    labelSpan.textContent = t[labelKey];
+                }
+            });
+
 
             // Step Tracker UI updates
             stepSectionTitle.textContent = t.stepSectionTitle;
-            const isStepTrackerOpen = stepTrackerSection.style.display !== 'none';
-            openStepTrackerBtn.textContent = isStepTrackerOpen ? t.closeStepTrackerButton : t.openStepTrackerButton;
             addOneStepBtn.textContent = t.addOneStepButton;
             toggleTrackingBtn.textContent = trackingInterval ? t.stopTrackingButton : t.startTrackingButton;
             resetStepsBtn.textContent = t.resetStepsButton;
             currentStepsDisplay.value = currentSteps;
-            if (!isStepTrackerOpen) {
+            // Only update result output if the section is open, otherwise keep initial text
+            if (stepTrackerSection.style.display !== 'none') {
+                 updateStepTrackerDisplay();
+            } else {
                 stepResultOutput.innerHTML = `<p>${t.stepsResultInitial}</p>`;
                 stepResultOutput.style.fontStyle = 'italic';
-            } else {
-                updateStepTrackerDisplay();
             }
+
 
             // Heart Rate Tracker UI updates
             heartRateSectionTitle.textContent = t.heartRateSectionTitle;
-            const isHeartRateTrackerOpen = heartRateTrackerSection.style.display !== 'none';
-            openHeartRateTrackerBtn.textContent = isHeartRateTrackerOpen ? t.closeHeartRateTrackerButton : t.openHeartRateTrackerButton;
             simulateHeartRateBtn.textContent = heartRateInterval ? t.heartRateSimulating(currentHeartRate) : t.simulateHeartRateButton;
             resetHeartRateBtn.textContent = t.resetHeartRateButton;
             currentHeartRateDisplay.value = currentHeartRate;
-            if (!isHeartRateTrackerOpen) {
+            if (heartRateTrackerSection.style.display !== 'none') {
+                updateHeartRateDisplay();
+            } else {
                 heartRateResultOutput.innerHTML = `<p>${t.heartRateResultInitial}</p>`;
                 heartRateResultOutput.style.fontStyle = 'italic';
-            } else {
-                updateHeartRateDisplay();
             }
 
             // Water Intake Tracker UI updates
             waterSectionTitle.textContent = t.waterSectionTitle;
-            const isWaterTrackerOpen = waterTrackerSection.style.display !== 'none';
-            openWaterTrackerBtn.textContent = isWaterTrackerOpen ? t.closeWaterTrackerButton : t.openWaterTrackerButton;
             addWaterBtn.textContent = t.addWaterButton;
             resetWaterBtn.textContent = t.resetWaterButton;
             waterIntakeDisplay.value = `${currentWaterIntake} ml`;
-            if (!isWaterTrackerOpen) {
+            if (waterTrackerSection.style.display !== 'none') {
+                updateWaterIntakeDisplay();
+            } else {
                 waterResultOutput.innerHTML = `<p>${t.waterResultInitial}</p>`;
                 waterResultOutput.style.fontStyle = 'italic';
-            } else {
-                updateWaterIntakeDisplay();
             }
-            
+
             // Mood & Gratitude Journal UI updates
             journalSectionTitle.textContent = t.journalSectionTitle;
             journalDescription.textContent = t.journalDescription;
-            const isJournalOpen = journalSection.style.display !== 'none';
-            openJournalBtn.textContent = isJournalOpen ? t.closeJournalButton : t.openJournalButton;
             moodSelect.querySelector('option[value=""]').textContent = t.moodSelectPlaceholder;
             gratitudeInput.placeholder = t.gratitudePlaceholder;
             saveJournalEntryBtn.textContent = t.saveJournalEntryButton;
-            if (isJournalOpen) {
+            if (journalSection.style.display !== 'none') {
                 renderJournalEntries();
             } else {
                 journalEntriesOutput.innerHTML = `<p>${t.noJournalEntry}</p>`;
@@ -1127,12 +1251,12 @@
             // Local & Traditional Wellness Tips UI updates
             localTipsSectionTitle.textContent = t.localTipsSectionTitle;
             localTipsDescription.textContent = t.localTipsDescription;
-            const isLocalTipsOpen = localTipsSection.style.display !== 'none';
-            openLocalTipsBtn.textContent = isLocalTipsOpen ? t.closeLocalTipsButton : t.openLocalTipsButton;
             localTipCategory.placeholder = t.localTipCategoryPlaceholder;
             getLocalTipBtn.textContent = t.getLocalTipButton;
-            localTipOutput.innerHTML = `<p>${t.localTipInitial}</p>`;
-            localTipOutput.style.fontStyle = 'italic';
+            if (localTipsSection.style.display !== 'none') {
+                localTipOutput.innerHTML = `<p>${t.localTipInitial}</p>`;
+                localTipOutput.style.fontStyle = 'italic';
+            }
             localTipCategoryDropdown.classList.add('hidden'); // Ensure dropdown is hidden on UI update
 
 
@@ -1172,6 +1296,8 @@
             stopTrackingSimulation();
             stopHeartRateSimulation();
             stopWaterReminder();
+            // Hide all feature sections
+            document.querySelectorAll('.feature-section').forEach(sec => sec.style.display = 'none');
         });
 
         generateBtn.addEventListener('click', async () => {
@@ -1221,23 +1347,16 @@
             }
         });
 
+        // Event listeners for emoji icons to toggle sections
+        iconStepTracker.addEventListener('click', () => toggleFeatureSection(stepTrackerSection));
+        iconHeartRateTracker.addEventListener('click', () => toggleFeatureSection(heartRateTrackerSection));
+        iconWaterTracker.addEventListener('click', () => toggleFeatureSection(waterTrackerSection));
+        iconJournal.addEventListener('click', () => toggleFeatureSection(journalSection));
+        iconLocalTips.addEventListener('click', () => toggleFeatureSection(localTipsSection));
+        iconQrCode.addEventListener('click', () => toggleFeatureSection(qrCodeSection));
+
+
         // Step Tracker Event Listeners
-        openStepTrackerBtn.addEventListener('click', () => {
-            const t = translations[currentLanguage];
-            const isOpen = stepTrackerSection.style.display !== 'none';
-            stepTrackerSection.style.display = isOpen ? 'none' : 'block';
-            openStepTrackerBtn.textContent = isOpen ? t.openStepTrackerButton : t.closeStepTrackerButton;
-            document.body.classList.toggle('main-content-active', !isOpen); // Adjust body height for scrolling
-
-            if (!isOpen) { // If opening the tracker
-                stepResultOutput.innerHTML = `<p>${t.stepsResultInitial}</p>`;
-                stepResultOutput.style.fontStyle = 'italic';
-                updateStepTrackerDisplay(); // Show initial steps
-            } else { // If closing, stop simulation
-                stopTrackingSimulation();
-            }
-        });
-
         addOneStepBtn.addEventListener('click', () => {
             if (currentSteps < stepsGoal) { // Prevent adding beyond goal if desired
                 currentSteps += stepsPerIncrement;
@@ -1263,22 +1382,6 @@
         });
 
         // Heart Rate Tracker Event Listeners
-        openHeartRateTrackerBtn.addEventListener('click', () => {
-            const t = translations[currentLanguage];
-            const isOpen = heartRateTrackerSection.style.display !== 'none';
-            heartRateTrackerSection.style.display = isOpen ? 'none' : 'block';
-            openHeartRateTrackerBtn.textContent = isOpen ? t.openHeartRateTrackerButton : t.closeHeartRateTrackerButton;
-            document.body.classList.toggle('main-content-active', !isOpen); // Adjust body height for scrolling
-
-            if (!isOpen) { // If opening the tracker
-                heartRateResultOutput.innerHTML = `<p>${t.heartRateResultInitial}</p>`;
-                heartRateResultOutput.style.fontStyle = 'italic';
-                updateHeartRateDisplay(); // Show initial HR
-            } else { // If closing, stop simulation
-                stopHeartRateSimulation();
-            }
-        });
-
         simulateHeartRateBtn.addEventListener('click', () => {
             if (heartRateInterval) {
                 stopHeartRateSimulation();
@@ -1297,23 +1400,6 @@
         });
 
         // Water Intake Tracker Event Listeners
-        openWaterTrackerBtn.addEventListener('click', () => {
-            const t = translations[currentLanguage];
-            const isOpen = waterTrackerSection.style.display !== 'none';
-            waterTrackerSection.style.display = isOpen ? 'none' : 'block';
-            openWaterTrackerBtn.textContent = isOpen ? t.openWaterTrackerButton : t.closeWaterTrackerButton;
-            document.body.classList.toggle('main-content-active', !isOpen); // Adjust body height for scrolling
-
-            if (!isOpen) { // If opening the tracker
-                waterResultOutput.innerHTML = `<p>${t.waterResultInitial}</p>`;
-                waterResultOutput.style.fontStyle = 'italic';
-                updateWaterIntakeDisplay(); // Show initial intake
-                startWaterReminder();
-            } else { // If closing, stop reminder
-                stopWaterReminder();
-            }
-        });
-
         addWaterBtn.addEventListener('click', () => {
             currentWaterIntake += waterIncrement;
             updateWaterIntakeDisplay();
@@ -1330,18 +1416,6 @@
         });
 
         // Mood & Gratitude Journal Event Listeners
-        openJournalBtn.addEventListener('click', () => {
-            const t = translations[currentLanguage];
-            const isOpen = journalSection.style.display !== 'none';
-            journalSection.style.display = isOpen ? 'none' : 'block';
-            openJournalBtn.textContent = isOpen ? t.closeJournalButton : t.openJournalButton;
-            document.body.classList.toggle('main-content-active', !isOpen); // Adjust body height for scrolling
-
-            if (!isOpen) { // If opening
-                renderJournalEntries();
-            }
-        });
-
         saveJournalEntryBtn.addEventListener('click', () => {
             const t = translations[currentLanguage];
             const mood = moodSelect.value;
@@ -1355,7 +1429,7 @@
 
             const today = new Date().toLocaleDateString(currentLanguage === 'ta' ? 'ta-IN' : 'en-US', { day: 'numeric', month: 'short', year: 'numeric' });
             const newEntry = { date: today, mood: mood, gratitude: gratitude };
-            
+
             // Check if there's already an entry for today
             const existingEntryIndex = journalEntries.findIndex(entry => entry.date === today);
             if (existingEntryIndex > -1) {
@@ -1363,7 +1437,7 @@
             } else {
                 journalEntries.push(newEntry);
             }
-            
+
             localStorage.setItem('journalEntries', JSON.stringify(journalEntries));
             renderJournalEntries();
             moodSelect.value = '';
@@ -1373,22 +1447,6 @@
         });
 
         // Local & Traditional Wellness Tips Event Listeners
-        openLocalTipsBtn.addEventListener('click', () => {
-            const t = translations[currentLanguage];
-            const isOpen = localTipsSection.style.display !== 'none';
-            localTipsSection.style.display = isOpen ? 'none' : 'block';
-            openLocalTipsBtn.textContent = isOpen ? t.closeLocalTipsButton : t.openLocalTipsButton;
-            document.body.classList.toggle('main-content-active', !isOpen); // Adjust body height for scrolling
-
-            if (!isOpen) { // If opening
-                localTipOutput.innerHTML = `<p>${t.localTipInitial}</p>`;
-                localTipOutput.style.fontStyle = 'italic';
-                localTipCategory.value = ''; // Clear input
-                localTipCategoryDropdown.classList.add('hidden'); // Hide dropdown
-            }
-            aiVoiceBtn.style.display = 'none'; // Hide voice button initially for this section
-        });
-
         localTipCategory.addEventListener('input', () => {
             filterCategories(localTipCategory.value);
         });
@@ -1431,10 +1489,11 @@
                     mainContent.style.display = 'block';
                     document.body.classList.add('main-content-active'); // Set initial body class
                     updateUI(); // Initial UI update
-                    updateStepTrackerDisplay(); // Initialize step display
-                    updateHeartRateDisplay(); // Initialize heart rate display
-                    updateWaterIntakeDisplay(); // Initialize water intake display
-                    renderJournalEntries(); // Render existing journal entries
+                    // Initialize displays for hidden sections
+                    updateStepTrackerDisplay();
+                    updateHeartRateDisplay();
+                    updateWaterIntakeDisplay();
+                    renderJournalEntries();
                     startWaterReminder(); // Start water reminders on load
                 }, { once: true });
             }, 2000); // Splash screen lasts for 2 seconds
