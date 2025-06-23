@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>தனிப்பயனாக்கப்பட்ட ஆரோக்கிய குறிப்பு உருவாக்குனர்</title>
+    <title>ஆரோக்கிய நண்பன்</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #E6F7FF;
+            background-color: #E6F7FF; /* Light Blue */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -20,6 +20,7 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             box-sizing: border-box;
+            transition: all 0.5s ease-in-out;
         }
 
         body.main-content-active {
@@ -39,7 +40,14 @@
             padding: 2.5rem;
             text-align: center;
             position: relative;
+            animation: fadeIn 0.8s ease-out;
         }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .language-selector-wrapper {
             position: absolute;
             top: 1.5rem;
@@ -54,7 +62,7 @@
         .input-field {
             flex-grow: 1;
             padding: 1rem 1.25rem;
-            padding-right: 3.5rem;
+            padding-right: 3.5rem; /* Space for mic icon */
             border: 1px solid #D1D5DB;
             border-radius: 0.875rem;
             font-size: 1.05rem;
@@ -82,15 +90,20 @@
             z-index: 10;
         }
         .mic-button:hover {
-            color: #DC2626;
+            color: #DC2626; /* Red */
             background-color: rgba(220, 38, 38, 0.1);
         }
         .mic-button.recording {
-            color: #DC2626;
-            animation: none;
+            color: #DC2626; /* Red */
+            animation: pulse 1s infinite alternate;
         }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.1); opacity: 0.7; }
+        }
+
         .generate-button, .action-button, .ai-voice-button {
-            background-color: #6A0DAD;
+            background-color: #6A0DAD; /* Dark Violet */
             color: #ffffff;
             padding: 1rem 2rem;
             border-radius: 0.875rem;
@@ -107,7 +120,7 @@
             gap: 0.5rem; /* Space between icon and text */
         }
         .generate-button:hover, .action-button:hover, .ai-voice-button:hover {
-            background-color: #4B0A7B;
+            background-color: #4B0A7B; /* Darker Violet */
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(106, 13, 173, 0.5);
         }
@@ -138,8 +151,8 @@
             100% { transform: rotate(360deg); }
         }
         .tip-box, .result-box {
-            background-color: #FFFFAA;
-            border: 1px solid #CCCC88;
+            background-color: #FFFFAA; /* Light Yellow */
+            border: 1px solid #CCCC88; /* Darker Yellow */
             border-radius: 1.25rem;
             padding: 2rem;
             margin-top: 2rem;
@@ -153,12 +166,13 @@
             font-style: italic;
             font-size: 1.05rem;
             transition: all 0.5s ease-in-out;
+            word-break: break-word; /* Ensure long words break */
         }
         .tip-box p, .result-box p {
             margin: 0;
         }
         .text-red-600 {
-            color: #DC2626;
+            color: #DC2626; /* Red */
         }
         /* Responsive adjustments */
         @media (max-width: 640px) {
@@ -227,6 +241,8 @@
             overflow-y: auto;
             text-align: left;
             padding: 0.5rem 0;
+            top: calc(100% + 5px); /* Position below input */
+            left: 0;
         }
         .dropdown-menu div {
             padding: 0.75rem 1.25rem;
@@ -274,6 +290,12 @@
             margin-top: 2rem;
             padding-top: 2rem;
             border-top: 1px solid #e5e7eb; /* Subtle separator */
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
@@ -328,9 +350,7 @@
             <div id="iconWaterTracker" class="feature-icon" title="தண்ணீர் டிராக்கர்">💧<span class="label" data-label-key="waterTrackerLabel"></span></div>
             <div id="iconJournal" class="feature-icon" title="மனநிலை & நன்றியுணர்வு ஜர்னல்">✍️<span class="label" data-label-key="journalLabel"></span></div>
             <div id="iconLocalTips" class="feature-icon" title="உள்ளூர் ஆரோக்கிய குறிப்புகள்">🌿<span class="label" data-label-key="localTipsLabel"></span></div>
-            <div id="iconQrCode" class="feature-icon" title="QR குறியீடு உருவாக்குனர்">📷<span class="label" data-label-key="qrCodeLabel"></span></div>
         </div>
-
 
         <div id="stepTrackerSection" class="feature-section">
             <h2 id="stepSectionTitle" class="text-2xl font-semibold text-gray-700 mb-4"></h2>
@@ -396,26 +416,13 @@
             <h2 id="localTipsSectionTitle" class="text-2xl font-semibold text-gray-700 mb-4"></h2>
             <p id="localTipsDescription" class="text-gray-600 mb-4 text-lg"></p>
             <div class="input-wrapper mb-4">
-                <label for="localTipCategory" class="sr-only">வகை</label>
                 <input type="text" id="localTipCategory" class="input-field" aria-label="உதவிக்குறிப்பு வகையை உள்ளிடவும்" placeholder="எ.கா. மஞ்சள், முருங்கை, தியானம்...">
                 <div id="localTipCategoryDropdown" class="dropdown-menu hidden mt-2 top-full left-0"></div>
             </div>
             <button id="getLocalTipBtn" class="generate-button"></button>
             <div id="localTipOutput" class="tip-box" aria-live="polite"></div>
         </div>
-
-        <div id="qrCodeSection" class="feature-section">
-            <h2 id="qrCodeSectionTitle" class="text-2xl font-semibold text-gray-700 mb-4"></h2>
-            <p id="qrCodeDescription" class="text-gray-600 mb-4 text-lg"></p>
-            <div class="input-wrapper mb-4">
-                <input type="text" id="qrInput" class="input-field" aria-label="QR குறியீட்டிற்கான உள்ளீட்டை உள்ளிடவும்" placeholder="QR குறியீட்டிற்கான உரையை உள்ளிடவும்">
-            </div>
-            <button id="generateQrBtn" class="generate-button"></button>
-            <div id="qrcode" class="mt-8 mx-auto p-4 border border-gray-300 rounded-lg" style="width:200px; height:200px; display: none;"></div>
-        </div>
     </div>
-
-    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
 
     <script>
         const translations = {
@@ -432,26 +439,25 @@
                 microphoneUnsupported: 'உங்கள் உலாவி மைக்ரோஃபோன் உள்ளீட்டை ஆதரிக்கவில்லை.',
                 microphonePermissionDenied: 'மைக்ரோஃபோன் அணுகல் மறுக்கப்பட்டது. அமைப்புகளில் அனுமதிகளை சரிபார்க்கவும்.',
                 microphoneListening: 'கேட்கிறது...',
-                aiPrompt: (goal) => `பயனரின் ஆரோக்கிய இலக்கு "${goal}" என்பதாகும். இந்த இலக்கை அடைய உதவும் ஒரு தனிப்பயனாக்கப்பட்ட, சுருக்கமான, **மிகவும் நேர்மறையான, ஊக்கமளிக்கும் மற்றும் உற்சாகப்படுத்தும்** ஆரோக்கிய உதவிக்குறிப்பை **தமிழில்** வழங்குங்கள். உதவிக்குறிப்பு செயல்முறைக்குரியதாகவும், எளிதில் பின்பற்றக்கூடியதாகவும் இருக்க வேண்டும்.`,
+                // Updated AI Prompt for Tamil to avoid QR code mentions
+                aiPrompt: (goal) => `பயனரின் ஆரோக்கிய இலக்கு "${goal}" என்பதாகும். இந்த இலக்கை அடைய உதவும் ஒரு தனிப்பப்பயனாக்கப்பட்ட, சுருக்கமான, **மிகவும் நேர்மறையான, ஊக்கமளிக்கும் மற்றும் உற்சாகப்படுத்தும்** ஆரோக்கிய உதவிக்குறிப்பை **தமிழில்** வழங்குங்கள். உதவிக்குறிப்பு செயல்முறைக்குரியதாகவும், எளிதில் பின்பற்றக்கூடியதாகவும் இருக்க வேண்டும். எந்த QR குறியீடுகளையும் சேர்க்க வேண்டாம்.`,
                 aiVoiceButton: 'உதவிக்குறிப்பைப் படிக்கவும்',
                 speechSynthesisUnsupported: 'உங்கள் உலாவி குரல் வெளியீட்டை ஆதரிக்கவில்லை.',
                 noTipToSpeak: 'பேசுவதற்கு உதவிக்குறிப்பு இல்லை.',
                 tipSpeaking: 'உதவிக்குறிப்பு பேசப்படுகிறது...',
                 tipSectionTitle: 'ஆரோக்கிய உதவிக்குறிப்பு',
 
-                // New Features Section Title
+                // Features Section Title
                 featuresTitle: 'அம்சங்கள்',
                 stepTrackerLabel: 'படிகள்',
                 heartRateTrackerLabel: 'இதயத் துடிப்பு',
                 waterTrackerLabel: 'தண்ணீர்',
                 journalLabel: 'ஜர்னல்',
                 localTipsLabel: 'உள்ளூர் குறிப்புகள்',
-                qrCodeLabel: 'QR குறியீடு',
 
 
                 // Step Tracker
                 stepSectionTitle: 'தினசரி படி டிராக்கர்',
-                closeButton: 'மூடு', // New button text for closing sections
                 addOneStepButton: '1 படி சேர்',
                 startTrackingButton: 'டிராக்கிங்கை தொடங்கு',
                 stopTrackingButton: 'டிராக்கிங்கை நிறுத்து',
@@ -527,14 +533,6 @@
                     'பாரம்பரிய உணவு': 'பாரம்பரிய தமிழ் உணவுகளான களி, கூழ், அடை போன்றவற்றை அவ்வப்போது உண்ணுங்கள். இவை ஆரோக்கியமான பொருட்களால் தயாரிக்கப்பட்டு உடலுக்கு நன்மை பயக்கும்.'
                 },
                 localTipNotFound: (category) => `"${category}" என்ற வகைக்கு எந்தக் குறிப்பும் இல்லை. வேறு வகையை முயற்சிக்கவும்.`,
-
-                // QR Code
-                qrCodeSectionTitle: 'QR குறியீடு உருவாக்குனர்',
-                qrCodeDescription: 'உங்கள் ஆரோக்கிய உதவிக்குறிப்பு அல்லது வேறு எந்த உரையையும் QR குறியீடாக உருவாக்கவும்.',
-                qrInputPlaceholder: 'QR குறியீட்டிற்கான உரையை உள்ளிடவும்',
-                generateQrButton: 'QR குறியீட்டை உருவாக்கு',
-                noQrInputError: 'QR குறியீட்டை உருவாக்க உள்ளீட்டை வழங்கவும்.',
-                qrCodeGenerated: 'QR குறியீடு உருவாக்கப்பட்டது!',
             },
             en: {
                 mainTitle: 'What is your wellness goal?',
@@ -549,26 +547,25 @@
                 microphoneUnsupported: 'Your browser does not support microphone input.',
                 microphonePermissionDenied: 'Microphone access denied. Please check permissions in settings.',
                 microphoneListening: 'Listening...',
-                aiPrompt: (goal) => `A user has stated their wellness goal as "${goal}". Provide a personalized, concise, **highly positive, encouraging, and motivating** wellness tip in English to help them achieve this goal. The tip should be actionable and easy to follow.`,
+                // Updated AI Prompt for English to avoid QR code mentions
+                aiPrompt: (goal) => `A user has stated their wellness goal as "${goal}". Provide a personalized, concise, **highly positive, encouraging, and motivating** wellness tip in English to help them achieve this goal. The tip should be actionable and easy to follow. Do not include any QR codes.`,
                 aiVoiceButton: 'Read Tip Aloud',
                 speechSynthesisUnsupported: 'Your browser does not support voice output.',
                 noTipToSpeak: 'No tip to speak.',
                 tipSpeaking: 'Speaking tip...',
                 tipSectionTitle: 'Wellness Tip Generator',
 
-                // New Features Section Title
+                // Features Section Title
                 featuresTitle: 'Features',
                 stepTrackerLabel: 'Steps',
                 heartRateTrackerLabel: 'Heart Rate',
                 waterTrackerLabel: 'Water',
                 journalLabel: 'Journal',
                 localTipsLabel: 'Local Tips',
-                qrCodeLabel: 'QR Code',
 
 
                 // Step Tracker
                 stepSectionTitle: 'Daily Step Tracker',
-                closeButton: 'Close', // New button text for closing sections
                 addOneStepButton: 'Add 1 Step',
                 startTrackingButton: 'Start Tracking',
                 stopTrackingButton: 'Stop Tracking',
@@ -638,19 +635,11 @@
                     'Millets': 'Incorporate millets like Ragi, Kambu, Samai, Thinai into your diet. They provide fiber and slow-release energy.',
                     'Yoga': 'Practice Surya Namaskaram or simple yoga asanas for 10 minutes daily in the morning to reduce stress. It calms both body and mind.',
                     'Meditation': 'Sit in a quiet place for 5 minutes daily and focus on your breath to meditate. This improves mental peace and focus.',
-                    'Ayurveda': 'According to Ayurveda, eat foods suitable for your body type (dosha). You can consult an Ayurvedic expert for personalized advice.',
+                    'Ayurveda': 'According to Ayurveda, your body type (dosha). You can consult an Ayurvedic expert for personalized advice.',
                     'Siddha Medicine': 'As per Siddha medicine, consuming Arugampul juice (Bermuda grass juice) or Amla juice can detoxify the body and provide rejuvenation.',
                     'Traditional Food': 'Occasionally eat traditional Tamil foods like Kali, Koozh, Adai. These are prepared with healthy ingredients and benefit the body.'
                 },
                 localTipNotFound: (category) => `No tip found for "${category}". Please try another category.`,
-
-                // QR Code
-                qrCodeSectionTitle: 'QR Code Generator',
-                qrCodeDescription: 'Generate a QR code for your wellness tip or any other text.',
-                qrInputPlaceholder: 'Enter text for QR code',
-                generateQrButton: 'Generate QR Code',
-                noQrInputError: 'Please provide input to generate QR code.',
-                qrCodeGenerated: 'QR code generated!',
             }
         };
 
@@ -669,7 +658,7 @@
         const mainContent = document.getElementById('mainContent');
 
         const tipSectionTitle = document.getElementById('tipSectionTitle');
-        const featuresTitle = document.getElementById('featuresTitle'); // New element
+        const featuresTitle = document.getElementById('featuresTitle');
 
         // Feature Sections
         const stepTrackerSection = document.getElementById('stepTrackerSection');
@@ -677,7 +666,6 @@
         const waterTrackerSection = document.getElementById('waterTrackerSection');
         const journalSection = document.getElementById('journalSection');
         const localTipsSection = document.getElementById('localTipsSection');
-        const qrCodeSection = document.getElementById('qrCodeSection'); // New element for QR Code section
 
         // Emoji Icons
         const iconStepTracker = document.getElementById('iconStepTracker');
@@ -685,7 +673,6 @@
         const iconWaterTracker = document.getElementById('iconWaterTracker');
         const iconJournal = document.getElementById('iconJournal');
         const iconLocalTips = document.getElementById('iconLocalTips');
-        const iconQrCode = document.getElementById('iconQrCode');
 
 
         // Step Tracker elements
@@ -726,14 +713,6 @@
         const getLocalTipBtn = document.getElementById('getLocalTipBtn');
         const localTipOutput = document.getElementById('localTipOutput');
 
-
-        // QR Code elements
-        const qrCodeSectionTitle = document.getElementById('qrCodeSectionTitle');
-        const qrCodeDescription = document.getElementById('qrCodeDescription');
-        const qrInput = document.getElementById('qrInput');
-        const generateQrBtn = document.getElementById('generateQrBtn');
-        const qrcodeDiv = document.getElementById('qrcode');
-
         let currentLanguage = localStorage.getItem('wellnessAppLanguage') || 'ta';
         languageSelect.value = currentLanguage;
 
@@ -741,7 +720,7 @@
         let trackingInterval = null;
         const stepsGoal = 10000;
         const stepsPerIncrement = 1;
-        const stepsPerKm = 1312.33;
+        const stepsPerKm = 1312.33; // Average steps per kilometer
 
         let heartRateInterval = null;
         let currentHeartRate = parseInt(localStorage.getItem('currentHeartRate')) || 70; // Default to 70 BPM
@@ -753,8 +732,6 @@
 
         let journalEntries = JSON.parse(localStorage.getItem('journalEntries')) || [];
 
-        let qrcodeInstance = null; // To store the QR code instance
-
         // Web Speech API (Speech Recognition)
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         let recognition;
@@ -763,7 +740,7 @@
             recognition = new SpeechRecognition();
             recognition.continuous = false;
             recognition.interimResults = false;
-            recognition.lang = currentLanguage === 'ta' ? 'ta-IN' : currentLanguage;
+            recognition.lang = currentLanguage === 'ta' ? 'ta-IN' : currentLanguage === 'en' ? 'en-US' : 'en-US'; // Default to en-US for other langs
 
             recognition.onresult = (event) => {
                 const speechResult = event.results[0][0].transcript;
@@ -803,7 +780,7 @@
                 loadingText.textContent = t.microphoneListening;
 
                 try {
-                    recognition.lang = currentLanguage === 'ta' ? 'ta-IN' : currentLanguage;
+                    recognition.lang = currentLanguage === 'ta' ? 'ta-IN' : currentLanguage === 'en' ? 'en-US' : 'en-US';
                     recognition.start();
                 } catch (e) {
                     console.warn("Speech recognition could not start:", e);
@@ -867,7 +844,7 @@
             }
 
             const utterance = new SpeechSynthesisUtterance(tipText);
-            utterance.lang = currentLanguage === 'ta' ? 'ta-IN' : currentLanguage;
+            utterance.lang = currentLanguage === 'ta' ? 'ta-IN' : currentLanguage === 'en' ? 'en-US' : 'en-US';
 
             if (currentLanguage === 'ta' && tamilVoice) {
                 utterance.voice = tamilVoice;
@@ -889,23 +866,30 @@
         // --- Feature Section Toggling Function ---
         function toggleFeatureSection(sectionElement) {
             const allSections = document.querySelectorAll('.feature-section');
+            let wasOpen = sectionElement.style.display !== 'none';
+
+            // Hide all sections first
             allSections.forEach(sec => {
-                if (sec !== sectionElement) {
-                    sec.style.display = 'none'; // Hide other sections
-                }
+                sec.style.display = 'none';
             });
 
-            const isOpen = sectionElement.style.display !== 'none';
-            sectionElement.style.display = isOpen ? 'none' : 'block';
-            document.body.classList.toggle('main-content-active', !isOpen); // Adjust body height for scrolling
+            // If the clicked section was already open, then we just hid it.
+            // If it was closed, now display it.
+            if (!wasOpen) {
+                sectionElement.style.display = 'block';
+                // Also, scroll to the top of the newly opened section for better UX
+                sectionElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
 
-            // Stop relevant simulations/reminders when a section is closed
-            if (isOpen) {
-                if (sectionElement === stepTrackerSection) stopTrackingSimulation();
-                if (sectionElement === heartRateTrackerSection) stopHeartRateSimulation();
-                if (sectionElement === waterTrackerSection) stopWaterReminder();
-            } else {
-                // If a section is opened, ensure its initial state is correct
+            // Adjust body height for scrolling, especially when a section is open
+            document.body.classList.toggle('main-content-active', !wasOpen);
+
+            // Stop relevant simulations/reminders when any section is closed
+            if (wasOpen) { // If it was open and now hidden
+                stopTrackingSimulation();
+                stopHeartRateSimulation();
+                stopWaterReminder();
+            } else { // If a section is newly opened, ensure its initial state is correct
                 if (sectionElement === stepTrackerSection) {
                     const t = translations[currentLanguage];
                     stepResultOutput.innerHTML = `<p>${t.stepsResultInitial}</p>`;
@@ -925,24 +909,15 @@
                     updateWaterIntakeDisplay();
                     startWaterReminder();
                 }
-                if (sectionElement === journalSection) renderJournalEntries();
+                if (sectionElement === journalSection) {
+                    renderJournalEntries();
+                }
                 if (sectionElement === localTipsSection) {
                     const t = translations[currentLanguage];
                     localTipOutput.innerHTML = `<p>${t.localTipInitial}</p>`;
                     localTipOutput.style.fontStyle = 'italic';
                     localTipCategory.value = '';
                     localTipCategoryDropdown.classList.add('hidden');
-                }
-                if (sectionElement === qrCodeSection) {
-                    if (qrcodeInstance) {
-                        qrcodeDiv.innerHTML = '';
-                        qrcodeDiv.style.display = 'none';
-                        qrcodeInstance = null;
-                    }
-                    qrInput.value = '';
-                    tipOutput.innerHTML = `<p>${translations[currentLanguage].initialTip}</p>`; // Reset main tip area
-                    tipOutput.style.fontStyle = 'italic';
-                    aiVoiceBtn.style.display = 'none'; // Hide voice button initially for QR section
                 }
             }
         }
@@ -981,7 +956,7 @@
                 trackingInterval = setInterval(() => {
                     currentSteps += stepsPerIncrement;
                     updateStepTrackerDisplay();
-                }, 1000);
+                }, 1000); // Increment every second
             } else if (currentSteps >= stepsGoal) {
                 updateStepTrackerDisplay();
             }
@@ -1006,11 +981,11 @@
             localStorage.setItem('currentHeartRate', currentHeartRate);
 
             heartRateResultOutput.style.fontStyle = 'normal';
-            if (currentHeartRate >= 60 && currentHeartRate <= 100) {
+            if (currentHeartRate >= 60 && currentHeartRate <= 100) { // Typical resting heart rate range
                 heartRateResultOutput.innerHTML = `<p>${t.heartRateIdeal(currentHeartRate)}</p>`;
             } else if (currentHeartRate > 100) {
                 heartRateResultOutput.innerHTML = `<p class="text-red-600">${t.heartRateHigh(currentHeartRate)}</p>`;
-            } else {
+            } else { // currentHeartRate < 60
                 heartRateResultOutput.innerHTML = `<p class="text-red-600">${t.heartRateLow(currentHeartRate)}</p>`;
             }
         }
@@ -1018,14 +993,15 @@
         function startHeartRateSimulation() {
             if (!heartRateInterval) {
                 const t = translations[currentLanguage];
-                simulateHeartRateBtn.textContent = t.heartRateSimulating(currentHeartRate); // Update button text
+                simulateHeartRateBtn.textContent = t.heartRateSimulating(currentHeartRate);
                 heartRateResultOutput.style.fontStyle = 'normal';
 
                 heartRateInterval = setInterval(() => {
+                    // Simulate slight fluctuations, keeping it within a reasonable range
                     currentHeartRate = Math.max(50, Math.min(120, currentHeartRate + (Math.random() > 0.5 ? 1 : -1) * Math.floor(Math.random() * 3)));
                     currentHeartRateDisplay.value = currentHeartRate;
                     localStorage.setItem('currentHeartRate', currentHeartRate);
-                    simulateHeartRateBtn.textContent = t.heartRateSimulating(currentHeartRate); // Update button text
+                    simulateHeartRateBtn.textContent = t.heartRateSimulating(currentHeartRate);
                     updateHeartRateDisplay();
                 }, 2000); // Update every 2 seconds
             }
@@ -1036,7 +1012,7 @@
                 clearInterval(heartRateInterval);
                 heartRateInterval = null;
                 const t = translations[currentLanguage];
-                simulateHeartRateBtn.textContent = t.simulateHeartRateButton; // Reset button text
+                simulateHeartRateBtn.textContent = t.simulateHeartRateButton;
                 heartRateResultOutput.innerHTML = `<p>${t.heartRateStopped(currentHeartRate)}</p>`;
                 heartRateResultOutput.style.fontStyle = 'normal';
             }
@@ -1053,6 +1029,7 @@
             waterResultOutput.style.fontStyle = 'normal';
             if (currentWaterIntake >= waterGoal) {
                 waterResultOutput.innerHTML = `<p>${t.waterGoalReached(currentWaterIntake, percentage)}</p>`;
+                stopWaterReminder(); // Stop reminder once goal is reached for the day
             } else {
                 waterResultOutput.innerHTML = `<p>${t.waterTracking(currentWaterIntake, remainingMl, percentage)}</p>`;
             }
@@ -1063,12 +1040,12 @@
             if (waterReminderInterval) {
                 clearInterval(waterReminderInterval);
             }
-            // Set a reminder every 2 hours (7200000 ms) for example
+            // Set a reminder every 3 hours (10800000 ms) for example, if goal not met
             waterReminderInterval = setInterval(() => {
-                if (currentWaterIntake < waterGoal) {
+                if (currentWaterIntake < waterGoal && waterTrackerSection.style.display !== 'none') { // Only alert if section is open
                     alert(translations[currentLanguage].waterReminder);
                 }
-            }, 7200000); // 2 hours
+            }, 10800000); // 3 hours
         }
 
         function stopWaterReminder() {
@@ -1089,10 +1066,13 @@
             }
 
             journalEntriesOutput.style.fontStyle = 'normal';
-            journalEntries.slice(-5).reverse().forEach(entry => { // Display last 5 entries
+            // Display last 5 entries, reversed to show most recent first
+            journalEntries.slice(-5).reverse().forEach(entry => {
                 const entryDiv = document.createElement('div');
                 entryDiv.className = 'border-b border-gray-200 pb-2 mb-2 last:border-b-0 last:pb-0 last:mb-0';
-                entryDiv.innerHTML = `<p class="font-semibold text-gray-700">${t.journalEntrySaved(entry.date, t[`mood${entry.mood.charAt(0).toUpperCase() + entry.mood.slice(1)}`], entry.gratitude)}</p>`;
+                // Map mood value to translated text
+                const translatedMood = t[`mood${entry.mood.charAt(0).toUpperCase() + entry.mood.slice(1)}`];
+                entryDiv.innerHTML = `<p class="font-semibold text-gray-700">${t.journalEntrySaved(entry.date, translatedMood, entry.gratitude)}</p>`;
                 journalEntriesOutput.appendChild(entryDiv);
             });
         }
@@ -1104,11 +1084,10 @@
             localTipOutput.style.fontStyle = 'normal';
             if (tip) {
                 localTipOutput.innerHTML = `<p>${tip}</p>`;
-                qrInput.value = tip; // Auto-fill QR input
-                aiVoiceBtn.style.display = 'inline-flex'; // Enable AI voice
+                aiVoiceBtn.style.display = 'inline-flex'; // Enable AI voice for local tips
             } else {
                 localTipOutput.innerHTML = `<p class="text-red-600">${t.localTipNotFound(category)}</p>`;
-                aiVoiceBtn.style.display = 'none'; // Disable AI voice
+                aiVoiceBtn.style.display = 'none'; // Disable AI voice if no tip found
             }
         }
 
@@ -1126,7 +1105,8 @@
                 categories.forEach(cat => {
                     const div = document.createElement('div');
                     div.textContent = cat;
-                    div.addEventListener('click', () => {
+                    div.addEventListener('mousedown', (event) => { // Use mousedown to prevent blur from hiding dropdown
+                        event.preventDefault(); // Prevent input from losing focus immediately
                         localTipCategory.value = cat;
                         localTipCategoryDropdown.classList.add('hidden');
                         localTipCategory.focus(); // Keep focus on input after selection
@@ -1136,36 +1116,6 @@
             } else {
                 localTipCategoryDropdown.classList.add('hidden');
             }
-        }
-
-        // --- QR Code Functions ---
-        function generateQrCode() {
-            const t = translations[currentLanguage];
-            const qrText = qrInput.value.trim();
-
-            if (!qrText) {
-                tipOutput.innerHTML = `<p class="text-red-600">${t.noQrInputError}</p>`;
-                tipOutput.style.fontStyle = 'normal';
-                qrcodeDiv.style.display = 'none'; // Hide QR code if input is empty
-                return;
-            }
-
-            // Clear previous QR code
-            qrcodeDiv.innerHTML = '';
-            qrcodeDiv.style.display = 'block';
-
-            // Create new QR code instance
-            qrcodeInstance = new QRCode(qrcodeDiv, {
-                text: qrText,
-                width: 200,
-                height: 200,
-                colorDark : "#000000",
-                colorLight : "#ffffff",
-                correctLevel : QRCode.CorrectLevel.H
-            });
-
-            tipOutput.innerHTML = `<p>${t.qrCodeGenerated}</p>`;
-            tipOutput.style.fontStyle = 'normal';
         }
 
         // --- Main UI Update Function ---
@@ -1180,7 +1130,7 @@
             tipOutput.style.fontStyle = 'italic';
 
             tipSectionTitle.textContent = t.tipSectionTitle;
-            featuresTitle.textContent = t.featuresTitle; // Update features section title
+            featuresTitle.textContent = t.featuresTitle;
 
             // Update emoji labels
             document.querySelectorAll('.feature-icon .label').forEach(labelSpan => {
@@ -1189,7 +1139,6 @@
                     labelSpan.textContent = t[labelKey];
                 }
             });
-
 
             // Step Tracker UI updates
             stepSectionTitle.textContent = t.stepSectionTitle;
@@ -1259,25 +1208,12 @@
             }
             localTipCategoryDropdown.classList.add('hidden'); // Ensure dropdown is hidden on UI update
 
-
-            // QR Code UI updates
-            qrCodeSectionTitle.textContent = t.qrCodeSectionTitle;
-            qrCodeDescription.textContent = t.qrCodeDescription;
-            qrInput.placeholder = t.qrInputPlaceholder;
-            generateQrBtn.textContent = t.generateQrButton;
-            // Reset QR code display on language change or UI update
-            if (qrcodeInstance) {
-                qrcodeDiv.innerHTML = ''; // Clear the generated QR code
-                qrcodeDiv.style.display = 'none'; // Hide the QR code div
-                qrcodeInstance = null; // Clear the instance
-            }
-
             // AI Voice button text update
             aiVoiceBtn.textContent = t.aiVoiceButton;
             aiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path></svg>`;
 
             if (recognition) {
-                recognition.lang = currentLanguage === 'ta' ? 'ta-IN' : currentLanguage;
+                recognition.lang = currentLanguage === 'ta' ? 'ta-IN' : currentLanguage === 'en' ? 'en-US' : 'en-US';
             }
         }
 
@@ -1317,15 +1253,19 @@
             aiVoiceBtn.style.display = 'none';
 
             try {
-                // You would replace this with an actual API call to Gemini
-                // For demonstration, we'll simulate a response
+                // Simulate an API call to Gemini (replace with actual fetch to your backend/Gemini API)
+                // The prompt now includes the exclusion for QR codes.
+                const prompt = t.aiPrompt(userGoal);
+                console.log("AI Prompt sent:", prompt); // For debugging
+                // In a real app, you'd fetch from a backend that calls Gemini API
                 const simulatedApiResponse = await new Promise(resolve => setTimeout(() => {
-                    const prompt = t.aiPrompt(userGoal);
                     let tip;
                     if (currentLanguage === 'ta') {
-                        tip = `உங்கள் இலக்கு "${userGoal}" என்றால், தினமும் காலை 15 நிமிடங்கள் நடைபயிற்சி செய்யுங்கள். இது உங்கள் உடலையும் மனதையும் புத்துணர்ச்சியுடன் வைத்திருக்க உதவும்.`;
+                        // Example simulated response from AI in Tamil, ensuring no QR
+                        tip = `உங்கள் இலக்கு "${userGoal}" என்றால், தினமும் காலை 15 நிமிடங்கள் நடைபயிற்சி செய்யுங்கள். இது உங்கள் உடலையும் மனதையும் புத்துணர்ச்சியுடன் வைத்திருக்க உதவும். ஆரோக்கியமான உணவை உட்கொண்டு, போதிய உறக்கம் பெறுவதை உறுதிப்படுத்திக் கொள்ளுங்கள்.`;
                     } else {
-                        tip = `To "${userGoal}", start by incorporating 15 minutes of brisk walking into your daily routine. It helps rejuvenate both your body and mind!`;
+                        // Example simulated response from AI in English, ensuring no QR
+                        tip = `To "${userGoal}", incorporate 15 minutes of brisk walking into your daily routine. It will help rejuvenate both your body and mind! Ensure you also maintain a balanced diet and get enough sleep.`;
                     }
                     resolve({ text: tip });
                 }, 1500)); // Simulate network delay
@@ -1333,9 +1273,6 @@
                 tipOutput.innerHTML = `<p>${simulatedApiResponse.text}</p>`;
                 tipOutput.style.fontStyle = 'normal';
                 aiVoiceBtn.style.display = 'inline-flex';
-
-                // Auto-fill QR input with the generated tip
-                qrInput.value = simulatedApiResponse.text;
 
             } catch (error) {
                 console.error('Error generating tip:', error);
@@ -1353,7 +1290,6 @@
         iconWaterTracker.addEventListener('click', () => toggleFeatureSection(waterTrackerSection));
         iconJournal.addEventListener('click', () => toggleFeatureSection(journalSection));
         iconLocalTips.addEventListener('click', () => toggleFeatureSection(localTipsSection));
-        iconQrCode.addEventListener('click', () => toggleFeatureSection(qrCodeSection));
 
 
         // Step Tracker Event Listeners
@@ -1462,22 +1398,17 @@
             }, 200);
         });
 
-
         getLocalTipBtn.addEventListener('click', () => {
             const category = localTipCategory.value.trim();
             const t = translations[currentLanguage];
             if (!category) {
                 localTipOutput.innerHTML = `<p class="text-red-600">${t.noLocalTipCategory}</p>`;
                 localTipOutput.style.fontStyle = 'normal';
-                aiVoiceBtn.style.display = 'none';
+                aiVoiceBtn.style.display = 'none'; // No AI voice for error
                 return;
             }
             displayLocalTip(category);
         });
-
-
-        // QR Code Event Listener
-        generateQrBtn.addEventListener('click', generateQrCode);
 
 
         // Initial UI setup and splash screen logic
@@ -1489,7 +1420,7 @@
                     mainContent.style.display = 'block';
                     document.body.classList.add('main-content-active'); // Set initial body class
                     updateUI(); // Initial UI update
-                    // Initialize displays for hidden sections
+                    // Initialize displays for hidden sections (their initial states)
                     updateStepTrackerDisplay();
                     updateHeartRateDisplay();
                     updateWaterIntakeDisplay();
