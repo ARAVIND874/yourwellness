@@ -42,7 +42,8 @@ exports.handler = async (event, context) => {
     }
 
     const genAI = new GoogleGenerativeAI(API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    // மாடல் பெயரை 'gemini-1.5-flash' ஆக மாற்றப்பட்டுள்ளது
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     const translations = {
         ta: (goal) => `பயனரின் ஆரோக்கிய இலக்கு "${goal}" என்பதாகும். இந்த இலக்கை அடைய உதவும் ஒரு தனிப்பயனாக்கப்பட்ட, சுருக்கமான, **மிகவும் நேர்மறையான, ஊக்கமளிக்கும் மற்றும் உற்சாகப்படுத்தும்** ஆரோக்கிய உதவிக்குறிப்பை **தமிழில்** வழங்குங்கள். எந்த QR குறியீடுகளையும் சேர்க்க வேண்டாம்.`,
