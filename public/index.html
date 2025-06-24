@@ -438,228 +438,10 @@
 
     <script>
         // --- Configuration ---
-        // IMPORTANT: For production, this API key should be handled on a backend server
-        // and not exposed directly in frontend code.
-        const GEMINI_API_KEY = 'YOUR_GEMINI_API_KEY'; // Replace with your actual Gemini API Key
-        const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`;
+        // IMPORTANT: The Gemini API Key is now handled securely via Netlify Functions.
+        // No direct API key in frontend code.
+        // The frontend will call '/.netlify/functions/generate-tip' which handles the key.
 
-        const translations = {
-            ta: {
-                mainTitle: 'உங்கள் ஆரோக்கிய இலக்கு என்ன?',
-                descriptionText: 'உங்கள் இலக்கை இங்கே உள்ளிட்டு, தனிப்பயனாக்கப்பட்ட ஆரோக்கிய உதவிக்குறிப்பைப் பெறுங்கள்.',
-                goalPlaceholder: 'எ.கா. மன அழுத்தத்தைக் குறைப்பது, எடை குறைப்பது, அதிக ஆற்றல் பெறுவது...',
-                generateButton: 'உதவிக்குறிப்பைப் பெறுங்கள்',
-                loadingText: 'உதவிக்குறிப்பு உருவாக்கப்படுகிறது...',
-                initialTip: 'உங்கள் தனிப்பயனாக்கப்பட்ட ஆரோக்கிய உதவிக்குறிப்பு இங்கே தோன்றும்.',
-                emptyGoalError: 'தயவுசெய்து உங்கள் ஆரோக்கிய இலக்கை உள்ளிடவும்.',
-                apiError: 'உதவிக்குறிப்பை உருவாக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.',
-                fetchError: 'உதவிக்குறிப்பை உருவாக்கும்போது ஒரு பிழை ஏற்பட்டது. உங்கள் இணைய இணைப்பைச் சரிபார்க்கவும்.',
-                microphoneUnsupported: 'உங்கள் உலாவி மைக்ரோஃபோன் உள்ளீட்டை ஆதரிக்கவில்லை. Chrome அல்லது Edge பயன்படுத்தவும்.',
-                microphonePermissionDenied: 'மைக்ரோஃபோன் அணுகல் மறுக்கப்பட்டது. உங்கள் உலாவி அமைப்புகளில் அனுமதிகளை சரிபார்க்கவும்.',
-                microphoneListening: 'கேட்கிறது...',
-                // Updated AI Prompt for Tamil to avoid QR code mentions
-                aiPrompt: (goal) => `பயனரின் ஆரோக்கிய இலக்கு "${goal}" என்பதாகும். இந்த இலக்கை அடைய உதவும் ஒரு தனிப்பயனாக்கப்பட்ட, சுருக்கமான, **மிகவும் நேர்மறையான, ஊக்கமளிக்கும் மற்றும் உற்சாகப்படுத்தும்** ஆரோக்கிய உதவிக்குறிப்பை **தமிழில்** வழங்குங்கள். உதவிக்குறிப்பு செயல்முறைக்குரியதாகவும், எளிதில் பின்பற்றக்கூடியதாகவும் இருக்க வேண்டும். எந்த QR குறியீடுகளையும் சேர்க்க வேண்டாம்.`,
-                aiVoiceButton: 'உதவிக்குறிப்பைப் படிக்கவும்',
-                speechSynthesisUnsupported: 'உங்கள் உலாவி குரல் வெளியீட்டை ஆதரிக்கவில்லை.',
-                noTipToSpeak: 'பேசுவதற்கு உதவிக்குறிப்பு இல்லை.',
-                tipSpeaking: 'உதவிக்குறிப்பு பேசப்படுகிறது...',
-                tipSectionTitle: 'ஆரோக்கிய உதவிக்குறிப்பு',
-
-                // Features Section Title
-                featuresTitle: 'அம்சங்கள்',
-                stepTrackerLabel: 'படிகள்',
-                heartRateTrackerLabel: 'இதயத் துடிப்பு',
-                waterTrackerLabel: 'தண்ணீர்',
-                journalLabel: 'ஜர்னல்',
-                localTipsLabel: 'உள்ளூர் குறிப்புகள்',
-
-
-                // Step Tracker
-                stepSectionTitle: 'தினசரி படி டிராக்கர்',
-                addOneStepButton: '1 படி சேர்',
-                startTrackingButton: 'டிராக்கிங்கை தொடங்கு',
-                stopTrackingButton: 'டிராக்கிங்கை நிறுத்து',
-                resetStepsButton: 'படிகளை மீட்டமை',
-                stepsResultInitial: 'டிராக்கரைத் திறக்கவும் அல்லது படிகளைச் சேர்க்கவும்.',
-                stepsTracking: (steps, distanceKm) => `டிராக்கிங்: ${steps} படிகள் (${distanceKm} கி.மீ.)`,
-                stepsGoalReached: (steps, distanceKm) => `இலக்கை அடைந்தது! நீங்கள் ${steps} படிகள் நடந்துள்ளீர்கள், இது தோராயமாக ${distanceKm} கி.மீ. ஆகும். வாழ்த்துக்கள்!`,
-                stepsGoalNear: (steps, remainingSteps, distanceKm) => `நன்றாகச் செய்தீர்கள்! நீங்கள் ${steps} படிகள் நடந்துள்ளீர்கள், இது தோராயமாக ${distanceKm} கி.மீ. ஆகும். இன்னும் ${remainingSteps} படிகள் தூரத்தில் உள்ளீர்கள்.`,
-                stepsGoalFar: (steps, distanceKm) => `தொடர்ந்து முயற்சி செய்யுங்கள்! நீங்கள் ${steps} படிகள் நடந்துள்ளீர்கள், இது தோராயமாக ${distanceKm} கி.மீ. ஆகும். உங்கள் 10,000 படிகள் இலக்கை அடைய இன்னும் ${10000 - steps} படிகள் உள்ளன.`,
-                stepsStopped: (steps, distanceKm) => `டிராக்கிங் நிறுத்தப்பட்டது. நீங்கள் ${steps} படிகள் நடந்துள்ளீர்கள், இது தோராயமாக ${distanceKm} கி.மீ.`,
-
-                // Heart Rate Tracker
-                heartRateSectionTitle: 'இதயத் துடிப்பு டிராக்கர்',
-                simulateHeartRateButton: 'இதயத் துடிப்பை உருவகப்படுத்து',
-                resetHeartRateButton: 'இதயத் துடிப்பை மீட்டமை',
-                heartRateResultInitial: 'டிராக்கரைத் திறக்கவும் அல்லது இதயத் துடிப்பை உருவகப்படுத்தவும்.',
-                heartRateSimulating: (hr) => `உருவகப்படுத்துகிறது: ${hr} துடிப்புகள்/நிமிடம்`,
-                heartRateStopped: (hr) => `உருவகப்படுத்துதல் நிறுத்தப்பட்டது. தற்போதைய துடிப்பு: ${hr} துடிப்புகள்/நிமிடம்.`,
-                heartRateIdeal: (hr) => `உங்கள் இதயத் துடிப்பு ${hr} BPM, இது ஓய்வில் உள்ள ஒருவருக்கு உகந்தது.`,
-                heartRateHigh: (hr) => `உங்கள் இதயத் துடிப்பு ${hr} BPM, இது சற்றே அதிகமாக உள்ளது.`,
-                heartRateLow: (hr) => `உங்கள் இதயத் துடிப்பு ${hr} BPM, இது சற்றே குறைவாக உள்ளது.`,
-
-                // Water Intake Tracker
-                waterSectionTitle: 'தினசரி தண்ணீர் உட்கொள்ளல்',
-                addWaterButton: '200 மில்லி சேர்',
-                resetWaterButton: 'மீட்டமை',
-                waterResultInitial: 'டிராக்கரைத் திறக்கவும் அல்லது தண்ணீரைச் சேர்க்கவும்.',
-                waterTracking: (ml, remainingMl, percentage) => `நீங்கள் ${ml} மில்லி தண்ணீர் குடித்துள்ளீர்கள். இலக்கை அடைய இன்னும் ${remainingMl} மில்லி தேவை. (${percentage}%)`,
-                waterGoalReached: (ml, percentage) => `வாழ்த்துக்கள்! நீங்கள் ${ml} மில்லி தண்ணீர் குடித்துள்ளீர்கள், இது உங்கள் இலக்கை அடைந்துவிட்டது! (${percentage}%)`,
-                waterReminder: 'தண்ணீர் குடிக்க மறக்காதீர்கள்!',
-
-                // Mood & Gratitude Journal
-                journalSectionTitle: 'மனநிலை & நன்றியுணர்வு ஜர்னல்',
-                journalDescription: 'உங்கள் மனநிலையைப் பதிவு செய்து, நீங்கள் நன்றியுள்ள விஷயங்களை எழுதுங்கள்.',
-                moodSelectPlaceholder: 'உங்கள் மனநிலையைத் தேர்ந்தெடுக்கவும்',
-                gratitudePlaceholder: 'நீங்கள் நன்றியுள்ள ஒரு விஷயத்தை எழுதுங்கள்...',
-                saveJournalEntryButton: 'பதிவு செய்',
-                noJournalEntry: 'இன்றைய பதிவுகள் எதுவும் இல்லை. ஒன்றைச் சேர்க்கவும்!',
-                journalEntrySaved: (date, mood, gratitude) => `நாள்: ${date}\nமனநிலை: ${mood}\nநன்றியுணர்வு: ${gratitude}`,
-                moodHappy: 'மகிழ்ச்சி',
-                moodNeutral: 'சாதாரணம்',
-                moodSad: 'சோகம்',
-                moodStressed: 'மன அழுத்தம்',
-                moodEnergetic: 'ஆற்றல்',
-                journalEntryAdded: 'பதிவு வெற்றிகரமாகச் சேர்க்கப்பட்டது!',
-
-                // Local & Traditional Wellness Tips
-                localTipsSectionTitle: 'உள்ளூர் ஆரோக்கிய குறிப்புகள்',
-                localTipsDescription: 'தமிழகத்தில் எளிதாகக் கிடைக்கும் பொருட்கள் மற்றும் பாரம்பரிய முறைகளைப் பயன்படுத்தி ஆரோக்கிய குறிப்புகளைப் பெறுங்கள்.',
-                localTipCategoryPlaceholder: 'எ.கா. மஞ்சள், முருங்கை, தியானம்...',
-                getLocalTipButton: 'குறிப்பைப் பெறுங்கள்',
-                localTipInitial: 'உள்ளூர் ஆரோக்கிய குறிப்புகள் இங்கே தோன்றும்.',
-                noLocalTipCategory: 'குறிப்பைப் பெற ஒரு வகையை உள்ளிடவும்.',
-                localTipCategories: [
-                    'மஞ்சள்', 'இஞ்சி', 'கறிவேப்பிலை', 'முருங்கை', 'துளசி', 'வேப்பிலை', 'கீரைகள்', 'காய்கறிகள்', 'பழங்கள்', 'சிறு தானியங்கள்', 'யோகா', 'தியானம்', 'ஆயுர்வேதம்', 'சித்த மருத்துவம்', 'பாரம்பரிய உணவு'
-                ],
-                // These are just example tips. In a real app, you'd fetch them from a backend/database.
-                localTipsContent: {
-                    'மஞ்சள்': 'மஞ்சள் ஒரு சிறந்த அழற்சி எதிர்ப்பு மற்றும் ஆண்டிசெப்டிக் பண்புகளைக் கொண்டுள்ளது. தினமும் காலையில் ஒரு சிட்டிகை மஞ்சளை வெதுவெதுப்பான நீரில் கலந்து குடிப்பது நோய் எதிர்ப்பு சக்தியை அதிகரிக்கும்.',
-                    'இஞ்சி': 'இஞ்சி செரிமானத்திற்கு மிகவும் நல்லது. உணவுக்கு முன் இஞ்சி துண்டுகளை எலுமிச்சை சாறு மற்றும் உப்பில் ஊறவைத்து சாப்பிடுவது பசியைத் தூண்டி, அஜீரணக் கோளாறுகளைக் குறைக்கும்.',
-                    'கறிவேப்பிலை': 'கறிவேப்பிலை முடி வளர்ச்சிக்கு உதவுவதுடன், இரத்த சர்க்கரை அளவைக் கட்டுப்படுத்தவும் பயன்படுகிறது. தினமும் உணவில் கறிவேப்பிலையைச் சேர்த்துக் கொள்ளுங்கள்.',
-                    'முருங்கை': 'முருங்கை கீரை இரும்புச்சத்து, வைட்டமின்கள் மற்றும் தாதுக்கள் நிறைந்த ஒரு சூப்பர்ஃபுட். வாரம் இருமுறை முருங்கை கீரை சூப் அல்லது பொரியல் செய்து சாப்பிடுவது எலும்புகளுக்கும், ஒட்டுமொத்த ஆரோக்கியத்திற்கும் நல்லது.',
-                    'துளசி': 'துளசி சளி மற்றும் இருமலுக்கு ஒரு சிறந்த வீட்டு வைத்தியம். தினமும் காலையில் சில துளசி இலைகளை மென்று சாப்பிடுவது சுவாச ஆரோக்கியத்தை மேம்படுத்தும்.',
-                    'வேப்பிலை': 'வேப்பிலை சரும ஆரோக்கியத்திற்கும், இரத்த சுத்திகரிப்பிற்கும் நல்லது. வேப்பிலையை அரைத்து முகத்தில் பூசுவது முகப்பருவை குறைக்க உதவும்.',
-                    'கீரைகள்': 'அகத்திக் கீரை, அரைக்கீரை, பொன்னாங்கண்ணி கீரை போன்ற கீரைகள் நார்ச்சத்து, வைட்டமின்கள் மற்றும் தாதுக்கள் நிறைந்தவை. தினமும் ஒருவகை கீரையை உணவில் சேர்ப்பது ஊட்டச்சத்தை மேம்படுத்தும்.',
-                    'காய்கறிகள்': 'உள்ளூரில் கிடைக்கும் பாகற்காய், வெண்டைக்காய், சுரைக்காய் போன்ற காய்கறிகளை சமையலில் அதிகம் பயன்படுத்துங்கள். இவை நார்ச்சத்து மற்றும் அத்தியாவசிய ஊட்டச்சத்துக்களை வழங்குகின்றன.',
-                    'பழங்கள்': 'மாம்பழம், பலாப்பழம், கொய்யா, வாழைப்பழம் போன்ற உள்ளூர் பழங்களை பருவ காலங்களில் தவறாமல் உண்ணுங்கள். இவை இயற்கையான வைட்டமின்கள் மற்றும் ஆற்றலை வழங்குகின்றன.',
-                    'சிறு தானியங்கள்': 'கேழ்வரகு, கம்பு, சாமை, திணை போன்ற சிறு தானியங்களை உங்கள் உணவில் சேர்த்துக்கொள்ளுங்கள். இவை நார்ச்சத்து மற்றும் மெதுவாக வெளியிடப்படும் ஆற்றலைத் தருகின்றன.',
-                    'யோகா': 'மன அழுத்தத்தைக் குறைக்க தினமும் காலை 10 நிமிடங்கள் சூரிய நமஸ்காரம் அல்லது எளிய யோகாசனங்களைப் பயிற்சி செய்யுங்கள். இது உடலையும் மனதையும் அமைதிப்படுத்தும்.',
-                    'தியானம்': 'தினமும் 5 நிமிடங்கள் அமைதியான இடத்தில் அமர்ந்து உங்கள் சுவாசத்தில் கவனம் செலுத்தி தியானம் செய்யுங்கள். இது மன அமைதியையும், கவனத்தையும் மேம்படுத்தும்.',
-                    'ஆயுர்வேதம்': 'ஆயுர்வேதத்தின் படி, உங்கள் உடல் வகைக்கு (தோஷம்) ஏற்ற உணவுகளை உண்ணுங்கள். ஒரு ஆயுர்வேத நிபுணரை அணுகி தனிப்பயனாக்கப்பட்ட ஆலோசனைகளைப் பெறலாம்.',
-                    'சித்த மருத்துவம்': 'சித்த மருத்துவத்தின்படி, அருகம்புல் ஜூஸ் அல்லது நெல்லிக்காய் ஜூஸ் அருந்துவது உடலை நச்சுத்தன்மையிலிருந்து நீக்கி புத்துணர்ச்சி அளிக்கும்.',
-                    'பாரம்பரிய உணவு': 'பாரம்பரிய தமிழ் உணவுகளான களி, கூழ், அடை போன்றவற்றை அவ்வப்போது உண்ணுங்கள். இவை ஆரோக்கியமான பொருட்களால் தயாரிக்கப்பட்டு உடலுக்கு நன்மை பயக்கும்.'
-                },
-                localTipNotFound: (category) => `"${category}" என்ற வகைக்கு எந்தக் குறிப்பும் இல்லை. வேறு வகையை முயற்சிக்கவும்.`,
-            },
-            en: {
-                mainTitle: 'What is your wellness goal?',
-                descriptionText: 'Enter your goal here to get a personalized wellness tip.',
-                goalPlaceholder: 'e.g., Reduce stress, Lose weight, Gain more energy...',
-                generateButton: 'Get Tip',
-                loadingText: 'Generating tip...',
-                initialTip: 'Your personalized wellness tip will appear here.',
-                emptyGoalError: 'Please enter your wellness goal.',
-                apiError: 'Could not generate tip. Please try again.',
-                fetchError: 'An error occurred while generating the tip. Please check your internet connection and try again.',
-                microphoneUnsupported: 'Speech Recognition not supported in this browser. Please use Chrome or Edge.',
-                microphonePermissionDenied: 'Microphone access denied. Please check permissions in your browser settings.',
-                microphoneListening: 'Listening...',
-                // Updated AI Prompt for English to avoid QR code mentions
-                aiPrompt: (goal) => `A user has stated their wellness goal as "${goal}". Provide a personalized, concise, **highly positive, encouraging, and motivating** wellness tip in English to help them achieve this goal. The tip should be actionable and easy to follow. Do not include any QR codes.`,
-                aiVoiceButton: 'Read Tip Aloud',
-                speechSynthesisUnsupported: 'Your browser does not support voice output.',
-                noTipToSpeak: 'No tip to speak.',
-                tipSpeaking: 'Speaking tip...',
-                tipSectionTitle: 'Wellness Tip Generator',
-
-                // Features Section Title
-                featuresTitle: 'Features',
-                stepTrackerLabel: 'Steps',
-                heartRateTrackerLabel: 'Heart Rate',
-                waterTrackerLabel: 'Water',
-                journalLabel: 'Journal',
-                localTipsLabel: 'Local Tips',
-
-
-                // Step Tracker
-                stepSectionTitle: 'Daily Step Tracker',
-                addOneStepButton: 'Add 1 Step',
-                startTrackingButton: 'Start Tracking',
-                stopTrackingButton: 'Stop Tracking',
-                resetStepsButton: 'Reset Steps',
-                stepsResultInitial: 'Open the tracker or add steps.',
-                stepsTracking: (steps, distanceKm) => `Tracking: ${steps} steps (${distanceKm} km)`,
-                stepsGoalReached: (steps, distanceKm) => `Goal Reached! You walked ${steps} steps, which is approximately ${distanceKm} km. Congratulations!`,
-                stepsGoalNear: (steps, remainingSteps, distanceKm) => `Well done! You walked ${steps} steps, which is approximately ${distanceKm} km. You're just ${remainingSteps} steps away from your goal.`,
-                stepsGoalFar: (steps, distanceKm) => `Keep going! You walked ${steps} steps, which is approximately ${distanceKm} km. You have ${10000 - steps} steps left to reach your 10,000 steps goal.`,
-                stepsStopped: (steps, distanceKm) => `Tracking stopped. You walked ${steps} steps, which is approximately ${distanceKm} km.`,
-
-                // Heart Rate Tracker
-                heartRateSectionTitle: 'Heart Rate Tracker',
-                simulateHeartRateButton: 'Simulate Heart Rate',
-                resetHeartRateButton: 'Reset Heart Rate',
-                heartRateResultInitial: 'Open the tracker or simulate heart rate.',
-                heartRateSimulating: (hr) => `Simulating: ${hr} BPM`,
-                heartRateStopped: (hr) => `Simulation stopped. Current Heart Rate: ${hr} BPM.`,
-                heartRateIdeal: (hr) => `Your heart rate is ${hr} BPM, which is ideal for a resting individual.`,
-                heartRateHigh: (hr) => `Your heart rate is ${hr} BPM, which is a bit high.`,
-                heartRateLow: (hr) => `Your heart rate is ${hr} BPM, which is a bit low.`,
-
-                // Water Intake Tracker
-                waterSectionTitle: 'Daily Water Intake',
-                addWaterButton: 'Add 200 ml',
-                resetWaterButton: 'Reset',
-                waterResultInitial: 'Open the tracker or add water.',
-                waterTracking: (ml, remainingMl, percentage) => `You've consumed ${ml} ml of water. ${remainingMl} ml left to reach your goal. (${percentage}%)`,
-                waterGoalReached: (ml, percentage) => `Congratulations! You've consumed ${ml} ml of water, reaching your daily goal! (${percentage}%)`,
-                waterReminder: 'Don\'t forget to drink water!',
-
-                // Mood & Gratitude Journal
-                journalSectionTitle: 'Mood & Gratitude Journal',
-                journalDescription: 'Record your mood and write down things you are grateful for.',
-                moodSelectPlaceholder: 'Select your mood',
-                gratitudePlaceholder: 'Write something you are grateful for...',
-                saveJournalEntryButton: 'Save Entry',
-                noJournalEntry: 'No entries today. Add one!',
-                journalEntrySaved: (date, mood, gratitude) => `Date: ${date}\nMood: ${mood}\nGratitude: ${gratitude}`,
-                moodHappy: 'Happy',
-                moodNeutral: 'Neutral',
-                moodSad: 'Sad',
-                moodStressed: 'Stressed',
-                moodEnergetic: 'Energetic',
-                journalEntryAdded: 'Entry successfully added!',
-
-                // Local & Traditional Wellness Tips
-                localTipsSectionTitle: 'Local Wellness Tips',
-                localTipsDescription: 'Get wellness tips using locally available ingredients and traditional practices from Tamil Nadu.',
-                localTipCategoryPlaceholder: 'e.g. Turmeric, Moringa, Meditation...',
-                getLocalTipButton: 'Get Tip',
-                localTipInitial: 'Local wellness tips will appear here.',
-                noLocalTipCategory: 'Please enter a category to get a tip.',
-                localTipCategories: [
-                    'Turmeric', 'Ginger', 'Curry Leaves', 'Moringa', 'Tulasi', 'Neem', 'Greens', 'Vegetables', 'Fruits', 'Millets', 'Yoga', 'Meditation', 'Ayurveda', 'Siddha Medicine', 'Traditional Food'
-                ],
-                localTipsContent: {
-                    'Turmeric': 'Turmeric has excellent anti-inflammatory and antiseptic properties. Drinking a pinch of turmeric with warm water daily in the morning boosts immunity.',
-                    'Ginger': 'Ginger is great for digestion. Eating ginger slices marinated in lemon juice and salt before meals can stimulate appetite and reduce indigestion.',
-                    'Curry Leaves': 'Curry leaves help in hair growth and also help control blood sugar levels. Include curry leaves in your daily diet.',
-                    'Moringa': 'Moringa leaves are a superfood rich in iron, vitamins, and minerals. Consuming Moringa soup or stir-fry twice a week is good for bones and overall health.',
-                    'Tulasi': 'Tulasi (Holy Basil) is an excellent home remedy for colds and coughs. Chewing a few Tulasi leaves daily in the morning improves respiratory health.',
-                    'Neem': 'Neem leaves are good for skin health and blood purification. Grinding neem leaves and applying it on the face can help reduce acne.',
-                    'Greens': 'Greens like Agathi keerai, Araikeerai, Ponnanganni keerai are rich in fiber, vitamins, and minerals. Including one type of greens in your diet daily improves nutrition.',
-                    'Vegetables': 'Use locally available vegetables like Bitter gourd, Ladies\' finger, Bottle gourd frequently in your cooking. They provide fiber and essential nutrients.',
-                    'Fruits': 'Consume local fruits like Mango, Jackfruit, Guava, Banana regularly during their seasons. They provide natural vitamins and energy.',
-                    'Millets': 'Incorporate millets like Ragi, Kambu, Samai, Thinai into your diet. They provide fiber and slow-release energy.',
-                    'Yoga': 'Practice Surya Namaskaram or simple yoga asanas for 10 minutes daily in the morning to reduce stress. It calms both body and mind.',
-                    'Meditation': 'Sit in a quiet place for 5 minutes daily and focus on your breath to meditate. This improves mental peace and focus.',
-                    'Ayurveda': 'According to Ayurveda, your body type (dosha). You can consult an an Ayurvedic expert for personalized advice.',
-                    'Siddha Medicine': 'As per Siddha medicine, consuming Arugampul juice (Bermuda grass juice) or Amla juice can detoxify the body and provide rejuvenation.',
-                    'Traditional Food': 'Occasionally eat traditional Tamil foods like Kali, Koozh, Adai. These are prepared with healthy ingredients and benefit the body.'
-                },
-                localTipNotFound: (category) => `No tip found for "${category}". Please try another category.`,
-            }
-        };
 
         // --- HTML Element References ---
         const goalInput = document.getElementById('goalInput');
@@ -752,6 +534,210 @@
         let waterReminderInterval = null;
 
         let journalEntries = JSON.parse(localStorage.getItem('journalEntries')) || [];
+
+        // --- Translations ---
+        const translations = {
+            ta: {
+                mainTitle: 'உங்கள் ஆரோக்கிய இலக்கு என்ன?',
+                descriptionText: 'உங்கள் இலக்கை இங்கே உள்ளிட்டு, தனிப்பயனாக்கப்பட்ட ஆரோக்கிய உதவிக்குறிப்பைப் பெறுங்கள்.',
+                goalPlaceholder: 'எ.கா. மன அழுத்தத்தைக் குறைப்பது, எடை குறைப்பது, அதிக ஆற்றல் பெறுவது...',
+                generateButton: 'உதவிக்குறிப்பைப் பெறுங்கள்',
+                loadingText: 'உதவிக்குறிப்பு உருவாக்கப்படுகிறது...',
+                initialTip: 'உங்கள் தனிப்பயனாக்கப்பட்ட ஆரோக்கிய உதவிக்குறிப்பு இங்கே தோன்றும்.',
+                emptyGoalError: 'தயவுசெய்து உங்கள் ஆரோக்கிய இலக்கை உள்ளிடவும்.',
+                apiError: 'உதவிக்குறிப்பை உருவாக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.',
+                fetchError: 'உதவிக்குறிப்பை உருவாக்கும்போது ஒரு பிழை ஏற்பட்டது. உங்கள் இணைய இணைப்பைச் சரிபார்க்கவும்.',
+                microphoneUnsupported: 'உங்கள் உலாவி மைக்ரோஃபோன் உள்ளீட்டை ஆதரிக்கவில்லை. Chrome அல்லது Edge பயன்படுத்தவும்.',
+                microphonePermissionDenied: 'மைக்ரோஃபோன் அணுகல் மறுக்கப்பட்டது. உங்கள் உலாவி அமைப்புகளில் அனுமதிகளை சரிபார்க்கவும்.',
+                microphoneListening: 'கேட்கிறது...',
+                aiPrompt: (goal) => `பயனரின் ஆரோக்கிய இலக்கு "${goal}" என்பதாகும். இந்த இலக்கை அடைய உதவும் ஒரு தனிப்பயனாக்கப்பட்ட, சுருக்கமான, **மிகவும் நேர்மறையான, ஊக்கமளிக்கும் மற்றும் உற்சாகப்படுத்தும்** ஆரோக்கிய உதவிக்குறிப்பை **தமிழில்** வழங்குங்கள். எந்த QR குறியீடுகளையும் சேர்க்க வேண்டாம்.`,
+                aiVoiceButton: 'உதவிக்குறிப்பைப் படிக்கவும்',
+                speechSynthesisUnsupported: 'உங்கள் உலாவி குரல் வெளியீட்டை ஆதரிக்கவில்லை.',
+                noTipToSpeak: 'பேசுவதற்கு உதவிக்குறிப்பு இல்லை.',
+                tipSpeaking: 'உதவிக்குறிப்பு பேசப்படுகிறது...',
+                tipStoppedSpeaking: 'உதவிக்குறிப்பு பேசுவது நிறுத்தப்பட்டது.',
+                tipSectionTitle: 'ஆரோக்கிய உதவிக்குறிப்பு',
+
+                featuresTitle: 'அம்சங்கள்',
+                stepTrackerLabel: 'படிகள்',
+                heartRateTrackerLabel: 'இதயத் துடிப்பு',
+                waterTrackerLabel: 'தண்ணீர்',
+                journalLabel: 'ஜர்னல்',
+                localTipsLabel: 'உள்ளூர் குறிப்புகள்',
+
+                stepSectionTitle: 'தினசரி படி டிராக்கர்',
+                addOneStepButton: '1 படி சேர்',
+                startTrackingButton: 'டிராக்கிங்கை தொடங்கு',
+                stopTrackingButton: 'டிராக்கிங்கை நிறுத்து',
+                resetStepsButton: 'படிகளை மீட்டமை',
+                stepsResultInitial: 'டிராக்கரைத் திறக்கவும் அல்லது படிகளைச் சேர்க்கவும்.',
+                stepsTracking: (steps, distanceKm) => `டிராக்கிங்: ${steps} படிகள் (${distanceKm} கி.மீ.)`,
+                stepsGoalReached: (steps, distanceKm) => `இலக்கை அடைந்தது! நீங்கள் ${steps} படிகள் நடந்துள்ளீர்கள், இது தோராயமாக ${distanceKm} கி.மீ. ஆகும். வாழ்த்துக்கள்!`,
+                stepsGoalNear: (steps, remainingSteps, distanceKm) => `நன்றாகச் செய்தீர்கள்! நீங்கள் ${steps} படிகள் நடந்துள்ளீர்கள், இது தோராயமாக ${distanceKm} கி.மீ. ஆகும். இன்னும் ${remainingSteps} படிகள் தூரத்தில் உள்ளீர்கள்.`,
+                stepsGoalFar: (steps, distanceKm) => `தொடர்ந்து முயற்சி செய்யுங்கள்! நீங்கள் ${steps} படிகள் நடந்துள்ளீர்கள், இது தோராயமாக ${distanceKm} கி.மீ. ஆகும். உங்கள் 10,000 படிகள் இலக்கை அடைய இன்னும் ${10000 - steps} படிகள் உள்ளன.`,
+                stepsStopped: (steps, distanceKm) => `டிராக்கிங் நிறுத்தப்பட்டது. நீங்கள் ${steps} படிகள் நடந்துள்ளீர்கள், இது தோராயமாக ${distanceKm} கி.மீ.`,
+
+                heartRateSectionTitle: 'இதயத் துடிப்பு டிராக்கர்',
+                simulateHeartRateButton: 'இதயத் துடிப்பை உருவகப்படுத்து',
+                resetHeartRateButton: 'இதயத் துடிப்பை மீட்டமை',
+                heartRateResultInitial: 'டிராக்கரைத் திறக்கவும் அல்லது இதயத் துடிப்பை உருவகப்படுத்தவும்.',
+                heartRateSimulating: (hr) => `உருவகப்படுத்துகிறது: ${hr} துடிப்புகள்/நிமிடம்`,
+                heartRateStopped: (hr) => `உருவகப்படுத்துதல் நிறுத்தப்பட்டது. தற்போதைய துடிப்பு: ${hr} துடிப்புகள்/நிமிடம்.`,
+                heartRateIdeal: (hr) => `உங்கள் இதயத் துடிப்பு ${hr} BPM, இது ஓய்வில் உள்ள ஒருவருக்கு உகந்தது.`,
+                heartRateHigh: (hr) => `உங்கள் இதயத் துடிப்பு ${hr} BPM, இது சற்றே அதிகமாக உள்ளது.`,
+                heartRateLow: (hr) => `உங்கள் இதயத் துடிப்பு ${hr} BPM, இது சற்றே குறைவாக உள்ளது.`,
+
+                waterSectionTitle: 'தினசரி தண்ணீர் உட்கொள்ளல்',
+                addWaterButton: '200 மில்லி சேர்',
+                resetWaterButton: 'மீட்டமை',
+                waterResultInitial: 'டிராக்கரைத் திறக்கவும் அல்லது தண்ணீரைச் சேர்க்கவும்.',
+                waterTracking: (ml, remainingMl, percentage) => `நீங்கள் ${ml} மில்லி தண்ணீர் குடித்துள்ளீர்கள். இலக்கை அடைய இன்னும் ${remainingMl} மில்லி தேவை. (${percentage}%)`,
+                waterGoalReached: (ml, percentage) => `வாழ்த்துக்கள்! நீங்கள் ${ml} மில்லி தண்ணீர் குடித்துள்ளீர்கள், இது உங்கள் இலக்கை அடைந்துவிட்டது! (${percentage}%)`,
+                waterReminder: 'தண்ணீர் குடிக்க மறக்காதீர்கள்!',
+
+                journalSectionTitle: 'மனநிலை & நன்றியுணர்வு ஜர்னல்',
+                journalDescription: 'உங்கள் மனநிலையைப் பதிவு செய்து, நீங்கள் நன்றியுள்ள விஷயங்களை எழுதுங்கள்.',
+                moodSelectPlaceholder: 'உங்கள் மனநிலையைத் தேர்ந்தெடுக்கவும்',
+                gratitudePlaceholder: 'நீங்கள் நன்றியுள்ள ஒரு விஷயத்தை எழுதுங்கள்...',
+                saveJournalEntryButton: 'பதிவு செய்',
+                noJournalEntry: 'இன்றைய பதிவுகள் எதுவும் இல்லை. ஒன்றைச் சேர்க்கவும்!',
+                journalEntrySaved: (date, mood, gratitude) => `நாள்: ${date}\nமனநிலை: ${mood}\nநன்றியுணர்வு: ${gratitude}`,
+                moodHappy: 'மகிழ்ச்சி',
+                moodNeutral: 'சாதாரணம்',
+                moodSad: 'சோகம்',
+                moodStressed: 'மன அழுத்தம்',
+                moodEnergetic: 'ஆற்றல்',
+                journalEntryAdded: 'பதிவு வெற்றிகரமாகச் சேர்க்கப்பட்டது!',
+
+                localTipsSectionTitle: 'உள்ளூர் ஆரோக்கிய குறிப்புகள்',
+                localTipsDescription: 'தமிழகத்தில் எளிதாகக் கிடைக்கும் பொருட்கள் மற்றும் பாரம்பரிய முறைகளைப் பயன்படுத்தி ஆரோக்கிய குறிப்புகளைப் பெறுங்கள்.',
+                localTipCategoryPlaceholder: 'எ.கா. மஞ்சள், முருங்கை, தியானம்...',
+                getLocalTipButton: 'குறிப்பைப் பெறுங்கள்',
+                localTipInitial: 'உள்ளூர் ஆரோக்கிய குறிப்புகள் இங்கே தோன்றும்.',
+                noLocalTipCategory: 'குறிப்பைப் பெற ஒரு வகையை உள்ளிடவும்.',
+                localTipCategories: [
+                    'மஞ்சள்', 'இஞ்சி', 'கறிவேப்பிலை', 'முருங்கை', 'துளசி', 'வேப்பிலை', 'கீரைகள்', 'காய்கறிகள்', 'பழங்கள்', 'சிறு தானியங்கள்', 'யோகா', 'தியானம்', 'ஆயுர்வேதம்', 'சித்த மருத்துவம்', 'பாரம்பரிய உணவு'
+                ],
+                localTipsContent: {
+                    'மஞ்சள்': 'மஞ்சள் ஒரு சிறந்த அழற்சி எதிர்ப்பு மற்றும் ஆண்டிசெப்டிக் பண்புகளைக் கொண்டுள்ளது. தினமும் காலையில் ஒரு சிட்டிகை மஞ்சளை வெதுவெதுப்பான நீரில் கலந்து குடிப்பது நோய் எதிர்ப்பு சக்தியை அதிகரிக்கும்.',
+                    'இஞ்சி': 'இஞ்சி செரிமானத்திற்கு மிகவும் நல்லது. உணவுக்கு முன் இஞ்சி துண்டுகளை எலுமிச்சை சாறு மற்றும் உப்பில் ஊறவைத்து சாப்பிடுவது பசியைத் தூண்டி, அஜீரணக் கோளாறுகளைக் குறைக்கும்.',
+                    'கறிவேப்பிலை': 'கறிவேப்பிலை முடி வளர்ச்சிக்கு உதவுவதுடன், இரத்த சர்க்கரை அளவைக் கட்டுப்படுத்தவும் பயன்படுகிறது. தினமும் உணவில் கறிவேப்பிலையைச் சேர்த்துக் கொள்ளுங்கள்.',
+                    'முருங்கை': 'முருங்கை கீரை இரும்புச்சத்து, வைட்டமின்கள் மற்றும் தாதுக்கள் நிறைந்த ஒரு சூப்பர்ஃபுட். வாரம் இருமுறை முருங்கை கீரை சூப் அல்லது பொரியல் செய்து சாப்பிடுவது எலும்புகளுக்கும், ஒட்டுமொத்த ஆரோக்கியத்திற்கும் நல்லது.',
+                    'துளசி': 'துளசி சளி மற்றும் இருமலுக்கு ஒரு சிறந்த வீட்டு வைத்தியம். தினமும் காலையில் சில துளசி இலைகளை மென்று சாப்பிடுவது சுவாச ஆரோக்கியத்தை மேம்படுத்தும்.',
+                    'வேப்பிலை': 'வேப்பிலை சரும ஆரோக்கியத்திற்கும், இரத்த சுத்திகரிப்பிற்கும் நல்லது. வேப்பிலையை அரைத்து முகத்தில் பூசுவது முகப்பருவை குறைக்க உதவும்.',
+                    'கீரைகள்': 'அகத்திக் கீரை, அரைக்கீரை, பொன்னாங்கண்ணி கீரை போன்ற கீரைகள் நார்ச்சத்து, வைட்டமின்கள் மற்றும் தாதுக்கள் நிறைந்தவை. தினமும் ஒருவகை கீரையை உணவில் சேர்ப்பது ஊட்டச்சத்தை மேம்படுத்தும்.',
+                    'காய்கறிகள்': 'உள்ளூரில் கிடைக்கும் பாகற்காய், வெண்டைக்காய், சுரைக்காய் போன்ற காய்கறிகளை சமையலில் அதிகம் பயன்படுத்துங்கள். இவை நார்ச்சத்து மற்றும் அத்தியாவசிய ஊட்டச்சத்துக்களை வழங்குகின்றன.',
+                    'பழங்கள்': 'மாம்பழம், பலாப்பழம், கொய்யா, வாழைப்பழம் போன்ற உள்ளூர் பழங்களை பருவ காலங்களில் தவறாமல் உண்ணுங்கள். இவை இயற்கையான வைட்டமின்கள் மற்றும் ஆற்றலை வழங்குகின்றன.',
+                    'சிறு தானியங்கள்': 'கேழ்வரகு, கம்பு, சாமை, திணை போன்ற சிறு தானியங்களை உங்கள் உணவில் சேர்த்துக்கொள்ளுங்கள். இவை நார்ச்சத்து மற்றும் மெதுவாக வெளியிடப்படும் ஆற்றலைத் தருகின்றன.',
+                    'யோகா': 'மன அழுத்தத்தைக் குறைக்க தினமும் காலை 10 நிமிடங்கள் சூரிய நமஸ்காரம் அல்லது எளிய யோகாசனங்களைப் பயிற்சி செய்யுங்கள். இது உடலையும் மனதையும் அமைதிப்படுத்தும்.',
+                    'தியானம்': 'தினமும் 5 நிமிடங்கள் அமைதியான இடத்தில் அமர்ந்து உங்கள் சுவாசத்தில் கவனம் செலுத்தி தியானம் செய்யுங்கள். இது மன அமைதியையும், கவனத்தையும் மேம்படுத்தும்.',
+                    'ஆயுர்வேதம்': 'ஆயுர்வேதத்தின் படி, உங்கள் உடல் வகைக்கு (தோஷம்) ஏற்ற உணவுகளை உண்ணுங்கள். ஒரு ஆயுர்வேத நிபுணரை அணுகி தனிப்பயனாக்கப்பட்ட ஆலோசனைகளைப் பெறலாம்.',
+                    'சித்த மருத்துவம்': 'சித்த மருத்துவத்தின்படி, அருகம்புல் ஜூஸ் அல்லது நெல்லிக்காய் ஜூஸ் அருந்துவது உடலை நச்சுத்தன்மையிலிருந்து நீக்கி புத்துணர்ச்சி அளிக்கும்.',
+                    'பாரம்பரிய உணவு': 'பாரம்பரிய தமிழ் உணவுகளான களி, கூழ், அடை போன்றவற்றை அவ்வப்போது உண்ணுங்கள். இவை ஆரோக்கியமான பொருட்களால் தயாரிக்கப்பட்டு உடலுக்கு நன்மை பயக்கும்.'
+                },
+                localTipNotFound: (category) => `"${category}" என்ற வகைக்கு எந்தக் குறிப்பும் இல்லை. வேறு வகையை முயற்சிக்கவும்.`,
+            },
+            en: {
+                mainTitle: 'What is your wellness goal?',
+                descriptionText: 'Enter your goal here to get a personalized wellness tip.',
+                goalPlaceholder: 'e.g., Reduce stress, Lose weight, Gain more energy...',
+                generateButton: 'Get Tip',
+                loadingText: 'Generating tip...',
+                initialTip: 'Your personalized wellness tip will appear here.',
+                emptyGoalError: 'Please enter your wellness goal.',
+                apiError: 'Could not generate tip. Please try again.',
+                fetchError: 'An error occurred while generating the tip. Please check your internet connection and try again.',
+                microphoneUnsupported: 'Speech Recognition not supported in this browser. Please use Chrome or Edge.',
+                microphonePermissionDenied: 'Microphone access denied. Please check permissions in your browser settings.',
+                microphoneListening: 'Listening...',
+                aiPrompt: (goal) => `A user has stated their wellness goal as "${goal}". Provide a personalized, concise, **highly positive, encouraging, and motivating** wellness tip in English to help them achieve this goal. Do not include any QR codes.`,
+                aiVoiceButton: 'Read Tip Aloud',
+                speechSynthesisUnsupported: 'Your browser does not support voice output.',
+                noTipToSpeak: 'No tip to speak.',
+                tipSpeaking: 'Speaking tip...',
+                tipStoppedSpeaking: 'Tip stopped speaking.',
+                tipSectionTitle: 'Wellness Tip Generator',
+
+                featuresTitle: 'Features',
+                stepTrackerLabel: 'Steps',
+                heartRateTrackerLabel: 'Heart Rate',
+                waterTrackerLabel: 'Water',
+                journalLabel: 'Journal',
+                localTipsLabel: 'Local Tips',
+
+                stepSectionTitle: 'Daily Step Tracker',
+                addOneStepButton: 'Add 1 Step',
+                startTrackingButton: 'Start Tracking',
+                stopTrackingButton: 'Stop Tracking',
+                resetStepsButton: 'Reset Steps',
+                stepsResultInitial: 'Open the tracker or add steps.',
+                stepsTracking: (steps, distanceKm) => `Tracking: ${steps} steps (${distanceKm} km)`,
+                stepsGoalReached: (steps, distanceKm) => `Goal Reached! You walked ${steps} steps, which is approximately ${distanceKm} km. Congratulations!`,
+                stepsGoalNear: (steps, remainingSteps, distanceKm) => `Well done! You walked ${steps} steps, which is approximately ${distanceKm} km. You're just ${remainingSteps} steps away from your goal.`,
+                stepsGoalFar: (steps, distanceKm) => `Keep going! You walked ${steps} steps, which is approximately ${distanceKm} km. You have ${10000 - steps} steps left to reach your 10,000 steps goal.`,
+                stepsStopped: (steps, distanceKm) => `Tracking stopped. You walked ${steps} steps, which is approximately ${distanceKm} km.`,
+
+                heartRateSectionTitle: 'Heart Rate Tracker',
+                simulateHeartRateButton: 'Simulate Heart Rate',
+                resetHeartRateButton: 'Reset Heart Rate',
+                heartRateResultInitial: 'Open the tracker or simulate heart rate.',
+                heartRateSimulating: (hr) => `Simulating: ${hr} BPM`,
+                heartRateStopped: (hr) => `Simulation stopped. Current Heart Rate: ${hr} BPM.`,
+                heartRateIdeal: (hr) => `Your heart rate is ${hr} BPM, which is ideal for a resting individual.`,
+                heartRateHigh: (hr) => `Your heart rate is ${hr} BPM, which is a bit high.`,
+                heartRateLow: (hr) => `Your heart rate is ${hr} BPM, which is a bit low.`,
+
+                waterSectionTitle: 'Daily Water Intake',
+                addWaterButton: 'Add 200 ml',
+                resetWaterButton: 'Reset',
+                waterResultInitial: 'Open the tracker or add water.',
+                waterTracking: (ml, remainingMl, percentage) => `You've consumed ${ml} ml of water. ${remainingMl} ml left to reach your goal. (${percentage}%)`,
+                waterGoalReached: (ml, percentage) => `Congratulations! You've consumed ${ml} ml of water, reaching your daily goal! (${percentage}%)`,
+                waterReminder: 'Don\'t forget to drink water!',
+
+                journalSectionTitle: 'Mood & Gratitude Journal',
+                journalDescription: 'Record your mood and write down things you are grateful for.',
+                moodSelectPlaceholder: 'Select your mood',
+                gratitudePlaceholder: 'Write something you are grateful for...',
+                saveJournalEntryButton: 'Save Entry',
+                noJournalEntry: 'No entries today. Add one!',
+                journalEntrySaved: (date, mood, gratitude) => `Date: ${date}\nMood: ${mood}\nGratitude: ${gratitude}`,
+                moodHappy: 'Happy',
+                moodNeutral: 'Neutral',
+                moodSad: 'Sad',
+                moodStressed: 'Stressed',
+                moodEnergetic: 'Energetic',
+                journalEntryAdded: 'Entry successfully added!',
+
+                localTipsSectionTitle: 'Local Wellness Tips',
+                localTipsDescription: 'Get wellness tips using locally available ingredients and traditional practices from Tamil Nadu.',
+                localTipCategoryPlaceholder: 'e.g. Turmeric, Moringa, Meditation...',
+                getLocalTipButton: 'Get Tip',
+                localTipInitial: 'Local wellness tips will appear here.',
+                noLocalTipCategory: 'Please enter a category to get a tip.',
+                localTipCategories: [
+                    'Turmeric', 'Ginger', 'Curry Leaves', 'Moringa', 'Tulasi', 'Neem', 'Greens', 'Vegetables', 'Fruits', 'Millets', 'Yoga', 'Meditation', 'Ayurveda', 'Siddha Medicine', 'Traditional Food'
+                ],
+                localTipsContent: {
+                    'Turmeric': 'Turmeric has excellent anti-inflammatory and antiseptic properties. Drinking a pinch of turmeric with warm water daily in the morning boosts immunity.',
+                    'Ginger': 'Ginger is great for digestion. Eating ginger slices marinated in lemon juice and salt before meals can stimulate appetite and reduce indigestion.',
+                    'Curry Leaves': 'Curry leaves help in hair growth and also help control blood sugar levels. Include curry leaves in your daily diet.',
+                    'Moringa': 'Moringa leaves are a superfood rich in iron, vitamins, and minerals. Consuming Moringa soup or stir-fry twice a week is good for bones and overall health.',
+                    'Tulasi': 'Tulasi (Holy Basil) is an excellent home remedy for colds and coughs. Chewing a few Tulasi leaves daily in the morning improves respiratory health.',
+                    'Neem': 'Neem leaves are good for skin health and blood purification. Grinding neem leaves and applying it on the face can help reduce acne.',
+                    'Greens': 'Greens like Agathi keerai, Araikeerai, Ponnanganni keerai are rich in fiber, vitamins, and minerals. Including one type of greens in your diet daily improves nutrition.',
+                    'Vegetables': 'Use locally available vegetables like Bitter gourd, Ladies\' finger, Bottle gourd frequently in your cooking. They provide fiber and essential nutrients.',
+                    'Fruits': 'Consume local fruits like Mango, Jackfruit, Guava, Banana regularly during their seasons. They provide natural vitamins and energy.',
+                    'Millets': 'Incorporate millets like Ragi, Kambu, Samai, Thinai into your diet. They provide fiber and slow-release energy.',
+                    'Yoga': 'Practice Surya Namaskaram or simple yoga asanas for 10 minutes daily in the morning to reduce stress. It calms both body and mind.',
+                    'Meditation': 'Sit in a quiet place for 5 minutes daily and focus on your breath to meditate. This improves mental peace and focus.',
+                    'Ayurveda': 'According to Ayurveda, your body type (dosha). You can consult an an Ayurvedic expert for personalized advice.',
+                    'Siddha Medicine': 'As per Siddha medicine, consuming Arugampul juice (Bermuda grass juice) or Amla juice can detoxify the body and provide rejuvenation.',
+                    'Traditional Food': 'Occasionally eat traditional Tamil foods like Kali, Koozh, Adai. These are prepared with healthy ingredients and benefit the body.'
+                },
+                localTipNotFound: (category) => `No tip found for "${category}". Please try another category.`,
+            }
+        };
 
         // --- Web Speech API (Speech Recognition) ---
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -897,6 +883,8 @@
             if (SpeechSynthesis.speaking) {
                 SpeechSynthesis.cancel(); // Stop any ongoing speech
                 aiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path></svg>`;
+                tipOutput.innerHTML = `<p>${t.tipStoppedSpeaking}</p>`;
+                tipOutput.style.fontStyle = 'normal';
                 return;
             }
 
@@ -1311,6 +1299,7 @@
             stopWaterReminder(true);
             // Hide all feature sections
             document.querySelectorAll('.feature-section').forEach(sec => sec.style.display = 'none');
+            document.body.classList.remove('main-content-active'); // Revert body to initial state
         });
 
         generateBtn.addEventListener('click', async () => {
@@ -1332,42 +1321,39 @@
             ttsVoiceSelect.style.display = 'none';
 
             try {
-                const prompt = t.aiPrompt(userGoal);
-                console.log("AI Prompt sent:", prompt);
+                // Call Netlify Function instead of direct Gemini API
+                console.log("Sending request to Netlify Function for goal:", userGoal);
 
-                const response = await fetch(GEMINI_API_URL, {
+                const response = await fetch('/.netlify/functions/generate-tip', { // Call your Netlify Function
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        contents: [{
-                            parts: [{
-                                text: prompt
-                            }]
-                        }]
+                        goal: userGoal, // Send the user's goal
+                        currentLanguage: currentLanguage // Send the selected language
                     }),
                 });
 
                 if (!response.ok) {
                     const errorData = await response.json();
-                    console.error('Gemini API Error Response:', errorData);
-                    throw new Error(`Gemini API error: ${response.status} ${errorData.error ? errorData.error.message : response.statusText}`);
+                    console.error('Netlify Function Error Response:', errorData);
+                    throw new Error(`Function error: ${response.status} ${errorData.error || response.statusText}`);
                 }
 
                 const data = await response.json();
-                if (data.candidates && data.candidates.length > 0 && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts.length > 0) {
-                    const generatedText = data.candidates[0].content.parts[0].text;
-                    outputTip.innerHTML = `<p>${generatedText}</p>`;
+                if (data.tip) { // Netlify Function is expected to return { tip: "..." }
+                    const generatedText = data.tip;
+                    tipOutput.innerHTML = `<p>${generatedText}</p>`;
                     tipOutput.style.fontStyle = 'normal';
                     aiVoiceBtn.style.display = 'inline-flex';
                     ttsVoiceSelect.style.display = 'inline-block';
                 } else {
-                    throw new Error("No valid tip found in AI response.");
+                    throw new Error("No valid tip found in response from function.");
                 }
 
             } catch (error) {
-                console.error('Error generating tip:', error);
+                console.error('Error calling Netlify Function:', error);
                 tipOutput.innerHTML = `<p class="text-red-600">${t.fetchError} ${error.message}</p>`;
                 tipOutput.style.fontStyle = 'normal';
                 aiVoiceBtn.style.display = 'none';
