@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
+        /* ... (உங்கள் ஏற்கனவே உள்ள CSS பாணிகள்) ... */
         body {
             font-family: 'Inter', sans-serif;
             background-color: #E6F7FF; /* Light Blue */
@@ -362,6 +363,11 @@
             <div id="iconWaterTracker" class="feature-icon" title="தண்ணீர் டிராக்கர்">💧<span class="label" data-label-key="waterTrackerLabel"></span></div>
             <div id="iconJournal" class="feature-icon" title="மனநிலை & நன்றியுணர்வு ஜர்னல்">✍️<span class="label" data-label-key="journalLabel"></span></div>
             <div id="iconLocalTips" class="feature-icon" title="உள்ளூர் ஆரோக்கிய குறிப்புகள்">🌿<span class="label" data-label-key="localTipsLabel"></span></div>
+            <div id="iconMealPlan" class="feature-icon" title="உணவுத் திட்டப் பரிந்துரைகள்">🍲<span class="label" data-label-key="mealPlanLabel"></span></div>
+            <div id="iconMoodAnalysis" class="feature-icon" title="உணர்வுப் பதிவேடு பகுப்பாய்வு">🤔<span class="label" data-label-key="moodAnalysisLabel"></span></div>
+            <div id="iconExerciseYoga" class="feature-icon" title="உடற்பயிற்சி & யோகா">🧘‍♀️<span class="label" data-label-key="exerciseYogaLabel"></span></div>
+            <div id="iconDiseasePrevention" class="feature-icon" title="நோய் தடுப்பு">🛡️<span class="label" data-label-key="diseasePreventionLabel"></span></div>
+            <div id="iconWellnessChallenge" class="feature-icon" title="ஆரோக்கிய சவால்கள்">🏆<span class="label" data-label-key="wellnessChallengeLabel"></span></div>
         </div>
 
         <div id="stepTrackerSection" class="feature-section">
@@ -434,14 +440,89 @@
             <button id="getLocalTipBtn" class="generate-button"></button>
             <div id="localTipOutput" class="tip-box" aria-live="polite"></div>
         </div>
-    </div>
+
+        <div id="mealPlanSection" class="feature-section">
+            <h2 id="mealPlanSectionTitle" class="text-2xl font-semibold text-gray-700 mb-4"></h2>
+            <p id="mealPlanDescription" class="text-gray-600 mb-4 text-lg"></p>
+            <div class="input-wrapper flex-col items-stretch">
+                <label for="dietGoalInput" class="sr-only">உணவு இலக்கு</label>
+                <input type="text" id="dietGoalInput" class="input-field mb-4" placeholder="எ.கா. எடை குறைப்பு, தசை வளர்ச்சி..." aria-label="உணவு இலக்கு">
+
+                <label for="dietPreferenceSelect" class="sr-only">உணவு விருப்பம்</label>
+                <select id="dietPreferenceSelect" class="input-field mb-4" aria-label="உணவு விருப்பம்">
+                    <option value="">உணவு விருப்பத்தைத் தேர்ந்தெடுக்கவும்</option>
+                    <option value="vegetarian">சைவம்</option>
+                    <option value="non-vegetarian">அசைவம்</option>
+                    <option value="vegan">முழு சைவம்</option>
+                </select>
+
+                <label for="allergiesInput" class="sr-only">ஒவ்வாமைகள் (இருப்பின்)</label>
+                <input type="text" id="allergiesInput" class="input-field mb-4" placeholder="எ.கா. நிலக்கடலை, பால்..." aria-label="ஒவ்வாமைகள்">
+            </div>
+            <button id="generateMealPlanBtn" class="action-button mt-4"></button>
+            <div id="mealPlanOutput" class="result-box mt-4 text-left" aria-live="polite"></div>
+        </div>
+
+        <div id="moodAnalysisSection" class="feature-section">
+            <h2 id="moodAnalysisSectionTitle" class="text-2xl font-semibold text-gray-700 mb-4"></h2>
+            <p id="moodAnalysisDescription" class="text-gray-600 mb-4 text-lg"></p>
+            <button id="analyzeMoodJournalBtn" class="action-button mt-4"></button>
+            <div id="moodAnalysisOutput" class="result-box mt-4 text-left" aria-live="polite"></div>
+        </div>
+
+        <div id="exerciseYogaSection" class="feature-section">
+            <h2 id="exerciseYogaSectionTitle" class="text-2xl font-semibold text-gray-700 mb-4"></h2>
+            <p id="exerciseYogaDescription" class="text-gray-600 mb-4 text-lg"></p>
+            <div class="input-wrapper flex-col items-stretch">
+                <label for="fitnessLevelSelect" class="sr-only">உடற்பயிற்சி நிலை</label>
+                <select id="fitnessLevelSelect" class="input-field mb-4" aria-label="உடற்பயிற்சி நிலை">
+                    <option value="">உடற்பயிற்சி நிலையைத் தேர்ந்தெடுக்கவும்</option>
+                    <option value="beginner">ஆரம்பநிலை</option>
+                    <option value="intermediate">நடுநிலை</option>
+                    <option value="advanced">மேம்பட்டது</option>
+                </select>
+
+                <label for="timeAvailableInput" class="sr-only">கிடைக்கக்கூடிய நேரம் (நிமிடங்கள்)</label>
+                <input type="number" id="timeAvailableInput" class="input-field mb-4" placeholder="கிடைக்கக்கூடிய நேரம் (நிமிடங்கள்)..." aria-label="கிடைக்கக்கூடிய நேரம்">
+
+                <label for="exerciseGoalInput" class="sr-only">உடற்பயிற்சி இலக்கு</label>
+                <input type="text" id="exerciseGoalInput" class="input-field mb-4" placeholder="எ.கா. உடல் நெகிழ்வுத்தன்மை, தசைகளை உருவாக்குதல்..." aria-label="உடற்பயிற்சி இலக்கு">
+            </div>
+            <button id="generateExerciseRoutineBtn" class="action-button mt-4"></button>
+            <div id="exerciseRoutineOutput" class="result-box mt-4 text-left" aria-live="polite"></div>
+        </div>
+
+        <div id="diseasePreventionSection" class="feature-section">
+            <h2 id="diseasePreventionSectionTitle" class="text-2xl font-semibold text-gray-700 mb-4"></h2>
+            <p id="diseasePreventionDescription" class="text-gray-600 mb-4 text-lg"></p>
+            <div class="input-wrapper mb-4">
+                <input type="text" id="healthConcernInput" class="input-field" aria-label="உடல்நலக் கவலையை உள்ளிடவும்" placeholder="எ.கா. ஜலதோஷம், செரிமானப் பிரச்சனை...">
+            </div>
+            <button id="getRemedyBtn" class="generate-button"></button>
+            <div id="remedyOutput" class="tip-box" aria-live="polite"></div>
+        </div>
+
+        <div id="wellnessChallengeSection" class="feature-section">
+            <h2 id="wellnessChallengeSectionTitle" class="text-2xl font-semibold text-gray-700 mb-4"></h2>
+            <p id="wellnessChallengeDescription" class="text-gray-600 mb-4 text-lg"></p>
+            <div class="input-wrapper flex-col items-stretch">
+                <label for="currentHabitInput" class="sr-only">தற்போதைய பழக்கம் (எ.கா. நீர் உட்கொள்ளல்)</label>
+                <input type="text" id="currentHabitInput" class="input-field mb-4" placeholder="உங்கள் தற்போதைய பழக்கம் (எ.கா. 1000ml தண்ணீர்)..." aria-label="தற்போதைய பழக்கம்">
+                
+                <label for="challengeGoalInput" class="sr-only">சவால் இலக்கு (எ.கா. 2000ml தண்ணீர்)</label>
+                <input type="text" id="challengeGoalInput" class="input-field mb-4" placeholder="உங்கள் சவால் இலக்கு (எ.கா. 2000ml தண்ணீர்)..." aria-label="சவால் இலக்கு">
+            </div>
+            <button id="generateChallengeBtn" class="action-button mt-4"></button>
+            <div id="challengeOutput" class="result-box mt-4 text-left" aria-live="polite"></div>
+        </div>
+
+        </div>
 
     <script>
         // --- Configuration ---
         // IMPORTANT: The Gemini API Key is now handled securely via Netlify Functions.
         // No direct API key in frontend code.
         // The frontend will call '/.netlify/functions/generate-tip' which handles the key.
-
 
         // --- HTML Element References ---
         const goalInput = document.getElementById('goalInput');
@@ -462,19 +543,33 @@
         const tipSectionTitle = document.getElementById('tipSectionTitle');
         const featuresTitle = document.getElementById('featuresTitle');
 
-        // Feature Sections
-        const stepTrackerSection = document.getElementById('stepTrackerSection');
-        const heartRateTrackerSection = document.getElementById('heartRateTrackerSection');
-        const waterTrackerSection = document.getElementById('waterTrackerSection');
-        const journalSection = document.getElementById('journalSection');
-        const localTipsSection = document.getElementById('localTipsSection');
-
         // Emoji Icons
         const iconStepTracker = document.getElementById('iconStepTracker');
         const iconHeartRateTracker = document.getElementById('iconHeartRateTracker');
         const iconWaterTracker = document.getElementById('iconWaterTracker');
         const iconJournal = document.getElementById('iconJournal');
         const iconLocalTips = document.getElementById('iconLocalTips');
+        // NEW FEATURE ICONS
+        const iconMealPlan = document.getElementById('iconMealPlan');
+        const iconMoodAnalysis = document.getElementById('iconMoodAnalysis');
+        const iconExerciseYoga = document.getElementById('iconExerciseYoga');
+        const iconDiseasePrevention = document.getElementById('iconDiseasePrevention');
+        const iconWellnessChallenge = document.getElementById('iconWellnessChallenge');
+
+
+        // Feature Sections (Existing)
+        const stepTrackerSection = document.getElementById('stepTrackerSection');
+        const heartRateTrackerSection = document.getElementById('heartRateTrackerSection');
+        const waterTrackerSection = document.getElementById('waterTrackerSection');
+        const journalSection = document.getElementById('journalSection');
+        const localTipsSection = document.getElementById('localTipsSection');
+
+        // NEW FEATURE SECTIONS
+        const mealPlanSection = document.getElementById('mealPlanSection');
+        const moodAnalysisSection = document.getElementById('moodAnalysisSection');
+        const exerciseYogaSection = document.getElementById('exerciseYogaSection');
+        const diseasePreventionSection = document.getElementById('diseasePreventionSection');
+        const wellnessChallengeSection = document.getElementById('wellnessChallengeSection');
 
 
         // Step Tracker elements
@@ -514,6 +609,48 @@
         const localTipCategoryDropdown = document.getElementById('localTipCategoryDropdown');
         const getLocalTipBtn = document.getElementById('getLocalTipBtn');
         const localTipOutput = document.getElementById('localTipOutput');
+
+
+        // --- NEW FEATURE ELEMENTS ---
+        // Meal Plan elements
+        const mealPlanSectionTitle = document.getElementById('mealPlanSectionTitle');
+        const mealPlanDescription = document.getElementById('mealPlanDescription');
+        const dietGoalInput = document.getElementById('dietGoalInput');
+        const dietPreferenceSelect = document.getElementById('dietPreferenceSelect');
+        const allergiesInput = document.getElementById('allergiesInput');
+        const generateMealPlanBtn = document.getElementById('generateMealPlanBtn');
+        const mealPlanOutput = document.getElementById('mealPlanOutput');
+
+        // Mood Analysis elements
+        const moodAnalysisSectionTitle = document.getElementById('moodAnalysisSectionTitle');
+        const moodAnalysisDescription = document.getElementById('moodAnalysisDescription');
+        const analyzeMoodJournalBtn = document.getElementById('analyzeMoodJournalBtn');
+        const moodAnalysisOutput = document.getElementById('moodAnalysisOutput');
+
+        // Exercise/Yoga elements
+        const exerciseYogaSectionTitle = document.getElementById('exerciseYogaSectionTitle');
+        const exerciseYogaDescription = document.getElementById('exerciseYogaDescription');
+        const fitnessLevelSelect = document.getElementById('fitnessLevelSelect');
+        const timeAvailableInput = document.getElementById('timeAvailableInput');
+        const exerciseGoalInput = document.getElementById('exerciseGoalInput');
+        const generateExerciseRoutineBtn = document.getElementById('generateExerciseRoutineBtn');
+        const exerciseRoutineOutput = document.getElementById('exerciseRoutineOutput');
+
+        // Disease Prevention elements
+        const diseasePreventionSectionTitle = document.getElementById('diseasePreventionSectionTitle');
+        const diseasePreventionDescription = document.getElementById('diseasePreventionDescription');
+        const healthConcernInput = document.getElementById('healthConcernInput');
+        const getRemedyBtn = document.getElementById('getRemedyBtn');
+        const remedyOutput = document.getElementById('remedyOutput');
+
+        // Wellness Challenge elements
+        const wellnessChallengeSectionTitle = document.getElementById('wellnessChallengeSectionTitle');
+        const wellnessChallengeDescription = document.getElementById('wellnessChallengeDescription');
+        const currentHabitInput = document.getElementById('currentHabitInput');
+        const challengeGoalInput = document.getElementById('challengeGoalInput');
+        const generateChallengeBtn = document.getElementById('generateChallengeBtn');
+        const challengeOutput = document.getElementById('challengeOutput');
+
 
         // --- Global State Variables ---
         let currentLanguage = localStorage.getItem('wellnessAppLanguage') || 'ta';
@@ -636,6 +773,65 @@
                     'பாரம்பரிய உணவு': 'பாரம்பரிய தமிழ் உணவுகளான களி, கூழ், அடை போன்றவற்றை அவ்வப்போது உண்ணுங்கள். இவை ஆரோக்கியமான பொருட்களால் தயாரிக்கப்பட்டு உடலுக்கு நன்மை பயக்கும்.'
                 },
                 localTipNotFound: (category) => `"${category}" என்ற வகைக்கு எந்தக் குறிப்பும் இல்லை. வேறு வகையை முயற்சிக்கவும்.`,
+
+                // --- NEW FEATURE TRANSLATIONS (Tamil) ---
+                mealPlanLabel: 'உணவுத் திட்டம்',
+                mealPlanSectionTitle: 'தனிப்பயனாக்கப்பட்ட உணவுத் திட்டம்',
+                mealPlanDescription: 'உங்கள் இலக்குகள் மற்றும் விருப்பங்களின் அடிப்படையில் தனிப்பயனாக்கப்பட்ட உணவுத் திட்டத்தைப் பெறுங்கள்.',
+                dietGoalPlaceholder: 'எ.கா. எடை குறைப்பு, தசை வளர்ச்சி...',
+                dietPreferenceSelectPlaceholder: 'உணவு விருப்பத்தைத் தேர்ந்தெடுக்கவும்',
+                allergiesPlaceholder: 'எ.கா. நிலக்கடலை, பால்...',
+                generateMealPlanButton: 'உணவுத் திட்டத்தைப் பெறுங்கள்',
+                noMealPlanInput: 'உணவுத் திட்டம் பெற உங்கள் இலக்கு மற்றும் விருப்பங்களை உள்ளிடவும்.',
+                mealPlanGenerationFailed: 'உணவுத் திட்டத்தை உருவாக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.',
+                mealPlanGenerating: 'உணவுத் திட்டம் உருவாக்கப்படுகிறது...',
+                mealPlanPrompt: (goal, preference, allergies) => `பயனரின் ஆரோக்கிய இலக்கு "${goal}". உணவு விருப்பம் "${preference}". ஒவ்வாமைகள் (இருப்பின்): "${allergies}". தினமும் உள்ளூரில் எளிதாகக் கிடைக்கும் பொருட்களைக் கொண்டு, ஒரு வாரத்திற்கான (காலை உணவு, மதிய உணவு, இரவு உணவு, சிற்றுண்டிகள் உட்பட) தனிப்பயனாக்கப்பட்ட, ஆரோக்கியமான மற்றும் சுவையான உணவுத் திட்டத்தை உருவாக்கவும். ஒவ்வொரு உணவுக்கும் எளிய செய்முறை விளக்கத்தையும் அளிக்கவும். தமிழ் மொழியில் பதில் வழங்கவும்.`,
+
+
+                moodAnalysisLabel: 'உணர்வு பகுப்பாய்வு',
+                moodAnalysisSectionTitle: 'உணர்வுப் பதிவேடு பகுப்பாய்வு மற்றும் வழிகாட்டுதல்',
+                moodAnalysisDescription: 'உங்கள் உணர்வுப் பதிவுகளை AI பகுப்பாய்வு செய்து, மனநிலை போக்குகள் மற்றும் வழிகாட்டுதல்களை வழங்கும்.',
+                analyzeMoodJournalButton: 'மனநிலையைப் பகுப்பாய்வு செய்',
+                noJournalEntriesForAnalysis: 'பகுப்பாய்வு செய்ய போதுமான ஜர்னல் பதிவுகள் இல்லை. சிலவற்றைச் சேர்க்கவும்.',
+                moodAnalysisFailed: 'மனநிலை பகுப்பாய்வை செய்ய முடியவில்லை. மீண்டும் முயற்சிக்கவும்.',
+                moodAnalysisGenerating: 'மனநிலை பகுப்பாய்வு செய்யப்படுகிறது...',
+                moodAnalysisPrompt: (journalEntries) => `பயனர் கடந்த ஒரு வாரமாகப் பதிவு செய்த மனநிலைகள் மற்றும் நன்றியுணர்வுப் பதிவுகள்: ${journalEntries}. இந்த உணர்வுப் பதிவுகளைப் பகுப்பாய்வு செய்து, பயனரின் மனநிலையின் போக்குகளைச் சுருக்கமாகக் குறிப்பிடுங்கள். பின்னர், இந்த மனநிலையை மேம்படுத்த உதவும், நடைமுறைக்கு உகந்த, எளிமையான 2-3 ஆலோசனைகளை (எ.கா., தியானம், இயற்கை நடை, பிடித்தமான செயல்) வழங்கவும். ஆலோசனை நேர்மறையாகவும், ஊக்கமளிப்பதாகவும் இருக்க வேண்டும். தமிழ் மொழியில் பதில் வழங்கவும்.`,
+
+
+                exerciseYogaLabel: 'உடற்பயிற்சி/யோகா',
+                exerciseYogaSectionTitle: 'தனிப்பயனாக்கப்பட்ட உடற்பயிற்சி/யோகாப் பயிற்சி',
+                exerciseYogaDescription: 'உங்கள் உடல் நிலை மற்றும் இலக்குகளின் அடிப்படையில் தனிப்பயனாக்கப்பட்ட பயிற்சி அட்டவணையைப் பெறுங்கள்.',
+                fitnessLevelSelectPlaceholder: 'உடற்பயிற்சி நிலையைத் தேர்ந்தெடுக்கவும்',
+                timeAvailablePlaceholder: 'கிடைக்கக்கூடிய நேரம் (நிமிடங்கள்)...',
+                exerciseGoalPlaceholder: 'எ.கா. உடல் நெகிழ்வுத்தன்மை, தசைகளை உருவாக்குதல்...',
+                generateExerciseRoutineButton: 'பயிற்சி அட்டவணையைப் பெறுங்கள்',
+                noExerciseInput: 'பயிற்சி அட்டவணை பெற உங்கள் நிலை, நேரம் மற்றும் இலக்கை உள்ளிடவும்.',
+                exerciseRoutineFailed: 'பயிற்சி அட்டவணையை உருவாக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.',
+                exerciseRoutineGenerating: 'பயிற்சி அட்டவணை உருவாக்கப்படுகிறது...',
+                exerciseRoutinePrompt: (level, time, goal) => `பயனரின் உடற்பயிற்சி நிலை: ${level}. தினசரி கிடைக்கக்கூடிய நேரம்: ${time} நிமிடங்கள். உடல் இலக்கு: ${goal}. இந்தப் பண்புகளின் அடிப்படையில், அடுத்த 7 நாட்களுக்கான ஒரு எளிமையான, வீட்டிலேயே செய்யக்கூடிய உடற்பயிற்சி/யோகாப் பயிற்சி அட்டவணையை உருவாக்கவும். ஒவ்வொரு பயிற்சிக்கும் சுருக்கமான விளக்கத்தையும், செய்முறை படிகளையும் (எழுத்து வடிவில்) சேர்த்து, உடல் காயங்கள் ஏற்படாதவாறு பாதுகாப்பான வழிகாட்டுதலையும் வழங்கவும். தமிழ் மொழியில் பதில் வழங்கவும்.`,
+
+
+                diseasePreventionLabel: 'நோய் தடுப்பு',
+                diseasePreventionSectionTitle: 'நோய் தடுப்பு மற்றும் வீட்டு வைத்தியக் குறிப்புகள்',
+                diseasePreventionDescription: 'உங்கள் உடல்நலக் கவலைகளுக்கு உள்ளூர்/பாரம்பரிய குறிப்புகளைப் பெறுங்கள்.',
+                healthConcernPlaceholder: 'எ.கா. ஜலதோஷம், செரிமானப் பிரச்சனை...',
+                getRemedyButton: 'குறிப்பைப் பெறுங்கள்',
+                noHealthConcern: 'குறிப்பைப் பெற ஒரு உடல்நலக் கவலையை உள்ளிடவும்.',
+                remedyFailed: 'குறிப்பை உருவாக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.',
+                remedyGenerating: 'குறிப்பு உருவாக்கப்படுகிறது...',
+                remedyPrompt: (concern) => `பயனருக்கு இருக்கும் கவலை/கேள்வி: "${concern}". தமிழகத்தில் எளிதாகக் கிடைக்கும் இயற்கை பொருட்கள் மற்றும் பாரம்பரிய முறைகளைப் பயன்படுத்தி, இந்த கவலைக்கான 2-3 தடுப்பு/வீட்டு வைத்தியக் குறிப்புகளைத் தமிழில் வழங்கவும். குறிப்புகள் பாதுகாப்பானதாகவும், மருத்துவ ஆலோசனைக்கு மாற்றாக இல்லாதவாறும், நிபுணரின் பரிந்துரையைப் பெற வலியுறுத்துவதாகவும் இருக்க வேண்டும்.`,
+
+
+                wellnessChallengeLabel: 'சவால்கள்',
+                wellnessChallengeSectionTitle: 'தனிப்பயனாக்கப்பட்ட ஆரோக்கிய சவால்கள்',
+                wellnessChallengeDescription: 'உங்கள் பழக்கவழக்கங்கள் மற்றும் இலக்குகளின் அடிப்படையில் ஒரு சவாலைப் பெறுங்கள்.',
+                currentHabitPlaceholder: 'உங்கள் தற்போதைய பழக்கம் (எ.கா. 1000ml தண்ணீர்)...',
+                challengeGoalPlaceholder: 'உங்கள் சவால் இலக்கு (எ.கா. 2000ml தண்ணீர்)...',
+                generateChallengeButton: 'சவாலை உருவாக்குங்கள்',
+                noChallengeInput: 'சவாலை உருவாக்க உங்கள் தற்போதைய பழக்கம் மற்றும் இலக்கை உள்ளிடவும்.',
+                challengeFailed: 'சவாலை உருவாக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.',
+                challengeGenerating: 'சவால் உருவாக்கப்படுகிறது...',
+                challengePrompt: (currentHabit, challengeGoal) => `பயனரின் தற்போதைய பழக்கம்: "${currentHabit}". இலக்கு: "${challengeGoal}". பயனரை அடுத்த 7 நாட்களுக்கு ஊக்குவிக்கும் ஒரு சிறிய, அடையக்கூடிய 'ஆரோக்கிய சவாலை' உருவாக்கவும். ஒவ்வொரு நாளுக்கும் ஒரு எளிய, ஊக்கமளிக்கும் குறிப்பு அல்லது செய்ய வேண்டிய ஒரு சவாலை (எ.கா., நாள் 1: ஒரு கூடுதல் கிளாஸ் தண்ணீர் குடிக்கவும்) வழங்கவும். சவால் நேர்மறையாகவும், பயனர் ஆர்வத்தைத் தூண்டும் வகையிலும் இருக்க வேண்டும். தமிழ் மொழியில் பதில் வழங்கவும்.`,
             },
             en: {
                 mainTitle: 'What is your wellness goal?',
@@ -731,11 +927,66 @@
                     'Millets': 'Incorporate millets like Ragi, Kambu, Samai, Thinai into your diet. They provide fiber and slow-release energy.',
                     'Yoga': 'Practice Surya Namaskaram or simple yoga asanas for 10 minutes daily in the morning to reduce stress. It calms both body and mind.',
                     'Meditation': 'Sit in a quiet place for 5 minutes daily and focus on your breath to meditate. This improves mental peace and focus.',
-                    'Ayurveda': 'According to Ayurveda, your body type (dosha). You can consult an an Ayurvedic expert for personalized advice.',
+                    'Ayurveda': 'According to Ayurveda, your body type (dosha) should eat specific foods. You can consult an Ayurvedic expert for personalized advice.',
                     'Siddha Medicine': 'As per Siddha medicine, consuming Arugampul juice (Bermuda grass juice) or Amla juice can detoxify the body and provide rejuvenation.',
                     'Traditional Food': 'Occasionally eat traditional Tamil foods like Kali, Koozh, Adai. These are prepared with healthy ingredients and benefit the body.'
                 },
                 localTipNotFound: (category) => `No tip found for "${category}". Please try another category.`,
+
+                // --- NEW FEATURE TRANSLATIONS (English) ---
+                mealPlanLabel: 'Meal Plan',
+                mealPlanSectionTitle: 'Personalized Meal Plan Suggestions',
+                mealPlanDescription: 'Get a customized meal plan based on your goals and preferences.',
+                dietGoalPlaceholder: 'e.g. Weight loss, Muscle gain...',
+                dietPreferenceSelectPlaceholder: 'Select diet preference',
+                allergiesPlaceholder: 'e.g. Peanuts, Dairy...',
+                generateMealPlanButton: 'Get Meal Plan',
+                noMealPlanInput: 'Please enter your goal and preferences to get a meal plan.',
+                mealPlanGenerationFailed: 'Could not generate meal plan. Please try again.',
+                mealPlanGenerating: 'Generating meal plan...',
+                mealPlanPrompt: (goal, preference, allergies) => `A user's wellness goal is "${goal}". Their diet preference is "${preference}". Allergies (if any): "${allergies}". Create a personalized, healthy, and delicious one-week meal plan (including breakfast, lunch, dinner, and snacks) using easily available local ingredients. Provide simple recipe explanations for each meal. Respond in English.`,
+
+                moodAnalysisLabel: 'Mood Analysis',
+                moodAnalysisSectionTitle: 'Mood Journal Analysis & Guidance',
+                moodAnalysisDescription: 'AI will analyze your mood entries to identify trends and provide guidance for mental well-being.',
+                analyzeMoodJournalButton: 'Analyze Mood',
+                noJournalEntriesForAnalysis: 'Not enough journal entries for analysis. Please add some.',
+                moodAnalysisFailed: 'Could not perform mood analysis. Please try again.',
+                moodAnalysisGenerating: 'Analyzing mood...',
+                moodAnalysisPrompt: (journalEntries) => `User's mood and gratitude entries for the past week: ${journalEntries}. Analyze these entries, summarize the user's mood trends (e.g., stress increased over the last few days). Then, provide 2-3 practical, simple suggestions (e.g., meditation, nature walk, favorite activity) to improve this mood. The advice should be positive and motivating. Respond in English.`,
+
+                exerciseYogaLabel: 'Exercise/Yoga',
+                exerciseYogaSectionTitle: 'Customized Exercise/Yoga Routine Suggestions',
+                exerciseYogaDescription: 'Get a personalized exercise or yoga routine based on your fitness level and goals.',
+                fitnessLevelSelectPlaceholder: 'Select fitness level',
+                timeAvailablePlaceholder: 'Time available (minutes)...',
+                exerciseGoalPlaceholder: 'e.g. Flexibility, Muscle building...',
+                generateExerciseRoutineButton: 'Get Routine',
+                noExerciseInput: 'Please enter your level, time, and goal to get a routine.',
+                exerciseRoutineFailed: 'Could not generate exercise routine. Please try again.',
+                exerciseRoutineGenerating: 'Generating exercise routine...',
+                exerciseRoutinePrompt: (level, time, goal) => `User's fitness level: ${level}. Daily time available: ${time} minutes. Fitness goal: ${goal}. Based on these, create a simple, home-friendly 7-day exercise/yoga routine. Provide brief descriptions and steps for each exercise (text-based) and safe guidelines to avoid injuries. Respond in English.`,
+
+                diseasePreventionLabel: 'Disease Prevention',
+                diseasePreventionSectionTitle: 'Disease Prevention & Home Remedies',
+                diseasePreventionDescription: 'Get local/traditional tips for your health concerns.',
+                healthConcernPlaceholder: 'e.g. Common cold, Digestion issues...',
+                getRemedyButton: 'Get Tip',
+                noHealthConcern: 'Please enter a health concern to get a tip.',
+                remedyFailed: 'Could not generate tip. Please try again.',
+                remedyGenerating: 'Generating tip...',
+                remedyPrompt: (concern) => `User's health concern/question: "${concern}". Using easily available natural ingredients and traditional practices from Tamil Nadu, provide 2-3 prevention/home remedy tips for this concern. Tips should be safe, not replace medical advice, and emphasize seeking professional consultation. Respond in English.`,
+
+                wellnessChallengeLabel: 'Challenges',
+                wellnessChallengeSectionTitle: 'Personalized Wellness Challenges',
+                wellnessChallengeDescription: 'Get a challenge based on your current habits and goals.',
+                currentHabitPlaceholder: 'Your current habit (e.g. 1000ml water)...',
+                challengeGoalPlaceholder: 'Your challenge goal (e.g. 2000ml water)...',
+                generateChallengeButton: 'Generate Challenge',
+                noChallengeInput: 'Please enter your current habit and goal to generate a challenge.',
+                challengeFailed: 'Could not generate challenge. Please try again.',
+                challengeGenerating: 'Generating challenge...',
+                challengePrompt: (currentHabit, challengeGoal) => `User's current habit: "${currentHabit}". Goal: "${challengeGoal}". Create a small, achievable 'wellness challenge' for the next 7 days to motivate the user. Provide a simple, encouraging tip or task for each day (e.g., Day 1: Drink one extra glass of water). The challenge should be positive and engaging for the user. Respond in English.`,
             }
         };
 
@@ -939,6 +1190,12 @@
                     if (sec === stepTrackerSection) stopTrackingSimulation(true);
                     if (sec === heartRateTrackerSection) stopHeartRateSimulation(true);
                     if (sec === waterTrackerSection) stopWaterReminder(true);
+                    // NEW: Reset/Clear outputs for other AI features
+                    if (sec === mealPlanSection) mealPlanOutput.innerHTML = '';
+                    if (sec === moodAnalysisSection) moodAnalysisOutput.innerHTML = '';
+                    if (sec === exerciseYogaSection) exerciseRoutineOutput.innerHTML = '';
+                    if (sec === diseasePreventionSection) remedyOutput.innerHTML = '';
+                    if (sec === wellnessChallengeSection) challengeOutput.innerHTML = '';
                 }
             });
 
@@ -971,6 +1228,28 @@
                     localTipCategory.value = '';
                     localTipCategoryDropdown.classList.add('hidden');
                 }
+                // NEW: Initialize new feature sections
+                else if (sectionElement === mealPlanSection) {
+                    mealPlanOutput.innerHTML = `<p>${t.initialTip}</p>`; // Reusing initialTip placeholder
+                    mealPlanOutput.style.fontStyle = 'italic';
+                }
+                else if (sectionElement === moodAnalysisSection) {
+                    moodAnalysisOutput.innerHTML = `<p>${t.initialTip}</p>`;
+                    moodAnalysisOutput.style.fontStyle = 'italic';
+                }
+                else if (sectionElement === exerciseYogaSection) {
+                    exerciseRoutineOutput.innerHTML = `<p>${t.initialTip}</p>`;
+                    exerciseRoutineOutput.style.fontStyle = 'italic';
+                }
+                else if (sectionElement === diseasePreventionSection) {
+                    remedyOutput.innerHTML = `<p>${t.initialTip}</p>`;
+                    remedyOutput.style.fontStyle = 'italic';
+                }
+                else if (sectionElement === wellnessChallengeSection) {
+                    challengeOutput.innerHTML = `<p>${t.initialTip}</p>`;
+                    challengeOutput.style.fontStyle = 'italic';
+                }
+
             } else {
                 sectionElement.style.display = 'none';
                 document.body.classList.remove('main-content-active');
@@ -1183,6 +1462,171 @@
             }
         }
 
+        // --- NEW FEATURE FUNCTIONS ---
+
+        // Helper function for AI calls (can be reused for all new AI features)
+        async function callAIFunction(functionName, data, outputElement, loadingMessage, errorMessageKey, initialPlaceholder) {
+            const t = translations[currentLanguage];
+            outputElement.innerHTML = '';
+            outputElement.style.fontStyle = 'italic';
+            loadingIndicator.style.display = 'flex';
+            loadingText.textContent = loadingMessage;
+            aiVoiceBtn.style.display = 'none'; // Generally hide for these features unless specific voice output is needed
+            ttsVoiceSelect.style.display = 'none';
+
+            try {
+                console.log(`Sending request to Netlify Function for ${functionName}:`, data);
+                const response = await fetch(`/.netlify/functions/${functionName}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data),
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error(`Netlify Function Error Response (${functionName}):`, errorData);
+                    throw new Error(`Function error: ${response.status} ${errorData.error || response.statusText}`);
+                }
+
+                const responseData = await response.json();
+                if (responseData.tip || responseData.plan || responseData.analysis || responseData.routine || responseData.remedy || responseData.challenge) {
+                    // Get the relevant response part (e.g., responseData.tip, responseData.plan)
+                    const resultText = responseData.tip || responseData.plan || responseData.analysis || responseData.routine || responseData.remedy || responseData.challenge;
+                    outputElement.innerHTML = `<p>${resultText}</p>`;
+                    outputElement.style.fontStyle = 'normal';
+                    // Re-enable AI Voice for relevant outputs if needed
+                    if (outputElement === tipOutput || outputElement === remedyOutput || outputElement === challengeOutput) {
+                        aiVoiceBtn.style.display = 'inline-flex';
+                        ttsVoiceSelect.style.display = 'inline-block';
+                    }
+                } else {
+                    throw new Error("No valid response found from function.");
+                }
+
+            } catch (error) {
+                console.error(`Error calling Netlify Function (${functionName}):`, error);
+                outputElement.innerHTML = `<p class="text-red-600">${t[errorMessageKey]} ${error.message}</p>`;
+                outputElement.style.fontStyle = 'normal';
+            } finally {
+                loadingIndicator.style.display = 'none';
+                loadingText.textContent = t.loadingText; // Reset main loading text
+            }
+        }
+
+        // 1. Meal Plan Functions
+        generateMealPlanBtn.addEventListener('click', async () => {
+            const t = translations[currentLanguage];
+            const dietGoal = dietGoalInput.value.trim();
+            const dietPreference = dietPreferenceSelect.value;
+            const allergies = allergiesInput.value.trim();
+
+            if (!dietGoal || !dietPreference) {
+                mealPlanOutput.innerHTML = `<p class="text-red-600">${t.noMealPlanInput}</p>`;
+                mealPlanOutput.style.fontStyle = 'normal';
+                return;
+            }
+
+            const prompt = t.mealPlanPrompt(dietGoal, dietPreference, allergies);
+            await callAIFunction(
+                'generate-meal-plan', // This will be your Netlify Function filename
+                { prompt: prompt, currentLanguage: currentLanguage },
+                mealPlanOutput,
+                t.mealPlanGenerating,
+                'mealPlanGenerationFailed',
+                t.initialTip // Or a specific initial message for meal plans
+            );
+        });
+
+        // 2. Mood Analysis Functions
+        analyzeMoodJournalBtn.addEventListener('click', async () => {
+            const t = translations[currentLanguage];
+            if (journalEntries.length === 0) {
+                moodAnalysisOutput.innerHTML = `<p class="text-red-600">${t.noJournalEntriesForAnalysis}</p>`;
+                moodAnalysisOutput.style.fontStyle = 'normal';
+                return;
+            }
+
+            const prompt = t.moodAnalysisPrompt(JSON.stringify(journalEntries)); // Send raw entries for AI to analyze
+            await callAIFunction(
+                'analyze-mood-journal', // This will be your Netlify Function filename
+                { prompt: prompt, currentLanguage: currentLanguage },
+                moodAnalysisOutput,
+                t.moodAnalysisGenerating,
+                'moodAnalysisFailed',
+                t.initialTip
+            );
+        });
+
+        // 3. Exercise/Yoga Functions
+        generateExerciseRoutineBtn.addEventListener('click', async () => {
+            const t = translations[currentLanguage];
+            const fitnessLevel = fitnessLevelSelect.value;
+            const timeAvailable = timeAvailableInput.value.trim();
+            const exerciseGoal = exerciseGoalInput.value.trim();
+
+            if (!fitnessLevel || !timeAvailable || !exerciseGoal) {
+                exerciseRoutineOutput.innerHTML = `<p class="text-red-600">${t.noExerciseInput}</p>`;
+                exerciseRoutineOutput.style.fontStyle = 'normal';
+                return;
+            }
+
+            const prompt = t.exerciseRoutinePrompt(fitnessLevel, timeAvailable, exerciseGoal);
+            await callAIFunction(
+                'generate-exercise-routine', // This will be your Netlify Function filename
+                { prompt: prompt, currentLanguage: currentLanguage },
+                exerciseRoutineOutput,
+                t.exerciseRoutineGenerating,
+                'exerciseRoutineFailed',
+                t.initialTip
+            );
+        });
+
+        // 4. Disease Prevention Functions
+        getRemedyBtn.addEventListener('click', async () => {
+            const t = translations[currentLanguage];
+            const healthConcern = healthConcernInput.value.trim();
+
+            if (!healthConcern) {
+                remedyOutput.innerHTML = `<p class="text-red-600">${t.noHealthConcern}</p>`;
+                remedyOutput.style.fontStyle = 'normal';
+                return;
+            }
+
+            const prompt = t.remedyPrompt(healthConcern);
+            await callAIFunction(
+                'get-home-remedy', // This will be your Netlify Function filename
+                { prompt: prompt, currentLanguage: currentLanguage },
+                remedyOutput,
+                t.remedyGenerating,
+                'remedyFailed',
+                t.initialTip
+            );
+        });
+
+        // 5. Wellness Challenge Functions
+        generateChallengeBtn.addEventListener('click', async () => {
+            const t = translations[currentLanguage];
+            const currentHabit = currentHabitInput.value.trim();
+            const challengeGoal = challengeGoalInput.value.trim();
+
+            if (!currentHabit || !challengeGoal) {
+                challengeOutput.innerHTML = `<p class="text-red-600">${t.noChallengeInput}</p>`;
+                challengeOutput.style.fontStyle = 'normal';
+                return;
+            }
+
+            const prompt = t.challengePrompt(currentHabit, challengeGoal);
+            await callAIFunction(
+                'generate-challenge', // This will be your Netlify Function filename
+                { prompt: prompt, currentLanguage: currentLanguage },
+                challengeOutput,
+                t.challengeGenerating,
+                'challengeFailed',
+                t.initialTip
+            );
+        });
+
+
         // --- Main UI Update Function ---
         function updateUI() {
             const t = translations[currentLanguage];
@@ -1272,6 +1716,61 @@
                 localTipOutput.style.fontStyle = 'italic';
             }
             localTipCategoryDropdown.classList.add('hidden'); // Ensure dropdown is hidden on UI update
+
+            // NEW: Meal Plan UI updates
+            mealPlanSectionTitle.textContent = t.mealPlanSectionTitle;
+            mealPlanDescription.textContent = t.mealPlanDescription;
+            dietGoalInput.placeholder = t.dietGoalPlaceholder;
+            dietPreferenceSelect.querySelector('option[value=""]').textContent = t.dietPreferenceSelectPlaceholder;
+            allergiesInput.placeholder = t.allergiesPlaceholder;
+            generateMealPlanBtn.textContent = t.generateMealPlanButton;
+            if (mealPlanSection.style.display !== 'none') {
+                mealPlanOutput.innerHTML = `<p>${t.initialTip}</p>`;
+                mealPlanOutput.style.fontStyle = 'italic';
+            }
+
+            // NEW: Mood Analysis UI updates
+            moodAnalysisSectionTitle.textContent = t.moodAnalysisSectionTitle;
+            moodAnalysisDescription.textContent = t.moodAnalysisDescription;
+            analyzeMoodJournalBtn.textContent = t.analyzeMoodJournalButton;
+            if (moodAnalysisSection.style.display !== 'none') {
+                moodAnalysisOutput.innerHTML = `<p>${t.initialTip}</p>`;
+                moodAnalysisOutput.style.fontStyle = 'italic';
+            }
+
+            // NEW: Exercise/Yoga UI updates
+            exerciseYogaSectionTitle.textContent = t.exerciseYogaSectionTitle;
+            exerciseYogaDescription.textContent = t.exerciseYogaDescription;
+            fitnessLevelSelect.querySelector('option[value=""]').textContent = t.fitnessLevelSelectPlaceholder;
+            timeAvailableInput.placeholder = t.timeAvailablePlaceholder;
+            exerciseGoalInput.placeholder = t.exerciseGoalPlaceholder;
+            generateExerciseRoutineBtn.textContent = t.generateExerciseRoutineButton;
+            if (exerciseYogaSection.style.display !== 'none') {
+                exerciseRoutineOutput.innerHTML = `<p>${t.initialTip}</p>`;
+                exerciseRoutineOutput.style.fontStyle = 'italic';
+            }
+
+            // NEW: Disease Prevention UI updates
+            diseasePreventionSectionTitle.textContent = t.diseasePreventionSectionTitle;
+            diseasePreventionDescription.textContent = t.diseasePreventionDescription;
+            healthConcernInput.placeholder = t.healthConcernPlaceholder;
+            getRemedyBtn.textContent = t.getRemedyButton;
+            if (diseasePreventionSection.style.display !== 'none') {
+                remedyOutput.innerHTML = `<p>${t.initialTip}</p>`;
+                remedyOutput.style.fontStyle = 'italic';
+            }
+
+            // NEW: Wellness Challenge UI updates
+            wellnessChallengeSectionTitle.textContent = t.wellnessChallengeSectionTitle;
+            wellnessChallengeDescription.textContent = t.wellnessChallengeDescription;
+            currentHabitInput.placeholder = t.currentHabitPlaceholder;
+            challengeGoalInput.placeholder = t.challengeGoalPlaceholder;
+            generateChallengeBtn.textContent = t.generateChallengeButton;
+            if (wellnessChallengeSection.style.display !== 'none') {
+                challengeOutput.innerHTML = `<p>${t.initialTip}</p>`;
+                challengeOutput.style.fontStyle = 'italic';
+            }
+
 
             // AI Voice button text update
             aiVoiceBtn.textContent = t.aiVoiceButton;
@@ -1369,6 +1868,12 @@
         iconWaterTracker.addEventListener('click', () => toggleFeatureSection(waterTrackerSection));
         iconJournal.addEventListener('click', () => toggleFeatureSection(journalSection));
         iconLocalTips.addEventListener('click', () => toggleFeatureSection(localTipsSection));
+        // NEW FEATURE ICON LISTENERS
+        iconMealPlan.addEventListener('click', () => toggleFeatureSection(mealPlanSection));
+        iconMoodAnalysis.addEventListener('click', () => toggleFeatureSection(moodAnalysisSection));
+        iconExerciseYoga.addEventListener('click', () => toggleFeatureSection(exerciseYogaSection));
+        iconDiseasePrevention.addEventListener('click', () => toggleFeatureSection(diseasePreventionSection));
+        iconWellnessChallenge.addEventListener('click', () => toggleFeatureSection(wellnessChallengeSection));
 
 
         // Step Tracker Event Listeners
@@ -1483,7 +1988,7 @@
             }, 200);
         });
 
-        getLocalTipBtn.addEventListener('click', () => {
+        getLocalTipBtn.addEventListener('click', async () => {
             const category = localTipCategory.value.trim();
             const t = translations[currentLanguage];
             if (!category) {
@@ -1493,6 +1998,8 @@
                 ttsVoiceSelect.style.display = 'none';
                 return;
             }
+            // For existing local tips, we don't need a Netlify function if the content is hardcoded
+            // If you decide to make local tips AI-generated, then use callAIFunction here.
             displayLocalTip(category);
         });
 
