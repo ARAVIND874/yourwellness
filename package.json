@@ -1,15 +1,17 @@
 {
-  "name": "health-tip-app",
+  "name": "healthtips-app",
   "version": "1.0.0",
-  "description": "A health tip generator using Netlify Functions and Gemini API.",
   "main": "index.js",
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "dotenv": "^16.5.0",
+    "start": "^5.1.0"
+  },
   "scripts": {
-    "start": "netlify dev"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
-  "license": "MIT",
-  "dependencies": {
-    "@google/generative-ai": "^0.11.0" // இது இங்கே இருக்க வேண்டும் (சமீபத்திய பதிப்பைப் பயன்படுத்தவும்)
-  }
+  "license": "ISC",
+  "description": ""
 }
