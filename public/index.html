@@ -151,7 +151,7 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        .tip-box, .step-result-box { /* Unified style for all output boxes */
+        .tip-box, .result-box { /* Unified style for all output boxes */
             background-color: #FFFFAA; /* Light Yellow */
             border: 1px solid #CCCC88; /* Darker Yellow */
             border-radius: 1.25rem;
@@ -169,7 +169,7 @@
             transition: all 0.5s ease-in-out;
             word-break: break-word; /* Ensure long words break */
         }
-        .tip-box p, .step-result-box p {
+        .tip-box p, .result-box p {
             margin: 0;
         }
         .text-red-600 {
@@ -229,6 +229,170 @@
             max-height: 25%;
             object-fit: contain;
         }
+
+        /* Feature Button for Main Page */
+        .features-toggle-button {
+            font-size: 4rem; /* Even larger emoji size for the main toggle */
+            cursor: pointer;
+            padding: 1rem;
+            border-radius: 1rem;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            line-height: 1;
+            margin-top: 2rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            background-color: #e0f2fe; /* Light blue background */
+        }
+        .features-toggle-button:hover {
+            transform: scale(1.05);
+            background-color: #bee3f8; /* Slightly darker blue hover */
+        }
+        .features-toggle-button span.label {
+            font-size: 1rem;
+            margin-top: 0.75rem;
+            color: #333;
+            font-weight: 600;
+        }
+
+        /* Feature Icons and Sections */
+        .feature-icon-container {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem; /* Space between icons */
+            margin-top: 2rem;
+            flex-wrap: wrap; /* Allow icons to wrap on smaller screens */
+        }
+        .feature-icon {
+            font-size: 3rem; /* Larger emoji size */
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.75rem;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            line-height: 1;
+        }
+        .feature-icon:hover {
+            transform: translateY(-5px);
+            background-color: rgba(135, 206, 235, 0.1); /* Light blue hover */
+        }
+        .feature-icon span.label {
+            font-size: 0.8rem; /* Smaller text label */
+            margin-top: 0.5rem;
+            color: #555;
+            font-weight: 500;
+        }
+
+        /* Feature sections (initially hidden, shown by JS) */
+        .feature-section {
+            display: none;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e5e7eb; /* Subtle separator */
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Specific feature section styles */
+        .dropdown-menu {
+            position: absolute;
+            background-color: white;
+            border: 1px solid #D1D5DB;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+            text-align: left;
+            padding: 0.5rem 0;
+            top: calc(100% + 5px); /* Position below input */
+            left: 0;
+        }
+        .dropdown-menu div {
+            padding: 0.75rem 1.25rem;
+            cursor: pointer;
+        }
+        .dropdown-menu div:hover {
+            background-color: #F3F4F6;
+        }
+        .dropdown-menu div.selected {
+            background-color: #e0f2fe; /* light blue */
+            font-weight: 500;
+        }
+        
+        .tts-voice-selector {
+            padding: 0.75rem;
+            border: 1px solid #D1D5DB;
+            border-radius: 0.875rem;
+            font-size: 0.95rem;
+            background-color: white;
+            margin-left: 1rem;
+            flex-grow: 1;
+        }
+        .body-map-container {
+            position: relative;
+            width: 100%;
+            max-width: 300px; /* Adjust as needed */
+            margin: 0 auto;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .body-map-image {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .pain-dot {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: red;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 0 5px rgba(0,0,0,0.5);
+            transform: translate(-50%, -50%); /* Center the dot on the click */
+        }
+        .pain-dot.selected {
+            background-color: darkred;
+            border: 2px solid yellow;
+        }
+        /* Hide all feature sections by default */
+        .feature-section {
+            display: none;
+        }
+        /* Show the main view or a specific section */
+        #initialView, #allFeatureIconsContainer.active, .feature-section.active {
+            display: block;
+        }
+        .back-button {
+            background: none;
+            border: none;
+            color: #6A0DAD;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0.5rem 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+        }
+        .back-button:hover {
+            color: #4B0A7B;
+        }
     </style>
 </head>
 <body>
@@ -243,509 +407,2022 @@
                 <option value="en">English</option>
             </select>
         </div>
-        <h1 id="mainTitle" class="text-3xl font-bold text-gray-800 mb-4 lg:text-4xl"></h1>
-        <p id="descriptionText" class="text-gray-600 mb-8 text-lg"></p>
 
-        <h2 id="tipSectionTitle" class="text-2xl font-semibold text-gray-700 mb-4"></h2>
-        <div class="input-wrapper">
-            <input type="text" id="goalInput" class="input-field" aria-label="உங்கள் ஆரோக்கிய இலக்கை உள்ளிடவும்">
-            <button id="micBtn" class="mic-button" title="உங்கள் இலக்கைப் பேசுங்கள்" aria-label="உங்கள் ஆரோக்கிய இலக்கைப் பதிவு செய்யவும்">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mic">
-                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
-                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-                    <line x1="12" y1="19" x2="12" y2="23"></line>
-                    <line x1="8" y1="23" x2="16" y2="23"></line>
-                </svg>
-            </button>
-        </div>
-        <div class="flex flex-wrap justify-center gap-4 mt-4">
-            <button id="generateBtn" class="generate-button"></button>
-            <button id="aiVoiceBtn" class="ai-voice-button" style="display: none;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2">
-                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path>
-                </svg>
-            </button>
-        </div>
-        <div id="loading" class="loading-indicator" aria-live="polite">
-            <div class="loading-spinner"></div>
-            <p id="loadingText"></p>
-        </div>
-        <div id="tipOutput" class="tip-box" aria-live="polite"></div>
+        <div id="initialView">
+            <h1 id="mainTitle" class="text-3xl font-bold text-gray-800 mb-4 lg:text-4xl"></h1>
+            <p id="descriptionText" class="text-gray-600 mb-8 text-lg"></p>
 
-        <button id="openStepTrackerBtn" class="open-tracker-button mt-8"></button>
-
-        <div id="stepTrackerSection" style="display: none;">
-            <h2 id="stepSectionTitle" class="text-2xl font-semibold text-gray-700 mt-10 mb-4"></h2>
+            <h2 id="tipSectionTitle" class="text-2xl font-semibold text-gray-700 mb-4"></h2>
             <div class="input-wrapper">
-                <label for="currentStepsDisplay" class="sr-only">தற்போதைய படிகள்</label>
-                <input type="text" id="currentStepsDisplay" class="input-field" value="0" readonly aria-atomic="true">
+                <input type="text" id="goalInput" class="input-field" aria-label="உங்கள் ஆரோக்கிய இலக்கை உள்ளிடவும்">
+                <button id="micBtn" class="mic-button" title="உங்கள் இலக்கைப் பேசுங்கள்" aria-label="உங்கள் ஆரோக்கிய இலக்கைப் பதிவு செய்யவும்">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mic">
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                        <line x1="12" y1="19" x2="12" y2="23"></line>
+                        <line x1="8" y1="23" x2="16" y2="23"></line>
+                    </svg>
+                </button>
             </div>
             <div class="flex flex-wrap justify-center gap-4 mt-4">
-                <button id="addOneStepBtn" class="action-button"></button>
-                <button id="toggleTrackingBtn" class="action-button"></button>
-                <button id="resetStepsBtn" class="action-button"></button>
+                <button id="generateBtn" class="generate-button"></button>
+                <button id="aiVoiceBtn" class="ai-voice-button" style="display: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path>
+                    </svg>
+                </button>
+                <select id="ttsVoiceSelect" class="tts-voice-selector" style="display: none;" aria-label="Select Voice"></select>
             </div>
-            <div id="stepResultOutput" class="step-result-box" aria-live="polite"></div>
+            <div id="loading" class="loading-indicator" aria-live="polite">
+                <div class="loading-spinner"></div>
+                <p id="loadingText"></p>
+            </div>
+            <div id="tipOutput" class="tip-box" aria-live="polite"></div>
+
+            <hr class="border-t border-gray-300 my-8">
+
+            <h2 id="featuresTitle" class="text-2xl font-semibold text-gray-700 mb-4"></h2>
+            <button id="toggleFeaturesBtn" class="features-toggle-button" title="அனைத்து அம்சங்களையும் காண்க">
+                ✨<span class="label" data-label-key="showFeaturesLabel"></span>
+            </button>
+        </div>
+
+        <!-- This div will now contain both the list of icons and the individual feature sections -->
+        <div id="featuresContainer" style="display: none;">
+            <!-- This button takes you back to the initial view from the features section -->
+            <button class="back-button" id="backToMainFromFeaturesContainer" style="display: none;">← பின்செல்</button>
+            <h1 id="featuresPageTitle" class="text-3xl font-bold text-gray-800 mb-6 mt-4 lg:text-4xl"></h1>
+
+            <!-- All feature icons container -->
+            <div id="allFeatureIconsContainer" class="feature-icon-container">
+                <div id="iconStepTracker" class="feature-icon" data-section="stepTrackerSection" title="படி டிராக்கர்">👟<span class="label" data-label-key="stepTrackerLabel"></span></div>
+                <div id="iconHeartRateTracker" class="feature-icon" data-section="heartRateTrackerSection" title="இதயத் துடிப்பு டிராக்கர்">💓<span class="label" data-label-key="heartRateTrackerLabel"></span></div>
+                <div id="iconWaterTracker" class="feature-icon" data-section="waterTrackerSection" title="தண்ணீர் டிராக்கர்">💧<span class="label" data-label-key="waterTrackerLabel"></span></div>
+                <div id="iconJournal" class="feature-icon" data-section="journalSection" title="மனநிலை & நன்றியுணர்வு ஜர்னல்">📝<span class="label" data-label-key="journalLabel"></span></div>
+                <div id="iconLocalTips" class="feature-icon" data-section="localTipsSection" title="உள்ளூர் ஆரோக்கிய குறிப்புகள்">🌱<span class="label" data-label-key="localTipsLabel"></span></div>
+                <div id="iconMealPlan" class="feature-icon" data-section="mealPlanSection" title="உணவுத் திட்டப் பரிந்துரைகள்">🍽️<span class="label" data-label-key="mealPlanLabel"></span></div>
+                <div id="iconMoodAnalysis" class="feature-icon" data-section="moodAnalysisSection" title="உணர்வுப் பதிவேடு பகுப்பாய்வு">🧠<span class="label" data-label-key="moodAnalysisLabel"></span></div>
+                <div id="iconExerciseYoga" class="feature-icon" data-section="exerciseYogaSection" title="உடற்பயிற்சி & யோகா">🤸‍♀️<span class="label" data-label-key="exerciseYogaLabel"></span></div>
+                <div id="iconDiseasePrevention" class="feature-icon" data-section="diseasePreventionSection" title="நோய் தடுப்பு">🛡️<span class="label" data-label-key="diseasePreventionLabel"></span></div>
+                <div id="iconWellnessChallenge" class="feature-icon" data-section="wellnessChallengeSection" title="ஆரோக்கிய சவால்கள்">🏅<span class="label" data-label-key="wellnessChallengeLabel"></span></div>
+                <div id="iconMedicationReminder" class="feature-icon" data-section="medicationReminderSection" title="மருந்து நினைவூட்டல்">⏰<span class="label" data-label-key="medicationReminderLabel"></span></div>
+                <div id="iconBodyPainMapping" class="feature-icon" data-section="bodyPainMappingSection" title="உடல் வலி மேப்பிங்">📍<span class="label" data-label-key="bodyPainMappingLabel"></span></div>
+                <div id="iconFirstAidEmergency" class="feature-icon" data-section="firstAidEmergencySection" title="முதலுதவி & அவசர உதவி">🆘<span class="label" data-label-key="firstAidEmergencyLabel"></span></div>
+            </div>
+
+            <!-- All feature sections are now children of featuresContainer -->
+            <div id="stepTrackerSection" class="feature-section">
+                <!-- Data target for back button now points to the icons container -->
+                <button class="back-button" data-target="allFeatureIconsContainer">← பின்செல்</button>
+                <h2 id="stepSectionTitle" class="text-2xl font-semibold text-gray-700 mb-4 mt-4"></h2>
+                <div class="input-wrapper">
+                    <label for="currentStepsDisplay" class="sr-only">தற்போதைய படிகள்</label>
+                    <input type="text" id="currentStepsDisplay" class="input-field" value="0" readonly aria-atomic="true">
+                </div>
+                <div class="flex flex-wrap justify-center gap-4 mt-4">
+                    <button id="addOneStepBtn" class="action-button"></button>
+                    <button id="toggleTrackingBtn" class="action-button"></button>
+                    <button id="resetStepsBtn" class="action-button"></button>
+                </div>
+                <div id="stepResultOutput" class="result-box" aria-live="polite"></div>
+            </div>
+
+            <div id="heartRateTrackerSection" class="feature-section">
+                <button class="back-button" data-target="allFeatureIconsContainer">← பின்செல்</button>
+                <h2 id="heartRateSectionTitle" class="text-2xl font-semibold text-gray-700 mb-4 mt-4"></h2>
+                <div class="input-wrapper">
+                    <label for="currentHeartRateDisplay" class="sr-only">தற்போதைய இதயத் துடிப்பு</label>
+                    <input type="text" id="currentHeartRateDisplay" class="input-field" value="0" readonly aria-atomic="true">
+                </div>
+                <div class="flex flex-wrap justify-center gap-4 mt-4">
+                    <button id="simulateHeartRateBtn" class="action-button"></button>
+                    <button id="resetHeartRateBtn" class="action-button"></button>
+                </div>
+                <div id="heartRateResultOutput" class="result-box" aria-live="polite"></div>
+            </div>
+
+            <div id="waterTrackerSection" class="feature-section">
+                <button class="back-button" data-target="allFeatureIconsContainer">← பின்செல்</button>
+                <h2 id="waterSectionTitle" class="text-2xl font-semibold text-gray-700 mb-4 mt-4"></h2>
+                <div class="input-wrapper">
+                    <label for="waterIntakeDisplay" class="sr-only">தற்போதைய தண்ணீர் உட்கொள்ளல்</label>
+                    <input type="text" id="waterIntakeDisplay" class="input-field" value="0 ml" readonly aria-atomic="true">
+                </div>
+                <div class="flex flex-wrap justify-center gap-4 mt-4">
+                    <button id="addWaterBtn" class="action-button"></button>
+                    <button id="resetWaterBtn" class="action-button"></button>
+                </div>
+                <div id="waterResultOutput" class="result-box" aria-live="polite"></div>
+            </div>
+
+            <div id="journalSection" class="feature-section">
+                <button class="back-button" data-target="allFeatureIconsContainer">← பின்செல்</button>
+                <h2 id="journalSectionTitle" class="text-2xl font-semibold text-gray-700 mb-4 mt-4"></h2>
+                <p id="journalDescription" class="text-gray-600 mb-4 text-lg"></p>
+                <div class="input-wrapper flex-col items-stretch">
+                    <label for="moodSelect" class="sr-only">உங்கள் மனநிலையைத் தேர்ந்தெடுக்கவும்</label>
+                    <select id="moodSelect" class="input-field mb-4" aria-label="உங்கள் மனநிலையைத் தேர்ந்தெடுக்கவும்">
+                        <option value="">உங்கள் மனநிலையைத் தேர்ந்தெடுக்கவும்</option>
+                        <option value="happy">மகிழ்ச்சி 😄</option>
+                        <option value="neutral">சாதாரணம் 😐</option>
+                        <option value="sad">சோகம் 😔</option>
+                        <option value="stressed">மன அழுத்தம் 😩</option>
+                        <option value="energetic">ஆற்றல் 💪</option>
+                    </select>
+                    <label for="gratitudeInput" class="sr-only">நீங்கள் நன்றியுள்ள ஒரு விஷயத்தை எழுதுங்கள்</label>
+                    <textarea id="gratitudeInput" class="input-field min-h-[100px]" placeholder="நீங்கள் நன்றியுள்ள ஒரு விஷயத்தை எழுதுங்கள்..." aria-label="நீங்கள் நன்றியுள்ள ஒரு விஷயத்தை எழுதுங்கள்"></textarea>
+                </div>
+                <button id="saveJournalEntryBtn" class="action-button mt-4"></button>
+                <div id="journalEntriesOutput" class="result-box mt-4 text-left"></div>
+            </div>
+
+            <div id="localTipsSection" class="feature-section">
+                <button class="back-button" data-target="allFeatureIconsContainer">← பின்செல்</button>
+                <h2 id="localTipsSectionTitle" class="text-2xl font-semibold text-gray-700 mb-4 mt-4"></h2>
+                <p id="localTipsDescription" class="text-gray-600 mb-4 text-lg"></p>
+                <div class="input-wrapper mb-4">
+                    <input type="text" id="localTipCategory" class="input-field" aria-label="உதவிக்குறிப்பு வகையை உள்ளிடவும்" placeholder="எ.கா. மஞ்சள், முருங்கை, தியானம்...">
+                    <div id="localTipCategoryDropdown" class="dropdown-menu hidden mt-2 top-full left-0"></div>
+                </div>
+                <button id="getLocalTipBtn" class="generate-button"></button>
+                <div id="localTipOutput" class="tip-box" aria-live="polite"></div>
+            </div>
+
+            <div id="mealPlanSection" class="feature-section">
+                <button class="back-button" data-target="allFeatureIconsContainer">← பின்செல்</button>
+                <h2 id="mealPlanSectionTitle" class="text-2xl font-semibold text-gray-700 mb-4 mt-4"></h2>
+                <p id="mealPlanDescription" class="text-gray-600 mb-4 text-lg"></p>
+                <div class="input-wrapper flex-col items-stretch">
+                    <label for="dietGoalInput" class="sr-only">உணவு இலக்கு</label>
+                    <input type="text" id="dietGoalInput" class="input-field mb-4" placeholder="எ.கா. எடை குறைப்பு, தசை வளர்ச்சி..." aria-label="உணவு இலக்கு">
+
+                    <label for="dietPreferenceSelect" class="sr-only">உணவு விருப்பம்</label>
+                    <select id="dietPreferenceSelect" class="input-field mb-4" aria-label="உணவு விருப்பம்">
+                        <option value="">உணவு விருப்பத்தைத் தேர்ந்தெடுக்கவும்</option>
+                        <option value="vegetarian">சைவம்</option>
+                        <option value="non-vegetarian">அசைவம்</option>
+                        <option value="vegan">முழு சைவம்</option>
+                    </select>
+
+                    <label for="allergiesInput" class="sr-only">ஒவ்வாமைகள் (இருப்பின்)</label>
+                    <input type="text" id="allergiesInput" class="input-field mb-4" placeholder="எ.கா. நிலக்கடலை, பால்..." aria-label="ஒவ்வாமைகள்">
+                </div>
+                <button id="generateMealPlanBtn" class="action-button mt-4"></button>
+                <div id="mealPlanOutput" class="result-box mt-4 text-left" aria-live="polite"></div>
+            </div>
+
+            <div id="moodAnalysisSection" class="feature-section">
+                <button class="back-button" data-target="allFeatureIconsContainer">← பின்செல்</button>
+                <h2 id="moodAnalysisSectionTitle" class="text-2xl font-semibold text-gray-700 mb-4 mt-4"></h2>
+                <p id="moodAnalysisDescription" class="text-gray-600 mb-4 text-lg"></p>
+                <button id="analyzeMoodJournalBtn" class="action-button mt-4"></button>
+                <div id="moodAnalysisOutput" class="result-box mt-4 text-left" aria-live="polite"></div>
+            </div>
+
+            <div id="exerciseYogaSection" class="feature-section">
+                <button class="back-button" data-target="allFeatureIconsContainer">← பின்செல்</button>
+                <h2 id="exerciseYogaSectionTitle" class="text-2xl font-semibold text-gray-700 mb-4 mt-4"></h2>
+                <p id="exerciseYogaDescription" class="text-gray-600 mb-4 text-lg"></p>
+                <div class="input-wrapper flex-col items-stretch">
+                    <label for="fitnessLevelSelect" class="sr-only">உடற்பயிற்சி நிலை</label>
+                    <select id="fitnessLevelSelect" class="input-field mb-4" aria-label="உடற்பயிற்சி நிலை">
+                        <option value="">உடற்பயிற்சி நிலையைத் தேர்ந்தெடுக்கவும்</option>
+                        <option value="beginner">ஆரம்பநிலை</option>
+                        <option value="intermediate">நடுநிலை</option>
+                        <option value="advanced">மேம்பட்டது</option>
+                    </select>
+
+                    <label for="timeAvailableInput" class="sr-only">கிடைக்கக்கூடிய நேரம் (நிமிடங்கள்)</label>
+                    <input type="number" id="timeAvailableInput" class="input-field mb-4" placeholder="கிடைக்கக்கூடிய நேரம் (நிமிடங்கள்)..." aria-label="கிடைக்கக்கூடிய நேரம்">
+
+                    <label for="exerciseGoalInput" class="sr-only">உடற்பயிற்சி இலக்கு</label>
+                    <input type="text" id="exerciseGoalInput" class="input-field mb-4" placeholder="எ.கா. உடல் நெகிழ்வுத்தன்மை, தசைகளை உருவாக்குதல்..." aria-label="உடற்பயிற்சி இலக்கு">
+                </div>
+                <button id="generateExerciseRoutineBtn" class="action-button mt-4"></button>
+                <div id="exerciseRoutineOutput" class="result-box mt-4 text-left" aria-live="polite"></div>
+            </div>
+
+            <div id="diseasePreventionSection" class="feature-section">
+                <button class="back-button" data-target="allFeatureIconsContainer">← பின்செல்</button>
+                <h2 id="diseasePreventionSectionTitle" class="text-2xl font-semibold text-gray-700 mb-4 mt-4"></h2>
+                <p id="diseasePreventionDescription" class="text-gray-600 mb-4 text-lg"></p>
+                <div class="input-wrapper mb-4">
+                    <input type="text" id="healthConcernInput" class="input-field" aria-label="உடல்நலக் கவலையை உள்ளிடவும்" placeholder="எ.கா. ஜலதோஷம், செரிமானப் பிரச்சனை...">
+                </div>
+                <button id="getRemedyBtn" class="generate-button"></button>
+                <div id="remedyOutput" class="tip-box" aria-live="polite"></div>
+            </div>
+
+            <div id="wellnessChallengeSection" class="feature-section">
+                <button class="back-button" data-target="allFeatureIconsContainer">← பின்செல்</button>
+                <h2 id="wellnessChallengeSectionTitle" class="text-2xl font-semibold text-gray-700 mb-4 mt-4"></h2>
+                <p id="wellnessChallengeDescription" class="text-gray-600 mb-4 text-lg"></p>
+                <div class="input-wrapper flex-col items-stretch">
+                    <label for="currentHabitInput" class="sr-only">தற்போதைய பழக்கம் (எ.கா. நீர் உட்கொள்ளல்)</label>
+                    <input type="text" id="currentHabitInput" class="input-field mb-4" placeholder="உங்கள் தற்போதைய பழக்கம் (எ.கா. 1000ml தண்ணீர்)..." aria-label="தற்போதைய பழக்கம்">
+                    
+                    <label for="challengeGoalInput" class="sr-only">சவால் இலக்கு (எ.கா. 2000ml தண்ணீர்)</label>
+                    <input type="text" id="challengeGoalInput" class="input-field mb-4" placeholder="உங்கள் சவால் இலக்கு (எ.கா. 2000ml தண்ணீர்)..." aria-label="சவால் இலக்கு">
+                </div>
+                <button id="generateChallengeBtn" class="action-button mt-4"></button>
+                <div id="challengeOutput" class="result-box mt-4 text-left" aria-live="polite"></div>
+            </div>
+
+            <div id="medicationReminderSection" class="feature-section">
+                <button class="back-button" data-target="allFeatureIconsContainer">← பின்செல்</button>
+                <h2 id="medicationReminderSectionTitle" class="text-2xl font-semibold text-gray-700 mb-4 mt-4"></h2>
+                <p id="medicationReminderDescription" class="text-gray-600 mb-4 text-lg"></p>
+
+                <div class="input-wrapper flex-col items-stretch mb-4">
+                    <label for="medicationNameInput" class="sr-only">மருந்தின் பெயர்</label>
+                    <input type="text" id="medicationNameInput" class="input-field mb-4" placeholder="மருந்தின் பெயர்..." aria-label="மருந்தின் பெயர்">
+
+                    <label for="medicationTimeInput" class="sr-only">நேரம்</label>
+                    <input type="time" id="medicationTimeInput" class="input-field mb-4" aria-label="நேரம்">
+
+                    <label for="medicationFrequencySelect" class="sr-only">நினைவூட்டல் அதிர்வெண்</label>
+                    <select id="medicationFrequencySelect" class="input-field mb-4" aria-label="நினைவூட்டல் அதிர்வெண்">
+                        <option value="">நினைவூட்டல் அதிர்வெண்</option>
+                        <option value="daily">தினசரி</option>
+                        <option value="weekly">வாராந்திர</option>
+                        <option value="once">ஒருமுறை</option>
+                    </select>
+                </div>
+                <button id="setReminderBtn" class="action-button mt-4"></button>
+                <div id="medicationRemindersList" class="result-box mt-4 text-left" aria-live="polite"></div>
+                <button id="clearMedicationRemindersBtn" class="action-button mt-4 bg-red-500 hover:bg-red-700 text-white"></button>
+            </div>
+
+            <div id="bodyPainMappingSection" class="feature-section">
+                <button class="back-button" data-target="allFeatureIconsContainer">← பின்செல்</button>
+                <h2 id="bodyPainMappingSectionTitle" class="text-2xl font-semibold text-gray-700 mb-4 mt-4"></h2>
+                <p id="bodyPainMappingDescription" class="text-gray-600 mb-4 text-lg"></p>
+
+                <div id="bodyMapContainer" class="body-map-container mb-6"> <!-- Added id="bodyMapContainer" here -->
+                    <img id="bodyMapImage" class="body-map-image" src="https://placehold.co/300x500/E0F2FE/000000?text=Body+Map" alt="Human Body Map for Pain Tracking">
+                </div>
+                <div class="input-wrapper flex-col items-stretch mb-4">
+                    <label for="painLocationInput" class="sr-only">வலி இடம்</label>
+                    <input type="text" id="painLocationInput" class="input-field mb-4" placeholder="வலி இடம் (எ.கா. அடிவயிறு, முதுகு...)" aria-label="வலி இடம்">
+
+                    <label for="painLevelSelect" class="sr-only">வலி நிலை</label>
+                    <select id="painLevelSelect" class="input-field mb-4" aria-label="வலி நிலை">
+                        <option value="">வலி நிலை தேர்ந்தெடுக்கவும்</option>
+                        <option value="mild">லேசானது</option>
+                        <option value="moderate">மிதமானது</option>
+                        <option value="severe">கடுமையானது</option>
+                    </select>
+                </div>
+                <div class="flex flex-wrap justify-center gap-4 mt-4">
+                    <button id="addPainEntryBtn" class="action-button"></button>
+                    <button id="clearPainMapBtn" class="action-button bg-red-500 hover:bg-red-700 text-white"></button>
+                </div>
+                <div id="painEntriesList" class="result-box mt-4 text-left" aria-live="polite"></div>
+            </div>
+
+            <div id="firstAidEmergencySection" class="feature-section">
+                <button class="back-button" data-target="allFeatureIconsContainer">← பின்செல்</button>
+                <h2 id="firstAidEmergencySectionTitle" class="text-2xl font-semibold text-gray-700 mb-4 mt-4"></h2>
+                <p id="firstAidEmergencyDescription" class="text-gray-600 mb-4 text-lg"></p>
+                <div class="input-wrapper mb-4">
+                    <input type="text" id="emergencySituationInput" class="input-field" aria-label="அவசர சூழ்நிலையை உள்ளிடவும்" placeholder="எ.கா. தீக்காயம், எலும்பு முறிவு, மூச்சுத்திணறல்...">
+                </div>
+                <button id="getEmergencyAdviceBtn" class="generate-button"></button>
+                <div id="emergencyAdviceOutput" class="tip-box" aria-live="polite"></div>
+            </div>
+
         </div>
     </div>
 
     <script>
-        const translations = {
-            ta: {
-                mainTitle: 'உங்கள் ஆரோக்கிய இலக்கு என்ன?',
-                descriptionText: 'உங்கள் இலக்கை இங்கே உள்ளிட்டு, தனிப்பயனாக்கப்பட்ட ஆரோக்கிய உதவிக்குறிப்பைப் பெறுங்கள்.',
-                goalPlaceholder: 'எ.கா. மன அழுத்தத்தைக் குறைப்பது, எடை குறைப்பது, அதிக ஆற்றல் பெறுவது...',
-                generateButton: 'உதவிக்குறிப்பைப் பெறுங்கள்',
-                loadingText: 'உதவிக்குறிப்பு உருவாக்கப்படுகிறது...',
-                initialTip: 'உங்கள் தனிப்பயனாக்கப்பட்ட ஆரோக்கிய உதவிக்குறிப்பு இங்கே தோன்றும்.',
-                emptyGoalError: 'தயவுசெய்து உங்கள் ஆரோக்கிய இலக்கை உள்ளிடவும்.',
-                apiError: 'உதவிக்குறிப்பை உருவாக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.',
-                fetchError: 'உதவிக்குறிப்பை உருவாக்கும்போது ஒரு பிழை ஏற்பட்டது. உங்கள் இணைய இணைப்பைச் சரிபார்க்கவும்.',
-                microphoneUnsupported: 'உங்கள் உலாவி மைக்ரோஃபோன் உள்ளீட்டை ஆதரிக்கவில்லை.',
-                microphonePermissionDenied: 'மைக்ரோஃபோன் அணுகல் மறுக்கப்பட்டது. அமைப்புகளில் அனுமதிகளை சரிபார்க்கவும்.',
-                microphoneListening: 'கேட்கிறது...',
-                // இந்த AI Prompt தான் முக்கியம். இது AI-க்கு குறிப்பை தமிழிலேயே உருவாக்கச் சொல்கிறது.
-                aiPrompt: (goal) => `பயனரின் ஆரோக்கிய இலக்கு "${goal}" என்பதாகும். இந்த இலக்கை அடைய உதவும் ஒரு தனிப்பயனாக்கப்பட்ட, சுருக்கமான, **மிகவும் நேர்மறையான, ஊக்கமளிக்கும் மற்றும் உற்சாகப்படுத்தும்** ஆரோக்கிய உதவிக்குறிப்பை **தமிழில்** வழங்குங்கள். உதவிக்குறிப்பு செயல்முறைக்குரியதாகவும், எளிதில் பின்பற்றக்கூடியதாகவும் இருக்க வேண்டும்.`,
-                aiVoiceButton: 'உதவிக்குறிப்பைப் படிக்கவும்',
-                speechSynthesisUnsupported: 'உங்கள் உலாவி குரல் வெளியீட்டை ஆதரிக்கவில்லை.',
-                noTipToSpeak: 'பேசுவதற்கு உதவிக்குறிப்பு இல்லை.',
-                tipSpeaking: 'உதவிக்குறிப்பு பேசப்படுகிறது...',
-                tipSectionTitle: 'ஆரோக்கிய உதவிக்குறிப்பு',
-                stepSectionTitle: 'தினசரி படி டிராக்கர்',
-                openStepTrackerButton: 'படி டிராக்கரைத் திற',
-                closeStepTrackerButton: 'படி டிராக்கரை மூடு',
-                addOneStepButton: '1 படி சேர்',
-                startTrackingButton: 'டிராக்கிங்கை தொடங்கு',
-                stopTrackingButton: 'டிராக்கிங்கை நிறுத்து',
-                resetStepsButton: 'படிகளை மீட்டமை',
-                stepsResultInitial: 'டிராக்கரைத் திறக்கவும் அல்லது படிகளைச் சேர்க்கவும்.',
-                stepsTracking: (steps, distanceKm) => `டிராக்கிங்: ${steps} படிகள் (${distanceKm} கி.மீ.)`,
-                stepsGoalReached: (steps, distanceKm) => `இலக்கை அடைந்தது! நீங்கள் ${steps} படிகள் நடந்துள்ளீர்கள், இது தோராயமாக ${distanceKm} கி.மீ. ஆகும். வாழ்த்துக்கள்!`,
-                stepsGoalNear: (steps, remainingSteps, distanceKm) => `நன்றாகச் செய்தீர்கள்! நீங்கள் ${steps} படிகள் நடந்துள்ளீர்கள், இது தோராயமாக ${distanceKm} கி.மீ. ஆகும். இன்னும் ${remainingSteps} படிகள் தூரத்தில் உள்ளீர்கள்.`,
-                stepsGoalFar: (steps, distanceKm) => `தொடர்ந்து முயற்சி செய்யுங்கள்! நீங்கள் ${steps} படிகள் நடந்துள்ளீர்கள், இது தோராயமாக ${distanceKm} கி.மீ. ஆகும். உங்கள் 10,000 படிகள் இலக்கை அடைய இன்னும் ${10000 - steps} படிகள் உள்ளன.`,
-                stepsStopped: (steps, distanceKm) => `டிராக்கிங் நிறுத்தப்பட்டது. நீங்கள் ${steps} படிகள் நடந்துள்ளீர்கள், இது தோராயமாக ${distanceKm} கி.மீ.`
-            },
-            en: {
-                mainTitle: 'What is your wellness goal?',
-                descriptionText: 'Enter your goal here to get a personalized wellness tip.',
-                goalPlaceholder: 'e.g., Reduce stress, Lose weight, Gain more energy...',
-                generateButton: 'Get Tip',
-                loadingText: 'Generating tip...',
-                initialTip: 'Your personalized wellness tip will appear here.',
-                emptyGoalError: 'Please enter your wellness goal.',
-                apiError: 'Could not generate tip. Please try again.',
-                fetchError: 'An error occurred while generating the tip. Please check your internet connection and try again.',
-                microphoneUnsupported: 'Your browser does not support microphone input.',
-                microphonePermissionDenied: 'Microphone access denied. Please check permissions in settings.',
-                microphoneListening: 'Listening...',
-                aiPrompt: (goal) => `A user has stated their wellness goal as "${goal}". Provide a personalized, concise, **highly positive, encouraging, and motivating** wellness tip in English to help them achieve this goal. The tip should be actionable and easy to follow.`,
-                aiVoiceButton: 'Read Tip Aloud',
-                speechSynthesisUnsupported: 'Your browser does not support voice output.',
-                noTipToSpeak: 'No tip to speak.',
-                tipSpeaking: 'Speaking tip...',
-                tipSectionTitle: 'Wellness Tip Generator',
-                stepSectionTitle: 'Daily Step Tracker',
-                openStepTrackerButton: 'Open Step Tracker',
-                closeStepTrackerButton: 'Close Step Tracker',
-                addOneStepButton: 'Add 1 Step',
-                startTrackingButton: 'Start Tracking',
-                stopTrackingButton: 'Stop Tracking',
-                resetStepsButton: 'Reset Steps',
-                stepsResultInitial: 'Open the tracker or add steps.',
-                stepsTracking: (steps, distanceKm) => `Tracking: ${steps} steps (${distanceKm} km)`,
-                stepsGoalReached: (steps, distanceKm) => `Goal Reached! You walked ${steps} steps, which is approximately ${distanceKm} km. Congratulations!`,
-                stepsGoalNear: (steps, remainingSteps, distanceKm) => `Well done! You walked ${steps} steps, which is approximately ${distanceKm} km. You're just ${remainingSteps} steps away from your goal.`,
-                stepsGoalFar: (steps, distanceKm) => `Keep going! You walked ${steps} steps, which is approximately ${distanceKm} km. You have ${10000 - steps} steps left to reach your 10,000 steps goal.`,
-                stepsStopped: (steps, distanceKm) => `Tracking stopped. You walked ${steps} steps, which is approximately ${distanceKm} km.`
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DOM Elements ---
+            const splashScreen = document.getElementById('splashScreen');
+            const mainContent = document.getElementById('mainContent');
+            const languageSelect = document.getElementById('languageSelect');
+
+            // Main View Elements
+            const mainTitle = document.getElementById('mainTitle');
+            const descriptionText = document.getElementById('descriptionText');
+            const tipSectionTitle = document.getElementById('tipSectionTitle');
+            const goalInput = document.getElementById('goalInput');
+            const micBtn = document.getElementById('micBtn');
+            const generateBtn = document.getElementById('generateBtn');
+            const aiVoiceBtn = document.getElementById('aiVoiceBtn');
+            const ttsVoiceSelect = document.getElementById('ttsVoiceSelect');
+            const loadingIndicator = document.getElementById('loading');
+            const loadingText = document.getElementById('loadingText');
+            const tipOutput = document.getElementById('tipOutput');
+            const featuresTitle = document.getElementById('featuresTitle');
+            const toggleFeaturesBtn = document.getElementById('toggleFeaturesBtn');
+
+            // Feature Container Elements
+            const featuresContainer = document.getElementById('featuresContainer');
+            const backToMainFromFeaturesContainer = document.getElementById('backToMainFromFeaturesContainer');
+            const featuresPageTitle = document.getElementById('featuresPageTitle');
+            const allFeatureIconsContainer = document.getElementById('allFeatureIconsContainer');
+            const featureIcons = document.querySelectorAll('.feature-icon');
+            const backButtons = document.querySelectorAll('.feature-section .back-button');
+
+            // Specific Feature Section Elements
+            // Step Tracker
+            const stepTrackerSection = document.getElementById('stepTrackerSection');
+            const stepSectionTitle = document.getElementById('stepSectionTitle');
+            const currentStepsDisplay = document.getElementById('currentStepsDisplay');
+            const addOneStepBtn = document.getElementById('addOneStepBtn');
+            const toggleTrackingBtn = document.getElementById('toggleTrackingBtn');
+            const resetStepsBtn = document.getElementById('resetStepsBtn');
+            const stepResultOutput = document.getElementById('stepResultOutput');
+
+            // Heart Rate Tracker
+            const heartRateTrackerSection = document.getElementById('heartRateTrackerSection');
+            const heartRateSectionTitle = document.getElementById('heartRateSectionTitle');
+            const currentHeartRateDisplay = document.getElementById('currentHeartRateDisplay');
+            const simulateHeartRateBtn = document.getElementById('simulateHeartRateBtn');
+            const resetHeartRateBtn = document.getElementById('resetHeartRateBtn');
+            const heartRateResultOutput = document.getElementById('heartRateResultOutput');
+
+            // Water Tracker
+            const waterTrackerSection = document.getElementById('waterTrackerSection');
+            const waterSectionTitle = document.getElementById('waterSectionTitle');
+            const waterIntakeDisplay = document.getElementById('waterIntakeDisplay');
+            const addWaterBtn = document.getElementById('addWaterBtn');
+            const resetWaterBtn = document.getElementById('resetWaterBtn'); 
+            const waterResultOutput = document.getElementById('waterResultOutput');
+
+            // Journal
+            const journalSection = document.getElementById('journalSection');
+            const journalSectionTitle = document.getElementById('journalSectionTitle');
+            const journalDescription = document.getElementById('journalDescription');
+            const moodSelect = document.getElementById('moodSelect');
+            const gratitudeInput = document.getElementById('gratitudeInput');
+            const saveJournalEntryBtn = document.getElementById('saveJournalEntryBtn');
+            const journalEntriesOutput = document.getElementById('journalEntriesOutput');
+
+            // Local Tips
+            const localTipsSection = document.getElementById('localTipsSection');
+            const localTipsSectionTitle = document.getElementById('localTipsSectionTitle'); 
+            const localTipsDescription = document.getElementById('localTipsDescription');
+            const localTipCategory = document.getElementById('localTipCategory');
+            const localTipCategoryDropdown = document.getElementById('localTipCategoryDropdown');
+            const getLocalTipBtn = document.getElementById('getLocalTipBtn');
+            const localTipOutput = document.getElementById('localTipOutput');
+
+            // Meal Plan
+            const mealPlanSection = document.getElementById('mealPlanSection');
+            const mealPlanSectionTitle = document.getElementById('mealPlanSectionTitle');
+            const mealPlanDescription = document.getElementById('mealPlanDescription');
+            const dietGoalInput = document.getElementById('dietGoalInput');
+            const dietPreferenceSelect = document.getElementById('dietPreferenceSelect');
+            const allergiesInput = document = document.getElementById('allergiesInput');
+            const generateMealPlanBtn = document.getElementById('generateMealPlanBtn');
+            const mealPlanOutput = document.getElementById('mealPlanOutput');
+
+            // Mood Analysis
+            const moodAnalysisSection = document.getElementById('moodAnalysisSection');
+            const moodAnalysisSectionTitle = document.getElementById('moodAnalysisSectionTitle');
+            const moodAnalysisDescription = document.getElementById('moodAnalysisDescription');
+            const analyzeMoodJournalBtn = document.getElementById('analyzeMoodJournalBtn');
+            const moodAnalysisOutput = document.getElementById('moodAnalysisOutput');
+
+            // Exercise & Yoga
+            const exerciseYogaSection = document.getElementById('exerciseYogaSection');
+            const exerciseYogaSectionTitle = document.getElementById('exerciseYogaSectionTitle');
+            const exerciseYogaDescription = document.getElementById('exerciseYogaDescription');
+            const fitnessLevelSelect = document.getElementById('fitnessLevelSelect');
+            const timeAvailableInput = document.getElementById('timeAvailableInput');
+            const exerciseGoalInput = document.getElementById('exerciseGoalInput');
+            const generateExerciseRoutineBtn = document.getElementById('generateExerciseRoutineBtn');
+            const exerciseRoutineOutput = document.getElementById('exerciseRoutineOutput');
+
+            // Disease Prevention
+            const diseasePreventionSection = document.getElementById('diseasePreventionSection');
+            const diseasePreventionSectionTitle = document.getElementById('diseasePreventionSectionTitle');
+            const diseasePreventionDescription = document.getElementById('diseasePreventionDescription');
+            const healthConcernInput = document.getElementById('healthConcernInput');
+            const getRemedyBtn = document.getElementById('getRemedyBtn');
+            const remedyOutput = document.getElementById('remedyOutput');
+
+            // Wellness Challenge
+            const wellnessChallengeSection = document.getElementById('wellnessChallengeSection');
+            const wellnessChallengeSectionTitle = document.getElementById('wellnessChallengeSectionTitle');
+            const wellnessChallengeDescription = document.getElementById('wellnessChallengeDescription');
+            const currentHabitInput = document.getElementById('currentHabitInput');
+            const challengeGoalInput = document.getElementById('challengeGoalInput');
+            const generateChallengeBtn = document.getElementById('generateChallengeBtn');
+            const challengeOutput = document.getElementById('challengeOutput');
+
+            // Medication Reminder
+            const medicationReminderSection = document.getElementById('medicationReminderSection');
+            const medicationReminderSectionTitle = document.getElementById('medicationReminderSectionTitle');
+            const medicationReminderDescription = document.getElementById('medicationReminderDescription');
+            const medicationNameInput = document.getElementById('medicationNameInput');
+            const medicationTimeInput = document.getElementById('medicationTimeInput');
+            const medicationFrequencySelect = document.getElementById('medicationFrequencySelect');
+            const setReminderBtn = document.getElementById('setReminderBtn');
+            const medicationRemindersList = document.getElementById('medicationRemindersList');
+            const clearMedicationRemindersBtn = document.getElementById('clearMedicationRemindersBtn');
+
+            // Body Pain Mapping
+            const bodyPainMappingSection = document.getElementById('bodyPainMappingSection');
+            const bodyPainMappingSectionTitle = document.getElementById('bodyPainMappingSectionTitle');
+            const bodyPainMappingDescription = document.getElementById('bodyPainMappingDescription');
+            const bodyMapContainer = document.getElementById('bodyMapContainer'); 
+            const bodyMapImage = document.getElementById('bodyMapImage');
+            const painLocationInput = document.getElementById('painLocationInput');
+            const painLevelSelect = document.getElementById('painLevelSelect');
+            const addPainEntryBtn = document.getElementById('addPainEntryBtn');
+            const clearPainMapBtn = document.getElementById('clearPainMapBtn');
+            const painEntriesList = document.getElementById('painEntriesList');
+
+            // First Aid & Emergency
+            const firstAidEmergencySection = document.getElementById('firstAidEmergencySection');
+            const firstAidEmergencySectionTitle = document.getElementById('firstAidEmergencySectionTitle');
+            const firstAidEmergencyDescription = document.getElementById('firstAidEmergencyDescription');
+            const emergencySituationInput = document.getElementById('emergencySituationInput');
+            const getEmergencyAdviceBtn = document.getElementById('getEmergencyAdviceBtn');
+            const emergencyAdviceOutput = document.getElementById('emergencyAdviceOutput');
+
+
+            // --- Global Variables ---
+            let currentLanguage = localStorage.getItem('wellnessBuddyLanguage') || 'ta';
+            let recognition; // For Web Speech API Recognition
+            let isListening = false;
+            let speechSynth; // For Web Speech API Synthesis
+            let availableVoices = [];
+            let currentUtterance = null; // To keep track of the current speech utterance
+
+            let stepCount = parseInt(localStorage.getItem('wellnessBuddySteps')) || 0;
+            let isTrackingSteps = false;
+            let stepTrackingInterval;
+            const stepsGoal = 10000; // Define stepsGoal here
+            const stepsPerKm = 1312.33; // Define stepsPerKm here
+
+            let waterIntakeMl = parseInt(localStorage.getItem('wellnessBuddyWater')) || 0;
+            let waterGoalMl = 2000; // Default goal
+
+            let journalEntries = JSON.parse(localStorage.getItem('wellnessBuddyJournal')) || [];
+            let medicationReminders = JSON.parse(localStorage.getItem('wellnessBuddyMedications')) || [];
+            let painMapEntries = JSON.parse(localStorage.getItem('wellnessBuddyPainMap')) || [];
+            let selectedPainPoint = null; // To store the coordinates of the clicked pain point
+
+            // --- Translations Object ---
+            const translations = {
+                ta: {
+                    appTitle: "ஆரோக்கிய நண்பன் - உங்கள் ஆரோக்கிய வழிகாட்டி",
+                    mainTitle: "உங்கள் ஆரோக்கிய நண்பன்",
+                    descriptionText: "உங்கள் ஆரோக்கிய இலக்குகளை அடைய நான் உங்களுக்கு உதவுவேன். ஒரு உதவிக்குறிப்பைப் பெற உங்கள் இலக்கை உள்ளிடவும் அல்லது அம்சங்களை ஆராயவும்.",
+                    tipSectionTitle: "ஆரோக்கிய குறிப்பு பெற",
+                    goalInputPlaceholder: "உங்கள் ஆரோக்கிய இலக்கை உள்ளிடவும் (எ.கா. எடை குறைப்பு, மன அழுத்த மேலாண்மை)",
+                    micButtonTitle: "உங்கள் இலக்கைப் பேசுங்கள்",
+                    generateButton: "உதவிக்குறிப்பு பெறுங்கள்",
+                    aiVoiceButton: "AI குரலில் கேளுங்கள்",
+                    loadingText: "குறிப்பு உருவாக்கப்படுகிறது...",
+                    tipOutputDefault: "நீங்கள் ஒரு இலக்கை உள்ளிடவும், நான் ஒரு தனிப்பயனாக்கப்பட்ட ஆரோக்கிய குறிப்பை உருவாக்குவேன்!",
+                    featuresTitle: "மேலும் அம்சங்கள்",
+                    showFeaturesLabel: "அனைத்து அம்சங்களையும் காட்டு",
+                    backButton: "← பின்செல்",
+                    featuresPageTitle: "ஆரோக்கிய நண்பன் அம்சங்கள்",
+
+                    // Feature labels
+                    stepTrackerLabel: "படி டிராக்கர்",
+                    heartRateTrackerLabel: "இதயத் துடிப்பு",
+                    waterTrackerLabel: "தண்ணீர் டிராக்கர்",
+                    journalLabel: "ஜர்னல்",
+                    localTipsLabel: "உள்ளூர் குறிப்புகள்",
+                    mealPlanLabel: "உணவுத் திட்டம்",
+                    moodAnalysisLabel: "உணர்வு பகுப்பாய்வு",
+                    exerciseYogaLabel: "உடற்பயிற்சி & யோகா",
+                    diseasePreventionLabel: "நோய் தடுப்பு",
+                    wellnessChallengeLabel: "ஆரோக்கிய சவால்கள்",
+                    medicationReminderLabel: "மருந்து நினைவூட்டல்",
+                    bodyPainMappingLabel: "உடல் வலி மேப்பிங்",
+                    firstAidEmergencyLabel: "முதலுதவி & அவசர உதவி",
+
+                    // Step Tracker Section
+                    stepSectionTitle: "படி டிராக்கர்",
+                    addOneStepBtn: "ஒரு படி சேர்",
+                    toggleTrackingBtnStart: "தொடங்கு",
+                    toggleTrackingBtnStop: "நிறுத்து",
+                    resetStepsBtn: "மீட்டமை",
+                    stepResultOutputInitial: "உங்கள் படிகளைக் கண்காணிக்கத் தொடங்குங்கள்!",
+                    stepTrackingStarted: "படி கண்காணிப்பு தொடங்கப்பட்டது.",
+                    stepTrackingStopped: "படி கண்காணிப்பு நிறுத்தப்பட்டது. இன்று நீங்கள் {{steps}} படிகள் எடுத்துள்ளீர்கள்!",
+                    stepAdded: "ஒரு படி சேர்க்கப்பட்டது. மொத்த படிகள்: {{steps}}",
+                    stepsReset: "படிகள் மீட்டமைக்கப்பட்டன.",
+                    currentStepsDisplayPrefix: "படிகள்: ",
+                    stepsTracking: (steps, distanceKm) => `டிராக்கிங்: ${steps} படிகள் (${distanceKm} கி.மீ.)`,
+                    stepsGoalReached: (steps, distanceKm) => `இலக்கை அடைந்தது! நீங்கள் ${steps} படிகள் நடந்துள்ளீர்கள், இது தோராயமாக ${distanceKm} கி.மீ. ஆகும். வாழ்த்துக்கள்!`,
+                    stepsGoalNear: (steps, remainingSteps, distanceKm) => `நன்றாகச் செய்தீர்கள்! நீங்கள் ${steps} படிகள் நடந்துள்ளீர்கள், இது தோராயமாக ${distanceKm} கி.மீ. ஆகும். இன்னும் ${remainingSteps} படிகள் தூரத்தில் உள்ளீர்கள்.`,
+                    stepsGoalFar: (steps, distanceKm) => `தொடர்ந்து முயற்சி செய்யுங்கள்! நீங்கள் ${steps} படிகள் நடந்துள்ளீர்கள், இது தோராயமாக ${distanceKm} கி.மீ. ஆகும். உங்கள் 10,000 படிகள் இலக்கை அடைய இன்னும் ${10000 - steps} படிகள் உள்ளன.`,
+                    stepsStopped: (steps, distanceKm) => `டிராக்கிங் நிறுத்தப்பட்டது. நீங்கள் ${steps} படிகள் நடந்துள்ளீர்கள், இது தோராயமாக ${distanceKm} கி.மீ.`,
+
+                    // Heart Rate Tracker Section
+                    heartRateSectionTitle: "இதயத் துடிப்பு டிராக்கர்",
+                    simulateHeartRateBtn: "இதயத் துடிப்பை உருவகப்படுத்து",
+                    resetHeartRateBtn: "மீட்டமை",
+                    heartRateResultOutputInitial: "உங்கள் இதயத் துடிப்பைக் கண்காணிக்கத் தொடங்குங்கள்.",
+                    heartRateSimulated: "உருவகப்படுத்தப்பட்ட இதயத் துடிப்பு: {{rate}} bpm. இது சாதாரண வரம்பிற்குள் உள்ளது. (இது ஒரு உருவகப்படுத்தப்பட்ட மதிப்பு)",
+                    heartRateSimulatedHigh: "உருவகப்படுத்தப்பட்ட இதயத் துடிப்பு: {{rate}} bpm. இது சற்றே அதிகமாக உள்ளது. ஒரு மருத்துவ நிபுணரை அணுகவும். (இது ஒரு உருவகப்படுத்தப்பட்ட மதிப்பு)",
+                    heartRateReset: "இதயத் துடிப்பு மீட்டமைக்கப்பட்டது.",
+                    currentHeartRateDisplayPrefix: "இதயத் துடிப்பு: ",
+
+                    // Water Tracker Section
+                    waterSectionTitle: "தண்ணீர் டிராக்கர்",
+                    addWaterBtn: "250ml சேர்",
+                    resetWaterBtn: "மீட்டமை",
+                    waterResultOutputInitial: "உங்கள் தண்ணீர் உட்கொள்ளலை கண்காணிக்கவும். இலக்கு: {{goal}} ml.",
+                    waterAdded: "{{amount}} ml தண்ணீர் சேர்க்கப்பட்டது. மொத்த உட்கொள்ளல்: {{total}} ml. நீங்கள் {{remaining}} ml இன்னும் குடிக்க வேண்டும்.",
+                    waterGoalReached: "அற்புதம்! நீங்கள் உங்கள் தினசரி தண்ணீர் இலக்கான {{total}} ml ஐ அடைந்துவிட்டீர்கள்!",
+                    waterReset: "தண்ணீர் உட்கொள்ளல் மீட்டமைக்கப்பட்டது.",
+                    currentWaterDisplayPrefix: "உட்கொள்ளல்: ",
+
+                    // Journal Section
+                    journalSectionTitle: "மனநிலை & நன்றியுணர்வு ஜர்னல்",
+                    journalDescription: "உங்கள் மனநிலையையும், நீங்கள் நன்றியுள்ள விஷயங்களையும் பதிவு செய்வதன் மூலம் உங்கள் உணர்ச்சிகளைக் கண்காணிக்கவும்.",
+                    moodSelectPlaceholder: "உங்கள் மனநிலையைத் தேர்ந்தெடுக்கவும்",
+                    gratitudeInputPlaceholder: "நீங்கள் நன்றியுள்ள ஒரு விஷயத்தை எழுதுங்கள்...",
+                    saveJournalEntryBtn: "பதிவைச் சேமி",
+                    journalEntrySaved: "உங்கள் ஜர்னல் பதிவு சேமிக்கப்பட்டது.",
+                    journalEntriesOutputDefault: "இன்னும் ஜர்னல் பதிவுகள் இல்லை. ஒரு புதிய பதிவைச் சேர்க்கவும்!",
+                    journalEntryDisplay: "நாள்: {{date}} | மனநிலை: {{mood}} | நன்றியுணர்வு: {{gratitude}}",
+                    moodHappy: "மகிழ்ச்சி",
+                    moodNeutral: "சாதாரணம்",
+                    moodSad: "சோகம்",
+                    moodStressed: "மன அழுத்தம்",
+                    moodEnergetic: "ஆற்றல்",
+                    journalNoMoodOrGratitude: "மனநிலையோ அல்லது நன்றியுணர்வோ இல்லாமல் சேமிக்க முடியாது. இரண்டில் ஒன்றையாவது உள்ளிடவும்.",
+
+                    // Local Tips Section
+                    localTipsSectionTitle: "உள்ளூர் ஆரோக்கிய குறிப்புகள்",
+                    localTipsDescription: "குறிப்பிட்ட உள்ளூர் மூலிகைகள் அல்லது பாரம்பரிய நடைமுறைகள் பற்றிய ஆரோக்கிய குறிப்புகளைப் பெறுங்கள். (எ.கா. மஞ்சள், முருங்கை, தியானம்)",
+                    localTipCategoryPlaceholder: "உதவிக்குறிப்பு வகையை உள்ளிடவும் (எ.கா. மஞ்சள், முருங்கை, தியானம்...)",
+                    getLocalTipBtn: "குறிப்பு பெறுங்கள்",
+                    localTipOutputDefault: "நீங்கள் ஒரு வகையை உள்ளிடவும், நான் ஒரு உள்ளூர் ஆரோக்கிய குறிப்பை உருவாக்குவேன்.",
+                    localTipNotFound: "இந்த வகைக்கான உள்ளூர் உதவிக்குறிப்புகள் தற்போது இல்லை.",
+                    localTipLoading: "உள்ளூர் குறிப்பு உருவாக்கப்படுகிறது...",
+
+
+                    // Meal Plan Section
+                    mealPlanSectionTitle: "உணவுத் திட்டப் பரிந்துரைகள்",
+                    mealPlanDescription: "உங்கள் உணவு இலக்குகள், விருப்பங்கள் மற்றும் ஒவ்வாமைகளின் அடிப்படையில் தனிப்பயனாக்கப்பட்ட உணவுத் திட்டத்தைப் பெறுங்கள்.",
+                    dietGoalInputPlaceholder: "உணவு இலக்கு (எ.கா. எடை குறைப்பு, தசை வளர்ச்சி...)",
+                    dietPreferenceSelectPlaceholder: "உணவு விருப்பத்தைத் தேர்ந்தெடுக்கவும்",
+                    dietPreferenceVegetarian: "சைவம்",
+                    dietPreferenceNonVegetarian: "அசைவம்",
+                    dietPreferenceVegan: "முழு சைவம்",
+                    allergiesInputPlaceholder: "ஒவ்வாமைகள் (இருப்பின், எ.கா. நிலக்கடலை, பால்...)",
+                    generateMealPlanBtn: "உணவுத் திட்டத்தை உருவாக்கு",
+                    mealPlanOutputDefault: "உங்கள் விவரங்களை உள்ளிடவும், ஒரு தனிப்பயனாக்கப்பட்ட உணவுத் திட்டத்தை உருவாக்குவேன்.",
+                    mealPlanLoading: "உணவுத் திட்டம் உருவாக்கப்படுகிறது...",
+                    mealPlanNoInput: "உணவு இலக்கு மற்றும் விருப்பம் தேவை.",
+
+                    // Mood Analysis Section
+                    moodAnalysisSectionTitle: "உணர்வுப் பதிவேடு பகுப்பாய்வு",
+                    moodAnalysisDescription: "உங்கள் ஜர்னல் பதிவுகளின் அடிப்படையில் உங்கள் மனநிலை போக்குகளைப் பகுப்பாய்வு செய்யுங்கள்.",
+                    analyzeMoodJournalBtn: "மனநிலையைப் பகுப்பாய்வு செய்",
+                    moodAnalysisOutputDefault: "உங்கள் ஜர்னல் பதிவுகள் பகுப்பாய்வு செய்யப்பட்ட பிறகு இங்கே முடிவுகள் தோன்றும்.",
+                    moodAnalysisNoEntries: "பகுப்பாய்வு செய்ய ஜர்னல் பதிவுகள் எதுவும் இல்லை.",
+                    moodAnalysisSummary: "உங்கள் ஜர்னல் பதிவுகளின் அடிப்படையில், உங்கள் மனநிலை போக்குகள் பின்வருமாறு:\n\nமொத்த பதிவுகள்: {{total}}\nமகிழ்ச்சி: {{happy}}%\nசாதாரணம்: {{neutral}}%\nசோகம்: {{sad}}%\nமன அழுத்தம்: {{stressed}}%\nஆற்றல்: {{energetic}}%\n\nஉங்கள் மனநலத்தை மேம்படுத்த நீங்கள் தொடர்ந்து ஜர்னல் எழுதலாம் அல்லது நிபுணரின் உதவியை நாடலாம்.",
+
+                    // Exercise & Yoga Section
+                    exerciseYogaSectionTitle: "உடற்பயிற்சி & யோகா பரிந்துரைகள்",
+                    exerciseYogaDescription: "உங்கள் உடற்பயிற்சி நிலை, கிடைக்கக்கூடிய நேரம் மற்றும் இலக்குகளின் அடிப்படையில் உடற்பயிற்சி மற்றும் யோகா நடைமுறைகளைப் பெறுங்கள்.",
+                    fitnessLevelSelectPlaceholder: "உடற்பயிற்சி நிலையைத் தேர்ந்தெடுக்கவும்",
+                    fitnessLevelBeginner: "ஆரம்பநிலை",
+                    fitnessLevelIntermediate: "நடுநிலை",
+                    fitnessLevelAdvanced: "மேம்பட்டது",
+                    timeAvailableInputPlaceholder: "கிடைக்கக்கூடிய நேரம் (நிமிடங்கள்)...",
+                    exerciseGoalInputPlaceholder: "உடற்பயிற்சி இலக்கு (எ.கா. உடல் நெகிழ்வுத்தன்மை, தசைகளை உருவாக்குதல்...)",
+                    generateExerciseRoutineBtn: "பயிற்சி திட்டத்தை உருவாக்கு",
+                    exerciseRoutineOutputDefault: "உங்கள் விவரங்களை உள்ளிடவும், ஒரு தனிப்பயனாக்கப்பட்ட பயிற்சி திட்டத்தை உருவாக்குவேன்.",
+                    exerciseRoutineLoading: "பயிற்சி திட்டம் உருவாக்கப்படுகிறது...",
+                    exerciseRoutineNoInput: "உடற்பயிற்சி நிலை, நேரம் மற்றும் இலக்கு தேவை.",
+
+                    // Disease Prevention Section
+                    diseasePreventionSectionTitle: "நோய் தடுப்பு & வீட்டு வைத்தியம்",
+                    diseasePreventionDescription: "பொதுவான உடல்நலக் கவலைகள் மற்றும் நோய்த்தடுப்புக்கான வீட்டு வைத்தியம் பற்றிய தகவல்களைப் பெறுங்கள்.",
+                    healthConcernInputPlaceholder: "உடல்நலக் கவலையை உள்ளிடவும் (எ.கா. ஜலதோஷம், செரிமானப் பிரச்சனை...)",
+                    getRemedyBtn: "தீர்வைக் காண்க",
+                    remedyOutputDefault: "நீங்கள் ஒரு உடல்நலக் கவலையை உள்ளிடவும், ஒரு தீர்வைக் காண்பிப்பேன்.",
+                    remedyLoading: "தீர்வு உருவாக்கப்படுகிறது...",
+                    remedyNotFound: "இந்த உடல்நலக் கவலைக்கான தீர்வு தற்போது இல்லை. ஒரு மருத்துவ நிபுணரை அணுகவும்.",
+
+                    // Wellness Challenge Section
+                    wellnessChallengeSectionTitle: "ஆரோக்கிய சவால்கள்",
+                    wellnessChallengeDescription: "உங்கள் ஆரோக்கிய இலக்குகளை அடைய உதவும் தனிப்பயனாக்கப்பட்ட சவால்களை உருவாக்குங்கள்.",
+                    currentHabitInputPlaceholder: "உங்கள் தற்போதைய பழக்கம் (எ.கா. நீர் உட்கொள்ளல்)...",
+                    challengeGoalInputPlaceholder: "உங்கள் சவால் இலக்கு (எ.கா. 2000ml தண்ணீர்)...",
+                    generateChallengeBtn: "சவாலை உருவாக்கு",
+                    challengeOutputDefault: "உங்கள் தற்போதைய மற்றும் சவால் இலக்குகளை உள்ளிடவும், நான் ஒரு ஆரோக்கிய சவாலை உருவாக்குவேன்.",
+                    challengeExample: "சிறந்த ஆரோக்கியத்திற்கான '{{habit}}' சவால்:\n\nவார சவால்: முதல் வாரத்தில், உங்கள் '{{habit}}' அளவை தினமும் 25% அதிகரிக்க முயற்சிக்கவும். அடுத்த வாரங்களில் படிப்படியாக அதிகரித்து, '{{goal}}' என்ற உங்கள் இலக்கை அடையவும்.\n\nதினசரி ஒரு சிறிய படி, பெரிய மாற்றத்தை உருவாக்கும்! உங்கள் முன்னேற்றத்தைக் கண்காணிக்க மறக்காதீர்கள்.",
+                    challengeNoInput: "தற்போதைய பழக்கம் மற்றும் சவால் இலக்கு தேவை.",
+
+                    // Medication Reminder Section
+                    medicationReminderSectionTitle: "மருந்து நினைவூட்டல்",
+                    medicationReminderDescription: "உங்கள் மருந்து நேரங்களை ஒருபோதும் தவறவிடாதீர்கள். புதிய நினைவூட்டல்களை அமைக்கவும்.",
+                    medicationNameInputPlaceholder: "மருந்தின் பெயர்...",
+                    medicationTimeInputPlaceholder: "நேரம்",
+                    medicationFrequencySelectPlaceholder: "நினைவூட்டல் அதிர்வெண்",
+                    medicationFrequencyDaily: "தினசரி",
+                    medicationFrequencyWeekly: "வாராந்திர",
+                    medicationFrequencyOnce: "ஒருமுறை",
+                    setReminderBtn: "நினைவூட்டலை அமை",
+                    medicationReminderSaved: "மருந்து நினைவூட்டல் சேமிக்கப்பட்டது.",
+                    medicationReminderListDefault: "இன்னும் மருந்து நினைவூட்டல்கள் இல்லை.",
+                    medicationReminderDisplay: "மருந்து: {{name}} | நேரம்: {{time}} | அதிர்வெண்: {{frequency}}",
+                    medicationReminderNoInput: "மருந்தின் பெயர், நேரம் மற்றும் அதிர்வெண் தேவை.",
+                    medicationReminderClearAll: "அனைத்தையும் அழி",
+
+                    // Body Pain Mapping Section
+                    bodyPainMappingSectionTitle: "உடல் வலி மேப்பிங்",
+                    bodyPainMappingDescription: "உடல் பாகங்களில் வலி புள்ளிகளைக் குறிக்கவும், வலி நிலை மற்றும் தேதி/நேரத்தை பதிவு செய்யவும்.",
+                    painLocationInputPlaceholder: "வலி இடம் (அடிவயிறு, முதுகு...)",
+                    painLevelSelectPlaceholder: "வலி நிலை தேர்ந்தெடுக்கவும்",
+                    painLevelMild: "லேசானது",
+                    painLevelModerate: "மிதமானது",
+                    painLevelSevere: "கடுமையானது",
+                    addPainEntryBtn: "வலி பதிவை சேர்",
+                    clearPainMapBtn: "வலி வரைபடத்தை அழி",
+                    painEntrySaved: "வலி பதிவு சேர்க்கப்பட்டது.",
+                    painEntriesListDefault: "இன்னும் வலி பதிவுகள் இல்லை. வரைபடத்தில் கிளிக் செய்யவும் அல்லது விவரங்களை உள்ளிடவும்.",
+                    painEntryDisplay: "இடம்: {{location}} | நிலை: {{level}} | நாள்: {{date}} | நேரம்: {{time}}",
+                    painEntryNoInput: "வலி இடம், வலி நிலை மற்றும் வரைபடத்தில் ஒரு புள்ளி தேவை.",
+
+                    // First Aid & Emergency Section
+                    firstAidEmergencySectionTitle: "முதலுதவி & அவசர உதவி",
+                    firstAidEmergencyDescription: "அவசர காலங்களில் விரைவான முதலுதவி தகவல்களைப் பெறுங்கள்.",
+                    emergencySituationInputPlaceholder: "அவசர சூழ்நிலையை உள்ளிடவும் (எ.கா. தீக்காயம், எலும்பு முறிவு, மூச்சுத்திணறல்...)",
+                    getEmergencyAdviceBtn: "ஆலோசனை பெறுங்கள்",
+                    emergencyAdviceOutputDefault: "அவசர சூழ்நிலையை உள்ளிடவும், நான் முதலுதவி ஆலோசனையை வழங்குவேன்.",
+                    emergencyAdviceLoading: "ஆலோசனை உருவாக்கப்படுகிறது...",
+                    emergencyAdviceError: "முதலுதவி ஆலோசனை பெற முடியவில்லை. தயவுசெய்து மீண்டும் முயற்சிக்கவும்.",
+
+
+                    // General messages
+                    error: "ஏதோ தவறு நடந்தது. தயவுசெய்து மீண்டும் முயற்சிக்கவும்.",
+                    micStart: "கேட்கிறேன்...",
+                    micStop: "பதிவு நிறுத்தப்பட்டது.",
+                    noSpeech: "பேச்சு கண்டறியப்படவில்லை. தயவுசெய்து மீண்டும் முயற்சிக்கவும்.",
+                    speechError: "குரல் அங்கீகாரத்தில் பிழை: {{error}}",
+                    noTTSVoice: "குரல் அங்கீகாரத்திற்கு எந்தக் குரல்களும் கிடைக்கவில்லை. வேறு உலாவியை முயற்சிக்கவும் அல்லது உங்கள் சாதன அமைப்புகளைச் சரிபார்க்கவும்."
+                },
+                en: {
+                    appTitle: "Wellness Buddy - Your Health Guide",
+                    mainTitle: "Your Wellness Buddy",
+                    descriptionText: "I'm here to help you achieve your wellness goals. Enter a goal to get a tip, or explore more features.",
+                    tipSectionTitle: "Get a Wellness Tip",
+                    goalInputPlaceholder: "Enter your health goal (e.g., lose weight, manage stress)",
+                    micButtonTitle: "Speak your goal",
+                    generateButton: "Get Tip",
+                    aiVoiceButton: "Listen in AI Voice",
+                    loadingText: "Generating tip...",
+                    tipOutputDefault: "Enter a goal, and I'll generate a personalized wellness tip for you!",
+                    featuresTitle: "More Features",
+                    showFeaturesLabel: "Show All Features",
+                    backButton: "← Back",
+                    featuresPageTitle: "Wellness Buddy Features",
+
+                    // Feature labels
+                    stepTrackerLabel: "Step Tracker",
+                    heartRateTrackerLabel: "Heart Rate",
+                    waterTrackerLabel: "Water Tracker",
+                    journalLabel: "Journal",
+                    localTipsLabel: "Local Tips",
+                    mealPlanLabel: "Meal Plan",
+                    moodAnalysisLabel: "Mood Analysis",
+                    exerciseYogaLabel: "Exercise & Yoga",
+                    diseasePreventionLabel: "Disease Prevention",
+                    wellnessChallengeLabel: "Wellness Challenges",
+                    medicationReminderLabel: "Medication Reminder",
+                    bodyPainMappingLabel: "Body Pain Mapping",
+                    firstAidEmergencyLabel: "First Aid & Emergency",
+
+                    // Step Tracker Section
+                    stepSectionTitle: "Step Tracker",
+                    addOneStepBtn: "Add One Step",
+                    toggleTrackingBtnStart: "Start Tracking",
+                    toggleTrackingBtnStop: "Stop Tracking",
+                    resetStepsBtn: "Reset Steps",
+                    stepResultOutputInitial: "Start tracking your steps!",
+                    stepTrackingStarted: "Step tracking started.",
+                    stepTrackingStopped: "Stop tracking stopped. You walked {{steps}} steps today!",
+                    stepAdded: "One step added. Total steps: {{steps}}",
+                    stepsReset: "Steps reset.",
+                    currentStepsDisplayPrefix: "Steps: ",
+                    stepsTracking: (steps, distanceKm) => `Tracking: ${steps} steps (${distanceKm} km)`,
+                    stepsGoalReached: (steps, distanceKm) => `Goal Reached! You walked ${steps} steps, which is approximately ${distanceKm} km. Congratulations!`,
+                    stepsGoalNear: (steps, remainingSteps, distanceKm) => `Well done! You walked ${steps} steps, which is approximately ${distanceKm} km. You're just ${remainingSteps} steps away from your goal.`,
+                    stepsGoalFar: (steps, distanceKm) => `Keep going! You walked ${steps} steps, which is approximately ${distanceKm} km. You have ${10000 - steps} steps left to reach your 10,000 steps goal.`,
+                    stepsStopped: (steps, distanceKm) => `Tracking stopped. You walked ${steps} steps, which is approximately ${distanceKm} km.`,
+
+                    // Heart Rate Tracker Section
+                    heartRateSectionTitle: "Heart Rate Tracker",
+                    simulateHeartRateBtn: "Simulate Heart Rate",
+                    resetHeartRateBtn: "Reset Heart Rate",
+                    heartRateResultOutputInitial: "Start monitoring your heart rate.",
+                    heartRateSimulated: "Simulated Heart Rate: {{rate}} bpm. This is within a normal range. (This is a simulated value)",
+                    heartRateSimulatedHigh: "Simulated Heart Rate: {{rate}} bpm. This is slightly high. Consult a medical professional. (This is a simulated value)",
+                    heartRateReset: "Heart rate reset.",
+                    currentHeartRateDisplayPrefix: "Heart Rate: ",
+
+                    // Water Tracker Section
+                    waterSectionTitle: "Water Tracker",
+                    addWaterBtn: "Add 250ml",
+                    resetWaterBtn: "Reset",
+                    waterResultOutputInitial: "Track your water intake. Goal: {{goal}} ml.",
+                    waterAdded: "{{amount}} ml water added. Total intake: {{total}} ml. You need to drink {{remaining}} ml more.",
+                    waterGoalReached: "Great job! You reached your daily water goal of {{total}} ml!",
+                    waterReset: "Water intake reset.",
+                    currentWaterDisplayPrefix: "Intake: ",
+
+                    // Journal Section
+                    journalSectionTitle: "Mood & Gratitude Journal",
+                    journalDescription: "Track your emotions by logging your mood and things you are grateful for.",
+                    moodSelectPlaceholder: "Select your mood",
+                    gratitudeInputPlaceholder: "Write something you're grateful for...",
+                    saveJournalEntryBtn: "Save Entry",
+                    journalEntrySaved: "Your journal entry has been saved!",
+                    journalEntriesOutputDefault: "No journal entries yet. Add a new one!",
+                    journalEntryDisplay: "Date: {{date}} | Mood: {{mood}} | Gratitude: {{gratitude}}",
+                    moodHappy: "Happy",
+                    moodNeutral: "Neutral",
+                    moodSad: "Sad",
+                    moodStressed: "Stressed",
+                    moodEnergetic: "Energetic",
+                    journalNoMoodOrGratitude: "Cannot save without mood or gratitude. Please enter at least one.",
+
+                    // Local Tips Section
+                    localTipsSectionTitle: "Local Wellness Tips",
+                    localTipsDescription: "Get health tips about specific local herbs or traditional practices. (e.g., Turmeric, Moringa, Meditation)",
+                    localTipCategoryPlaceholder: "Enter tip category (e.g., Turmeric, Moringa, Meditation...)",
+                    getLocalTipBtn: "Get Tip",
+                    localTipOutputDefault: "Enter a category, and I'll generate a local wellness tip.",
+                    localTipLoading: "Generating local tip...",
+                    localTipNotFound: "No local tips found for this category at the moment.",
+
+
+                    // Meal Plan Section
+                    mealPlanSectionTitle: "Meal Plan Recommendations",
+                    mealPlanDescription: "Get a personalized meal plan based on your dietary goals, preferences, and allergies.",
+                    dietGoalInputPlaceholder: "Dietary goal (e.g., weight loss, muscle gain...)",
+                    dietPreferenceSelectPlaceholder: "Select diet preference",
+                    dietPreferenceVegetarian: "Vegetarian",
+                    dietPreferenceNonVegetarian: "Non-Vegetarian",
+                    dietPreferenceVegan: "Vegan",
+                    allergiesInputPlaceholder: "Allergies (if any, e.g., peanuts, dairy...)",
+                    generateMealPlanBtn: "Generate Meal Plan",
+                    mealPlanOutputDefault: "Enter your details, and I'll generate a personalized meal plan.",
+                    mealPlanLoading: "Generating meal plan...",
+                    mealPlanNoInput: "Dietary goal and preference are required.",
+
+                    // Mood Analysis Section
+                    moodAnalysisSectionTitle: "Mood Journal Analysis",
+                    moodAnalysisDescription: "Analyze your mood trends based on your journal entries.",
+                    analyzeMoodJournalBtn: "Analyze Mood",
+                    moodAnalysisOutputDefault: "Results will appear here after analyzing your journal entries.",
+                    moodAnalysisNoEntries: "No journal entries to analyze yet.",
+                    moodAnalysisSummary: "Based on your journal entries, your mood trends are as follows:\n\nTotal Entries: {{total}}\nHappy: {{happy}}%\nNeutral: {{neutral}}%\nSad: {{sad}}%\nStressed: {{stressed}}%\nEnergetic: {{energetic}}%\n\nYou can continue journaling or seek professional help to improve your mental well-being.",
+
+                    // Exercise & Yoga Section
+                    exerciseYogaSectionTitle: "Exercise & Yoga Recommendations",
+                    exerciseYogaDescription: "Get exercise and yoga routines based on your fitness level, time available, and goals.",
+                    fitnessLevelSelectPlaceholder: "Select fitness level",
+                    fitnessLevelBeginner: "Beginner",
+                    fitnessLevelIntermediate: "Intermediate",
+                    fitnessLevelAdvanced: "Advanced",
+                    timeAvailableInputPlaceholder: "Time available (minutes)...",
+                    exerciseGoalInputPlaceholder: "Exercise goal (e.g., flexibility, build muscle...)",
+                    generateExerciseRoutineBtn: "Generate Routine",
+                    exerciseRoutineOutputDefault: "Enter your details, and I'll generate a personalized exercise routine.",
+                    exerciseRoutineLoading: "Generating exercise routine...",
+                    exerciseRoutineNoInput: "Fitness level, time, and goal are required.",
+
+                    // Disease Prevention Section
+                    diseasePreventionSectionTitle: "Disease Prevention & Home Remedies",
+                    diseasePreventionDescription: "Get information about home remedies for common health concerns and disease prevention.",
+                    healthConcernInputPlaceholder: "Enter health concern (e.g., common cold, indigestion...)",
+                    getRemedyBtn: "Get Remedy",
+                    remedyOutputDefault: "Enter a health concern, and I'll show a remedy.",
+                    remedyLoading: "Generating remedy...",
+                    remedyNotFound: "No remedy found for this health concern at the moment. Please consult a medical professional.",
+
+                    // Wellness Challenge Section
+                    wellnessChallengeSectionTitle: "Wellness Challenges",
+                    wellnessChallengeDescription: "Create personalized challenges to help you achieve your wellness goals.",
+                    currentHabitInputPlaceholder: "Your current habit (e.g., 1000ml water)...",
+                    challengeGoalInputPlaceholder: "Your challenge goal (e.g., 2000ml water)...",
+                    generateChallengeBtn: "Generate Challenge",
+                    challengeOutputDefault: "Enter your current habit and challenge goal, and I'll generate a wellness challenge.",
+                    challengeExample: "Here's a '{{habit}}' challenge for better wellness:\n\nWeekly Challenge: For the first week, try to increase your '{{habit}}' by 25% daily. Gradually increase in subsequent weeks to reach your goal of '{{goal}}'.\n\nA small step daily makes a big difference! Don't forget to track your progress.",
+                    challengeNoInput: "Current habit and challenge goal are required.",
+
+                    // Medication Reminder Section
+                    medicationReminderSectionTitle: "Medication Reminder",
+                    medicationReminderDescription: "Never miss your medication times. Set new reminders.",
+                    medicationNameInputPlaceholder: "Medication name...",
+                    medicationTimeInputPlaceholder: "Time",
+                    medicationFrequencySelectPlaceholder: "Reminder Frequency",
+                    medicationFrequencyDaily: "Daily",
+                    medicationFrequencyWeekly: "Weekly",
+                    medicationFrequencyOnce: "Once",
+                    setReminderBtn: "Set Reminder",
+                    medicationReminderSaved: "Medication reminder saved!",
+                    medicationReminderListDefault: "No medication reminders set yet.",
+                    medicationReminderDisplay: "Medication: {{name}} | Time: {{time}} | Frequency: {{frequency}}",
+                    medicationReminderNoInput: "Medication name, time, and frequency are required.",
+                    medicationReminderClearAll: "Clear All",
+
+                    // Body Pain Mapping Section
+                    bodyPainMappingSectionTitle: "Body Pain Mapping",
+                    bodyPainMappingDescription: "Map pain points on the body and log pain level and date/time.",
+                    painLocationInputPlaceholder: "Pain location (e.g., abdomen, back...)",
+                    painLevelSelectPlaceholder: "Select pain level",
+                    painLevelMild: "Mild",
+                    painLevelModerate: "Moderate",
+                    painLevelSevere: "Severe",
+                    addPainEntryBtn: "Add Pain Entry",
+                    clearPainMapBtn: "Clear Pain Map",
+                    painEntrySaved: "Pain entry added.",
+                    painEntriesListDefault: "No pain entries yet. Click on the map or enter details.",
+                    painEntryDisplay: "Location: {{location}} | Level: {{level}} | Date: {{date}} | Time: {{time}}",
+                    painEntryNoInput: "Pain location, pain level, and a point on the map are required.",
+
+                    // First Aid & Emergency Section
+                    firstAidEmergencySectionTitle: "First Aid & Emergency",
+                    firstAidEmergencyDescription: "Get quick first aid information for emergencies.",
+                    emergencySituationInputPlaceholder: "Enter emergency situation (e.g., burn, fracture, choking...)",
+                    getEmergencyAdviceBtn: "Get Advice",
+                    emergencyAdviceOutputDefault: "Enter an emergency situation, and I'll provide first aid advice.",
+                    emergencyAdviceLoading: "Generating advice...",
+                    emergencyAdviceError: "Could not retrieve first aid advice. Please try again.",
+
+                    // General messages
+                    error: "Something went wrong. Please try again.",
+                    micStart: "Listening...",
+                    micStop: "Recording stopped.",
+                    noSpeech: "No speech detected. Please try again.",
+                    speechError: "Speech recognition error: {{error}}",
+                    noTTSVoice: "No voices available for speech synthesis. Try another browser or check your device settings."
+                }
+            };
+
+            // --- Utility Functions ---
+
+            /**
+             * Translates and updates all text content based on the current language.
+             */
+            function applyTranslations() {
+                const t = translations[currentLanguage];
+                document.title = t.appTitle;
+                mainTitle.textContent = t.mainTitle;
+                descriptionText.textContent = t.descriptionText;
+                tipSectionTitle.textContent = t.tipSectionTitle;
+                goalInput.placeholder = t.goalInputPlaceholder;
+                micBtn.title = t.micButtonTitle;
+                micBtn.setAttribute('aria-label', t.micButtonTitle);
+                generateBtn.textContent = t.generateButton;
+                aiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path></svg>${t.aiVoiceButton}`;
+                loadingText.textContent = t.loadingText;
+                if (tipOutput.textContent.trim() === '' || tipOutput.textContent.includes("Enter a goal") || tipOutput.textContent.includes("இலக்கை உள்ளிடவும்")) { // Only update if default or empty
+                    tipOutput.innerHTML = `<p>${t.tipOutputDefault}</p>`;
+                }
+                featuresTitle.textContent = t.featuresTitle;
+                toggleFeaturesBtn.querySelector('.label').textContent = t.showFeaturesLabel;
+                backToMainFromFeaturesContainer.textContent = t.backButton;
+                featuresPageTitle.textContent = t.featuresPageTitle;
+
+                // Update feature icon labels
+                document.getElementById('iconStepTracker').querySelector('.label').textContent = t.stepTrackerLabel;
+                document.getElementById('iconHeartRateTracker').querySelector('.label').textContent = t.heartRateTrackerLabel;
+                document.getElementById('iconWaterTracker').querySelector('.label').textContent = t.waterTrackerLabel;
+                document.getElementById('iconJournal').querySelector('.label').textContent = t.journalLabel;
+                document.getElementById('iconLocalTips').querySelector('.label').textContent = t.localTipsLabel;
+                document.getElementById('iconMealPlan').querySelector('.label').textContent = t.mealPlanLabel;
+                document.getElementById('iconMoodAnalysis').querySelector('.label').textContent = t.moodAnalysisLabel;
+                document.getElementById('iconExerciseYoga').querySelector('.label').textContent = t.exerciseYogaLabel;
+                document.getElementById('iconDiseasePrevention').querySelector('.label').textContent = t.diseasePreventionLabel;
+                document.getElementById('iconWellnessChallenge').querySelector('.label').textContent = t.wellnessChallengeLabel;
+                document.getElementById('iconMedicationReminder').querySelector('.label').textContent = t.medicationReminderLabel;
+                document.getElementById('iconBodyPainMapping').querySelector('.label').textContent = t.bodyPainMappingLabel;
+                document.getElementById('iconFirstAidEmergency').querySelector('.label').textContent = t.firstAidEmergencyLabel;
+
+                // Update specific feature sections
+                // Step Tracker
+                stepSectionTitle.textContent = t.stepSectionTitle;
+                addOneStepBtn.textContent = t.addOneStepBtn;
+                toggleTrackingBtn.textContent = isTrackingSteps ? t.toggleTrackingBtnStop : t.toggleTrackingBtnStart;
+                resetStepsBtn.textContent = t.resetStepsBtn;
+                if (stepResultOutput.textContent.trim() === '' || stepResultOutput.textContent.includes("Start tracking") || stepResultOutput.textContent.includes("கண்காணிக்கத் தொடங்குங்கள்")) {
+                    stepResultOutput.innerHTML = `<p>${t.stepResultOutputInitial}</p>`;
+                }
+                updateStepDisplay(); // Update display with translated prefix
+
+                // Heart Rate Tracker
+                heartRateSectionTitle.textContent = t.heartRateSectionTitle;
+                simulateHeartRateBtn.textContent = t.simulateHeartRateBtn;
+                resetHeartRateBtn.textContent = t.resetHeartRateBtn;
+                if (heartRateResultOutput.textContent.trim() === '' || heartRateResultOutput.textContent.includes("Start monitoring") || heartRateResultOutput.textContent.includes("கண்காணிக்கத் தொடங்குங்கள்")) {
+                    heartRateResultOutput.innerHTML = `<p>${t.heartRateResultOutputInitial}</p>`;
+                }
+                updateHeartRateDisplay(); // Update display with translated prefix
+
+                // Water Tracker
+                waterSectionTitle.textContent = t.waterSectionTitle;
+                addWaterBtn.textContent = t.addWaterBtn;
+                resetWaterBtn.textContent = t.resetStepsBtn; // Fixed: Should be resetWaterBtn
+                if (waterResultOutput.textContent.trim() === '' || waterResultOutput.textContent.includes("Track your water intake") || waterResultOutput.textContent.includes("தண்ணீர் உட்கொள்ளலை கண்காணிக்கவும்")) {
+                    waterResultOutput.innerHTML = `<p>${t.waterResultOutputInitial.replace('{{goal}}', waterGoalMl)}</p>`;
+                }
+                updateWaterDisplay(); // Update display with translated prefix
+
+                // Journal
+                journalSectionTitle.textContent = t.journalSectionTitle;
+                journalDescription.textContent = t.journalDescription;
+                moodSelect.querySelector('option[value=""]').textContent = t.moodSelectPlaceholder;
+                moodSelect.querySelector('option[value="happy"]').textContent = t.moodHappy + ' 😄';
+                moodSelect.querySelector('option[value="neutral"]').textContent = t.moodNeutral + ' 😐';
+                moodSelect.querySelector('option[value="sad"]').textContent = t.moodSad + ' �';
+                moodSelect.querySelector('option[value="stressed"]').textContent = t.moodStressed + ' 😩';
+                moodSelect.querySelector('option[value="energetic"]').textContent = t.moodEnergetic + ' 💪';
+                gratitudeInput.placeholder = t.gratitudeInputPlaceholder;
+                saveJournalEntryBtn.textContent = t.saveJournalEntryBtn;
+                displayJournalEntries(); // Re-render journal entries with new translations
+
+                // Local Tips
+                localTipsSectionTitle.textContent = t.localTipsSectionTitle;
+                localTipsDescription.textContent = t.localTipsDescription;
+                localTipCategory.placeholder = t.localTipCategoryPlaceholder;
+                getLocalTipBtn.textContent = t.getLocalTipBtn;
+                if (localTipOutput.textContent.trim() === '' || localTipOutput.textContent.includes("Enter a category") || localTipOutput.textContent.includes("ஒரு வகையை உள்ளிடவும்")) {
+                    localTipOutput.innerHTML = `<p>${t.localTipOutputDefault}</p>`;
+                }
+
+                // Meal Plan
+                mealPlanSectionTitle.textContent = t.mealPlanSectionTitle;
+                mealPlanDescription.textContent = t.mealPlanDescription;
+                dietGoalInput.placeholder = t.dietGoalInputPlaceholder;
+                dietPreferenceSelect.querySelector('option[value=""]').textContent = t.dietPreferenceSelectPlaceholder;
+                dietPreferenceSelect.querySelector('option[value="vegetarian"]').textContent = t.dietPreferenceVegetarian;
+                dietPreferenceSelect.querySelector('option[value="non-vegetarian"]').textContent = t.dietPreferenceNonVegetarian;
+                dietPreferenceSelect.querySelector('option[value="vegan"]').textContent = t.dietPreferenceVegan;
+                allergiesInput.placeholder = t.allergiesInputPlaceholder;
+                generateMealPlanBtn.textContent = t.generateMealPlanBtn;
+                if (mealPlanOutput.textContent.trim() === '' || mealPlanOutput.textContent.includes("Enter your details") || mealPlanOutput.textContent.includes("உங்கள் விவரங்களை உள்ளிடவும்")) {
+                    mealPlanOutput.innerHTML = `<p>${t.mealPlanOutputDefault}</p>`;
+                }
+
+                // Mood Analysis
+                moodAnalysisSectionTitle.textContent = t.moodAnalysisSectionTitle;
+                moodAnalysisDescription.textContent = t.moodAnalysisDescription;
+                analyzeMoodJournalBtn.textContent = t.analyzeMoodJournalBtn;
+                if (moodAnalysisOutput.textContent.trim() === '' || moodAnalysisOutput.textContent.includes("Results will appear here") || moodAnalysisOutput.textContent.includes("முடிவுகள் தோன்றும்")) {
+                    moodAnalysisOutput.innerHTML = `<p>${t.moodAnalysisOutputDefault}</p>`;
+                }
+
+                // Exercise & Yoga
+                exerciseYogaSectionTitle.textContent = t.exerciseYogaSectionTitle;
+                exerciseYogaDescription.textContent = t.exerciseYogaDescription;
+                fitnessLevelSelect.querySelector('option[value=""]').textContent = t.fitnessLevelSelectPlaceholder;
+                fitnessLevelSelect.querySelector('option[value="beginner"]').textContent = t.fitnessLevelBeginner;
+                fitnessLevelSelect.querySelector('option[value="intermediate"]').textContent = t.fitnessLevelIntermediate;
+                fitnessLevelSelect.querySelector('option[value="advanced"]').textContent = t.fitnessLevelAdvanced;
+                timeAvailableInput.placeholder = t.timeAvailableInputPlaceholder;
+                exerciseGoalInput.placeholder = t.exerciseGoalInputPlaceholder;
+                generateExerciseRoutineBtn.textContent = t.generateExerciseRoutineBtn;
+                if (exerciseRoutineOutput.textContent.trim() === '' || exerciseRoutineOutput.textContent.includes("Enter your details") || exerciseRoutineOutput.textContent.includes("உங்கள் விவரங்களை உள்ளிடவும்")) {
+                    exerciseRoutineOutput.innerHTML = `<p>${t.exerciseRoutineOutputDefault}</p>`;
+                }
+
+                // Disease Prevention
+                diseasePreventionSectionTitle.textContent = t.diseasePreventionSectionTitle;
+                diseasePreventionDescription.textContent = t.diseasePreventionDescription;
+                healthConcernInput.placeholder = t.healthConcernInputPlaceholder;
+                getRemedyBtn.textContent = t.getRemedyBtn;
+                if (remedyOutput.textContent.trim() === '' || remedyOutput.textContent.includes("Enter a health concern") || remedyOutput.textContent.includes("உடல்நலக் கவலையை உள்ளிடவும்")) {
+                    remedyOutput.innerHTML = `<p>${t.remedyOutputDefault}</p>`;
+                }
+
+                // Wellness Challenge
+                wellnessChallengeSectionTitle.textContent = t.wellnessChallengeSectionTitle;
+                wellnessChallengeDescription.textContent = t.wellnessChallengeDescription;
+                currentHabitInput.placeholder = t.currentHabitInputPlaceholder;
+                challengeGoalInput.placeholder = t.challengeGoalInputPlaceholder;
+                generateChallengeBtn.textContent = t.generateChallengeBtn;
+                if (challengeOutput.textContent.trim() === '' || challengeOutput.textContent.includes("Enter your current habit") || challengeOutput.textContent.includes("உங்கள் தற்போதைய பழக்கம்")) {
+                    challengeOutput.innerHTML = `<p>${t.challengeOutputDefault}</p>`;
+                }
+
+                // Medication Reminder
+                medicationReminderSectionTitle.textContent = t.medicationReminderSectionTitle;
+                medicationReminderDescription.textContent = t.medicationReminderDescription;
+                medicationNameInput.placeholder = t.medicationNameInputPlaceholder;
+                medicationTimeInput.setAttribute('aria-label', t.medicationTimeInputPlaceholder);
+                medicationFrequencySelect.querySelector('option[value=""]').textContent = t.medicationFrequencySelectPlaceholder;
+                medicationFrequencySelect.querySelector('option[value="daily"]').textContent = t.medicationFrequencyDaily;
+                medicationFrequencySelect.querySelector('option[value="weekly"]').textContent = t.medicationFrequencyWeekly;
+                medicationFrequencySelect.querySelector('option[value="once"]').textContent = t.medicationFrequencyOnce;
+                setReminderBtn.textContent = t.setReminderBtn;
+                clearMedicationRemindersBtn.textContent = t.medicationReminderClearAll;
+                displayMedicationReminders(); // Re-render reminders with new translations
+
+                // Body Pain Mapping
+                bodyPainMappingSectionTitle.textContent = t.bodyPainMappingSectionTitle;
+                bodyPainMappingDescription.textContent = t.bodyPainMappingDescription;
+                painLocationInput.placeholder = t.painLocationInputPlaceholder;
+                painLevelSelect.querySelector('option[value=""]').textContent = t.painLevelSelectPlaceholder;
+                painLevelSelect.querySelector('option[value="mild"]').textContent = t.painLevelMild;
+                painLevelSelect.querySelector('option[value="moderate"]').textContent = t.painLevelModerate;
+                painLevelSelect.querySelector('option[value="severe"]').textContent = t.painLevelSevere;
+                addPainEntryBtn.textContent = t.addPainEntryBtn;
+                clearPainMapBtn.textContent = t.clearPainMapBtn;
+                displayPainMapEntries(); // Re-render pain map entries with new translations
+
+                // First Aid & Emergency
+                firstAidEmergencySectionTitle.textContent = t.firstAidEmergencySectionTitle;
+                firstAidEmergencyDescription.textContent = t.firstAidEmergencyDescription;
+                emergencySituationInput.placeholder = t.emergencySituationInputPlaceholder;
+                getEmergencyAdviceBtn.textContent = t.getEmergencyAdviceBtn;
+                if (emergencyAdviceOutput.textContent.trim() === '' || emergencyAdviceOutput.textContent.includes("Enter an emergency situation") || emergencyAdviceOutput.textContent.includes("அவசர சூழ்நிலையை உள்ளிடவும்")) {
+                    emergencyAdviceOutput.innerHTML = `<p>${t.emergencyAdviceOutputDefault}</p>`;
+                }
+
+                // Update all back buttons
+                document.querySelectorAll('.back-button').forEach(button => {
+                    button.textContent = t.backButton;
+                });
             }
-        };
 
-        const goalInput = document.getElementById('goalInput');
-        const generateBtn = document.getElementById('generateBtn');
-        const loadingIndicator = document.getElementById('loading');
-        const tipOutput = document.getElementById('tipOutput');
-        const languageSelect = document.getElementById('languageSelect');
-        const mainTitle = document.getElementById('mainTitle');
-        const descriptionText = document.getElementById('descriptionText');
-        const loadingText = document.getElementById('loadingText');
-        const micBtn = document.getElementById('micBtn');
-        const aiVoiceBtn = document.getElementById('aiVoiceBtn');
-
-        const splashScreen = document.getElementById('splashScreen');
-        const mainContent = document.getElementById('mainContent');
-
-        const tipSectionTitle = document.getElementById('tipSectionTitle');
-        const stepSectionTitle = document.getElementById('stepSectionTitle');
-        const currentStepsDisplay = document.getElementById('currentStepsDisplay');
-        const addOneStepBtn = document.getElementById('addOneStepBtn');
-        const toggleTrackingBtn = document.getElementById('toggleTrackingBtn');
-        const resetStepsBtn = document.getElementById('resetStepsBtn');
-        const stepResultOutput = document.getElementById('stepResultOutput');
-        const stepTrackerSection = document.getElementById('stepTrackerSection');
-        const openStepTrackerBtn = document.getElementById('openStepTrackerBtn');
-
-        let currentLanguage = localStorage.getItem('wellnessAppLanguage') || 'ta';
-        languageSelect.value = currentLanguage;
-
-        let currentSteps = parseInt(localStorage.getItem('currentSteps')) || 0;
-        let trackingInterval = null;
-        const stepsGoal = 10000;
-        const stepsPerIncrement = 1;
-        const stepsPerKm = 1312.33;
-
-        // Web Speech API (Speech Recognition)
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        let recognition;
-
-        if (SpeechRecognition) {
-            recognition = new SpeechRecognition();
-            recognition.continuous = false;
-            recognition.interimResults = false;
-            recognition.lang = currentLanguage === 'ta' ? 'ta-IN' : 'en-US';
-
-            recognition.onresult = (event) => {
-                const speechResult = event.results[0][0].transcript;
-                goalInput.value = speechResult;
-                micBtn.classList.remove('recording');
-                loadingIndicator.style.display = 'none';
-            };
-
-            recognition.onerror = (event) => {
-                micBtn.classList.remove('recording');
-                loadingIndicator.style.display = 'none';
+            /**
+             * Displays a loading state for AI generation.
+             * @param {boolean} show - Whether to show or hide the loading indicator.
+             * @param {HTMLElement} outputElement - The specific output element to show loading for.
+             * @param {string} loadingMessageKey - Key for the loading message in translations.
+             */
+            function showLoadingAI(show, outputElement, loadingMessageKey) {
                 const t = translations[currentLanguage];
-                if (event.error === 'not-allowed') {
-                    tipOutput.innerHTML = `<p class="text-red-600">${t.microphonePermissionDenied}</p>`;
+                if (show) {
+                    loadingIndicator.style.display = 'flex';
+                    loadingText.textContent = t[loadingMessageKey];
+                    outputElement.innerHTML = `<p class="text-gray-500 italic">${t[loadingMessageKey]}</p>`;
+                    // Disable all AI-related buttons during loading
+                    generateBtn.disabled = true;
+                    micBtn.disabled = true;
+                    aiVoiceBtn.disabled = true;
+                    ttsVoiceSelect.disabled = true;
+                    getLocalTipBtn.disabled = true;
+                    generateMealPlanBtn.disabled = true;
+                    generateExerciseRoutineBtn.disabled = true;
+                    getRemedyBtn.disabled = true;
+                    getEmergencyAdviceBtn.disabled = true;
                 } else {
-                    tipOutput.innerHTML = `<p class="text-red-600">${t.apiError}</p>`;
+                    loadingIndicator.style.display = 'none';
+                    loadingText.textContent = ''; // Clear loading text
+                    // Re-enable buttons
+                    generateBtn.disabled = false;
+                    micBtn.disabled = false;
+                    aiVoiceBtn.disabled = false;
+                    ttsVoiceSelect.disabled = false;
+                    getLocalTipBtn.disabled = false;
+                    generateMealPlanBtn.disabled = false;
+                    generateExerciseRoutineBtn.disabled = false;
+                    getRemedyBtn.disabled = false;
+                    getEmergencyAdviceBtn.disabled = false;
                 }
-                tipOutput.style.fontStyle = 'normal';
-                console.error('Speech recognition error:', event.error);
-            };
+            }
 
-            recognition.onend = () => {
-                micBtn.classList.remove('recording');
-                loadingIndicator.style.display = 'none';
-                if (!tipOutput.innerHTML.includes('text-red-600') && tipOutput.innerHTML === '') {
-                    tipOutput.innerHTML = `<p>${translations[currentLanguage].initialTip}</p>`;
-                    tipOutput.style.fontStyle = 'italic';
-                }
-            };
-
-            micBtn.addEventListener('click', () => {
+            /**
+             * Generic function to call Gemini API.
+             * @param {string} promptText - The prompt to send to the AI.
+             * @param {HTMLElement} outputElement - The DOM element to display the output.
+             * @param {string} loadingMessageKey - The key for the loading message in translations.
+             * @param {string} errorMessageKey - The key for the error message in translations.
+             * @returns {Promise<string>} A promise that resolves with the generated text or an error message.
+             */
+            async function callGeminiAPI(promptText, outputElement, loadingMessageKey, errorMessageKey) {
+                showLoadingAI(true, outputElement, loadingMessageKey);
                 const t = translations[currentLanguage];
-                micBtn.classList.add('recording');
-                tipOutput.innerHTML = ''; // Clear previous tip/error
-                tipOutput.style.fontStyle = 'italic';
-                loadingIndicator.style.display = 'flex';
-                loadingText.textContent = t.microphoneListening;
 
                 try {
-                    recognition.lang = currentLanguage === 'ta' ? 'ta-IN' : 'en-US';
-                    recognition.start();
-                } catch (e) {
-                    console.warn("Speech recognition could not start:", e);
+                    let chatHistory = [];
+                    chatHistory.push({ role: "user", parts: [{ text: promptText }] });
+                    const payload = { contents: chatHistory };
+                    const apiKey = ""; // Leave this as-is; Canvas will provide it at runtime.
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const result = await response.json();
+                    let generatedText = t[errorMessageKey]; // Default error message
+
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        generatedText = result.candidates[0].content.parts[0].text;
+                    } else {
+                        console.error("Unexpected API response structure:", result);
+                    }
+                    outputElement.innerHTML = `<p>${generatedText}</p>`;
+                    return generatedText;
+
+                } catch (error) {
+                    console.error(`Error during AI generation for ${loadingMessageKey}:`, error);
+                    outputElement.innerHTML = `<p class="text-red-600">${t[errorMessageKey]}</p>`;
+                    return t[errorMessageKey];
+                } finally {
+                    showLoadingAI(false);
+                }
+            }
+
+            /**
+             * Shows a specific feature section and hides others.
+             * @param {HTMLElement} sectionToShow - The feature section to display.
+             */
+            function showFeatureSection(sectionToShow) {
+                document.getElementById('initialView').style.display = 'none';
+                allFeatureIconsContainer.style.display = 'none';
+                featuresContainer.style.display = 'block';
+                featuresPageTitle.style.display = 'none'; // Hide the general features title
+                backToMainFromFeaturesContainer.style.display = 'none'; // Hide the general back button
+
+                document.querySelectorAll('.feature-section').forEach(section => {
+                    section.style.display = 'none';
+                });
+
+                if (sectionToShow) {
+                    sectionToShow.style.display = 'block';
+                    sectionToShow.querySelector('.back-button').style.display = 'inline-flex'; // Show section's specific back button
+                }
+            }
+
+            /**
+             * Returns to the main initial view.
+             */
+            function returnToMainView() {
+                document.querySelectorAll('.feature-section').forEach(section => {
+                    section.style.display = 'none';
+                });
+                featuresContainer.style.display = 'none';
+                document.getElementById('initialView').style.display = 'block';
+                featuresPageTitle.style.display = 'block'; // Show the general features title
+            }
+
+            /**
+             * Shows the all feature icons container.
+             */
+            function showAllFeatureIcons() {
+                document.getElementById('initialView').style.display = 'none';
+                document.querySelectorAll('.feature-section').forEach(section => {
+                    section.style.display = 'none';
+                });
+                featuresContainer.style.display = 'block';
+                featuresPageTitle.style.display = 'block';
+                allFeatureIconsContainer.style.display = 'flex'; // Show icons
+                backToMainFromFeaturesContainer.style.display = 'inline-flex'; // Show back to main from features container
+            }
+
+            /**
+             * Fetches a wellness tip from the Gemini API.
+             * @param {string} goal - The user's wellness goal.
+             * @returns {Promise<string>} A promise that resolves with the generated tip.
+             */
+            async function getWellnessTip(goal) {
+                const t = translations[currentLanguage];
+                const promptText = `Generate a wellness tip for the goal: "${goal}". Respond in ${currentLanguage === 'ta' ? 'Tamil' : 'English'}. Briefly explain the tip and include a motivational aspect.`;
+                return callGeminiAPI(promptText, tipOutput, 'loadingText', 'error');
+            }
+
+            /**
+             * Handles speech recognition for the goal input.
+             */
+            function startSpeechRecognition() {
+                if (!('webkitSpeechRecognition' in window)) {
+                    tipOutput.innerHTML = `<p class="text-red-600">${translations[currentLanguage].speechError.replace('{{error}}', 'Browser not supported. Use Chrome.')}</p>`;
+                    return;
+                }
+
+                if (recognition) {
+                    recognition.stop();
+                }
+
+                recognition = new webkitSpeechRecognition();
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                recognition.lang = currentLanguage === 'ta' ? 'ta-IN' : 'en-US'; // Set language for recognition
+
+                recognition.onstart = () => {
+                    isListening = true;
+                    micBtn.classList.add('recording');
+                    goalInput.placeholder = translations[currentLanguage].micStart;
+                    goalInput.value = ''; // Clear previous input when starting
+                    tipOutput.innerHTML = ''; // Clear previous tip output
+                };
+
+                recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    goalInput.value = transcript;
+                    console.log('Speech result:', transcript);
+                };
+
+                recognition.onerror = (event) => {
+                    console.error('Speech recognition error', event.error);
+                    tipOutput.innerHTML = `<p class="text-red-600">${translations[currentLanguage].speechError.replace('{{error}}', event.error)}</p>`;
+                    goalInput.placeholder = translations[currentLanguage].goalInputPlaceholder; // Revert placeholder
+                    isListening = false;
                     micBtn.classList.remove('recording');
-                    loadingIndicator.style.display = 'none';
-                    tipOutput.innerHTML = `<p class="text-red-600">${t.apiError}</p>`;
-                    tipOutput.style.fontStyle = 'normal';
+                };
+
+                recognition.onend = () => {
+                    isListening = false;
+                    micBtn.classList.remove('recording');
+                    goalInput.placeholder = translations[currentLanguage].goalInputPlaceholder; // Revert placeholder
+                    if (goalInput.value.trim() === '') { // If nothing was recorded
+                        tipOutput.innerHTML = `<p class="text-red-600">${translations[currentLanguage].noSpeech}</p>`;
+                    }
+                };
+
+                recognition.start();
+            }
+
+            /**
+             * Initializes Text-to-Speech (TTS) and populates voice options.
+             */
+            function initSpeechSynthesis() {
+                speechSynth = window.speechSynthesis;
+                if (!speechSynth) {
+                    aiVoiceBtn.style.display = 'none';
+                    ttsVoiceSelect.style.display = 'none';
+                    console.warn('SpeechSynthesis not supported in this browser.');
+                    return;
+                }
+
+                const populateVoiceList = () => {
+                    availableVoices = speechSynth.getVoices();
+                    ttsVoiceSelect.innerHTML = ''; // Clear previous options
+                    let defaultVoiceFound = false;
+
+                    availableVoices.forEach(voice => {
+                        // Prioritize voices for current language (Tamil or English)
+                        // Fallback to any voice if specific not found
+                        if ((currentLanguage === 'ta' && voice.lang.startsWith('ta-')) ||
+                            (currentLanguage === 'en' && voice.lang.startsWith('en-'))) {
+                            const option = document.createElement('option');
+                            option.textContent = `${voice.name} (${voice.lang})`;
+                            option.value = voice.name;
+                            ttsVoiceSelect.appendChild(option);
+                            if (!defaultVoiceFound && (voice.default || voice.name.includes('Google') || voice.name.includes('Microsoft'))) {
+                                option.selected = true;
+                                defaultVoiceFound = true;
+                            }
+                        }
+                    });
+
+                    // If no language-specific voice is found, add all available
+                    if (ttsVoiceSelect.options.length === 0 && availableVoices.length > 0) {
+                         availableVoices.forEach(voice => {
+                            const option = document.createElement('option');
+                            option.textContent = `${voice.name} (${voice.lang})`;
+                            option.value = voice.name;
+                            ttsVoiceSelect.appendChild(option);
+                            if (voice.default) {
+                                option.selected = true;
+                            }
+                        });
+                    }
+
+                    if (ttsVoiceSelect.options.length === 0) {
+                        aiVoiceBtn.style.display = 'none';
+                        ttsVoiceSelect.style.display = 'none';
+                        tipOutput.innerHTML = `<p class="text-red-600">${translations[currentLanguage].noTTSVoice}</p>`;
+                    } else {
+                        aiVoiceBtn.style.display = 'inline-flex';
+                        ttsVoiceSelect.style.display = 'inline-block';
+                    }
+                };
+
+                populateVoiceList();
+                if (speechSynth.onvoiceschanged !== undefined) {
+                    speechSynth.onvoiceschanged = populateVoiceList;
+                }
+            }
+
+            /**
+             * Speaks the given text using Text-to-Speech.
+             * @param {string} text - The text to speak.
+             */
+            function speakText(text) {
+                if (!speechSynth || text.trim() === '') {
+                    return;
+                }
+
+                // Stop any ongoing speech
+                if (speechSynth.speaking) {
+                    speechSynth.cancel();
+                }
+
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                const selectedVoiceName = ttsVoiceSelect.value;
+                currentUtterance.voice = availableVoices.find(voice => voice.name === selectedVoiceName);
+                currentUtterance.lang = currentLanguage === 'ta' ? 'ta-IN' : 'en-US';
+                currentUtterance.pitch = 1;
+                currentUtterance.rate = 1;
+
+                currentUtterance.onerror = (event) => {
+                    console.error('Speech synthesis error', event);
+                    // Handle error, e.g., display a message
+                };
+
+                speechSynth.speak(currentUtterance);
+            }
+
+            // --- Feature Specific Functions ---
+
+            // Step Tracker
+            function updateStepDisplay() {
+                const t = translations[currentLanguage];
+                const distanceKm = (stepCount / stepsPerKm).toFixed(2);
+                currentStepsDisplay.value = `${t.currentStepsDisplayPrefix}${stepCount}`;
+
+                if (stepCount >= stepsGoal) {
+                    stepResultOutput.innerHTML = `<p>${t.stepsGoalReached(stepCount, distanceKm)}</p>`;
+                    if (isTrackingSteps) {
+                        clearInterval(stepTrackingInterval);
+                        isTrackingSteps = false;
+                        toggleTrackingBtn.textContent = t.toggleTrackingBtnStart;
+                    }
+                } else if (stepCount >= stepsGoal * 0.75) {
+                    const remainingSteps = stepsGoal - stepCount;
+                    stepResultOutput.innerHTML = `<p>${t.stepsGoalNear(stepCount, remainingSteps, distanceKm)}</p>`;
+                } else {
+                    stepResultOutput.innerHTML = `<p>${t.stepsGoalFar(stepCount, distanceKm)}</p>`;
+                }
+            }
+
+            function addStep() {
+                stepCount++;
+                localStorage.setItem('wellnessBuddySteps', stepCount);
+                updateStepDisplay();
+                stepResultOutput.innerHTML = `<p>${translations[currentLanguage].stepAdded.replace('{{steps}}', stepCount)}</p>`;
+            }
+
+            function toggleStepTracking() {
+                if (isTrackingSteps) {
+                    clearInterval(stepTrackingInterval);
+                    isTrackingSteps = false;
+                    toggleTrackingBtn.textContent = translations[currentLanguage].toggleTrackingBtnStart;
+                    const distanceKm = (stepCount / stepsPerKm).toFixed(2);
+                    stepResultOutput.innerHTML = `<p>${translations[currentLanguage].stepsStopped(stepCount, distanceKm)}</p>`;
+                } else {
+                    // Simulate adding a step every 3 seconds for demo purposes
+                    stepTrackingInterval = setInterval(() => {
+                        addStep();
+                    }, 3000);
+                    isTrackingSteps = true;
+                    toggleTrackingBtn.textContent = translations[currentLanguage].toggleTrackingBtnStop;
+                    stepResultOutput.innerHTML = `<p>${translations[currentLanguage].stepTrackingStarted}</p>`;
+                }
+            }
+
+            function resetSteps() {
+                if (isTrackingSteps) {
+                    clearInterval(stepTrackingInterval);
+                    isTrackingSteps = false;
+                    toggleTrackingBtn.textContent = translations[currentLanguage].toggleTrackingBtnStart;
+                }
+                stepCount = 0;
+                localStorage.removeItem('wellnessBuddySteps');
+                updateStepDisplay();
+                stepResultOutput.innerHTML = `<p>${translations[currentLanguage].stepsReset}</p>`;
+            }
+
+            // Heart Rate Tracker
+            function updateHeartRateDisplay() {
+                // Display value directly, simulation will update it
+                currentHeartRateDisplay.value = `${translations[currentLanguage].currentHeartRateDisplayPrefix}${currentHeartRateDisplay.value.replace(/[^0-9]/g, '') || '0'}`;
+            }
+
+            function simulateHeartRate() {
+                // Simulate a random heart rate between 60-120 bpm (normal to slightly elevated)
+                const simulatedRate = Math.floor(Math.random() * (120 - 60 + 1)) + 60;
+                currentHeartRateDisplay.value = `${simulatedRate} bpm`;
+                if (simulatedRate > 100) {
+                    heartRateResultOutput.innerHTML = `<p class="text-red-600">${translations[currentLanguage].heartRateSimulatedHigh.replace('{{rate}}', simulatedRate)}</p>`;
+                } else {
+                    heartRateResultOutput.innerHTML = `<p>${translations[currentLanguage].heartRateSimulated.replace('{{rate}}', simulatedRate)}</p>`;
+                }
+                updateHeartRateDisplay();
+            }
+
+            function resetHeartRate() {
+                currentHeartRateDisplay.value = '0 bpm';
+                heartRateResultOutput.innerHTML = `<p>${translations[currentLanguage].heartRateReset}</p>`;
+                updateHeartRateDisplay();
+            }
+
+            // Water Tracker
+            function updateWaterDisplay() {
+                waterIntakeDisplay.value = `${translations[currentLanguage].currentWaterDisplayPrefix}${waterIntakeMl} ml`;
+            }
+
+            function addWater(amount = 250) {
+                waterIntakeMl += amount;
+                localStorage.setItem('wellnessBuddyWater', waterIntakeMl);
+                updateWaterDisplay();
+                const remaining = waterGoalMl - waterIntakeMl;
+                if (remaining <= 0) {
+                    waterResultOutput.innerHTML = `<p>${translations[currentLanguage].waterGoalReached.replace('{{total}}', waterIntakeMl)}</p>`;
+                } else {
+                    waterResultOutput.innerHTML = `<p>${translations[currentLanguage].waterAdded.replace('{{amount}}', amount).replace('{{total}}', waterIntakeMl).replace('{{remaining}}', remaining)}</p>`;
+                }
+            }
+
+            function resetWater() {
+                waterIntakeMl = 0;
+                localStorage.removeItem('wellnessBuddyWater');
+                updateWaterDisplay();
+                waterResultOutput.innerHTML = `<p>${translations[currentLanguage].waterReset}</p>`;
+            }
+
+            // Journal
+            function saveJournalEntry() {
+                const mood = moodSelect.value;
+                const gratitude = gratitudeInput.value.trim();
+
+                if (!mood && !gratitude) {
+                    journalEntriesOutput.innerHTML = `<p class="text-red-600">${translations[currentLanguage].journalNoMoodOrGratitude}</p>`;
+                    return;
+                }
+
+                const now = new Date();
+                const date = now.toLocaleDateString(currentLanguage === 'ta' ? 'ta-IN' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                const time = now.toLocaleTimeString(currentLanguage === 'ta' ? 'ta-IN' : 'en-US', { hour: '2-digit', minute: '2-digit' });
+
+                journalEntries.unshift({
+                    date: date,
+                    mood: mood,
+                    gratitude: gratitude,
+                    timestamp: now.toISOString() // For sorting/analysis
+                });
+                localStorage.setItem('wellnessBuddyJournal', JSON.stringify(journalEntries));
+                journalEntriesOutput.innerHTML = `<p>${translations[currentLanguage].journalEntrySaved}</p>`;
+                moodSelect.value = '';
+                gratitudeInput.value = '';
+                displayJournalEntries();
+            }
+
+            function displayJournalEntries() {
+                if (journalEntries.length === 0) {
+                    journalEntriesOutput.innerHTML = `<p>${translations[currentLanguage].journalEntriesOutputDefault}</p>`;
+                    return;
+                }
+
+                let html = `<ul class="list-none p-0 m-0">`;
+                journalEntries.forEach(entry => {
+                    const moodText = translations[currentLanguage][`mood${entry.mood.charAt(0).toUpperCase() + entry.mood.slice(1)}`] || entry.mood;
+                    html += `<li class="mb-2 p-3 border border-gray-200 rounded-lg text-sm bg-gray-50">
+                                <span>${translations[currentLanguage].journalEntryDisplay
+                                    .replace('{{date}}', entry.date)
+                                    .replace('{{mood}}', moodText)
+                                    .replace('{{gratitude}}', entry.gratitude || '-')}</span>
+                            </li>`;
+                });
+                html += `</ul>`;
+                journalEntriesOutput.innerHTML = html;
+            }
+
+            // Local Tips (AI-driven)
+            async function getLocalTip() {
+                const category = localTipCategory.value.trim();
+                const t = translations[currentLanguage];
+                if (!category) {
+                    localTipOutput.innerHTML = `<p class="text-red-600">${t.localTipOutputDefault}</p>`;
+                    return;
+                }
+                const promptText = `Provide a wellness tip related to "${category}", suitable for ${currentLanguage === 'ta' ? 'Tamil' : 'English'} speakers. Briefly explain its benefits and how to use it.`;
+                await callGeminiAPI(promptText, localTipOutput, 'localTipLoading', 'localTipNotFound');
+            }
+
+            function showLocalTipCategoryDropdown() {
+                const input = localTipCategory.value.toLowerCase().trim();
+                localTipCategoryDropdown.innerHTML = '';
+                localTipCategoryDropdown.classList.remove('hidden');
+
+                // Provide some common suggestions for local tips
+                const commonCategories = {
+                    ta: ["மஞ்சள்", "முருங்கை", "தியானம்", "நெல்லிக்காய்", "கீரை", "ஆடாதோடை"],
+                    en: ["turmeric", "moringa", "meditation", "amla", "spinach", "adathoda"]
+                };
+                const categories = commonCategories[currentLanguage] || commonCategories['en']; // Fallback to English
+
+                const filteredCategories = categories.filter(cat => cat.toLowerCase().includes(input));
+
+                if (input && filteredCategories.length > 0) {
+                    filteredCategories.forEach(cat => {
+                        const div = document.createElement('div');
+                        div.textContent = cat;
+                        div.addEventListener('click', () => {
+                            localTipCategory.value = cat;
+                            localTipCategoryDropdown.classList.add('hidden');
+                        });
+                        localTipCategoryDropdown.appendChild(div);
+                    });
+                } else if (input) {
+                    const div = document.createElement('div');
+                    div.textContent = currentLanguage === 'ta' ? "பொருத்தம் இல்லை" : "No matches";
+                    div.style.color = '#777';
+                    localTipCategoryDropdown.appendChild(div);
+                } else {
+                    // Show all common suggestions if input is empty
+                    categories.forEach(cat => {
+                        const div = document.createElement('div');
+                        div.textContent = cat;
+                        div.addEventListener('click', () => {
+                            localTipCategory.value = cat;
+                            localTipCategoryDropdown.classList.add('hidden');
+                        });
+                        localTipCategoryDropdown.appendChild(div);
+                    });
+                }
+            }
+
+
+            // Meal Plan (AI-driven)
+            async function generateMealPlan() {
+                const goal = dietGoalInput.value.trim();
+                const preference = dietPreferenceSelect.value;
+                const allergies = allergiesInput.value.trim();
+                const t = translations[currentLanguage];
+
+                if (!goal || !preference) {
+                    mealPlanOutput.innerHTML = `<p class="text-red-600">${t.mealPlanNoInput}</p>`;
+                    return;
+                }
+
+                let promptText = `Create a sample daily meal plan for the dietary goal "${goal}" with a "${t[`dietPreference${preference.charAt(0).toUpperCase() + preference.slice(1)}`]}" preference.`;
+                if (allergies) {
+                    promptText += ` Also, consider these allergies: ${allergies}.`;
+                }
+                promptText += ` Include breakfast, lunch, dinner, and snacks. Respond in ${currentLanguage === 'ta' ? 'Tamil' : 'English'}.`;
+                
+                await callGeminiAPI(promptText, mealPlanOutput, 'mealPlanLoading', 'error');
+            }
+
+            // Mood Analysis (Simulated AI)
+            function analyzeMoodJournal() {
+                const t = translations[currentLanguage];
+                if (journalEntries.length === 0) {
+                    moodAnalysisOutput.innerHTML = `<p class="text-red-600">${t.moodAnalysisNoEntries}</p>`;
+                    return;
+                }
+
+                const moodCounts = { happy: 0, neutral: 0, sad: 0, stressed: 0, energetic: 0 };
+                journalEntries.forEach(entry => {
+                    if (entry.mood && moodCounts.hasOwnProperty(entry.mood)) {
+                        moodCounts[entry.mood]++;
+                    }
+                });
+
+                const totalEntries = journalEntries.length;
+                const happyPercent = ((moodCounts.happy / totalEntries) * 100).toFixed(1);
+                const neutralPercent = ((moodCounts.neutral / totalEntries) * 100).toFixed(1);
+                const sadPercent = ((moodCounts.sad / totalEntries) * 100).toFixed(1);
+                const stressedPercent = ((moodCounts.stressed / totalEntries) * 100).toFixed(1);
+                const energeticPercent = ((moodCounts.energetic / totalEntries) * 100).toFixed(1);
+
+                let analysisText = t.moodAnalysisSummary
+                    .replace('{{total}}', totalEntries)
+                    .replace('{{happy}}', happyPercent)
+                    .replace('{{neutral}}', neutralPercent)
+                    .replace('{{sad}}', sadPercent)
+                    .replace('{{stressed}}', stressedPercent)
+                    .replace('{{energetic}}', energeticPercent);
+
+                moodAnalysisOutput.innerHTML = `<pre class="whitespace-pre-wrap">${analysisText}</pre>`;
+            }
+
+            // Exercise & Yoga (AI-driven)
+            async function generateExerciseRoutine() {
+                const fitnessLevel = fitnessLevelSelect.value;
+                const timeAvailable = parseInt(timeAvailableInput.value);
+                const exerciseGoal = exerciseGoalInput.value.trim();
+                const t = translations[currentLanguage];
+
+                if (!fitnessLevel || isNaN(timeAvailable) || timeAvailable <= 0 || !exerciseGoal) {
+                    exerciseRoutineOutput.innerHTML = `<p class="text-red-600">${t.exerciseRoutineNoInput}</p>`;
+                    return;
+                }
+
+                const promptText = `Generate a ${t[`fitnessLevel${fitnessLevel.charAt(0).toUpperCase() + fitnessLevel.slice(1)}`]} level exercise and yoga routine for ${timeAvailable} minutes, focusing on "${exerciseGoal}". Provide a warm-up, main exercises, and a cool-down, plus a relevant yoga suggestion. Respond in ${currentLanguage === 'ta' ? 'Tamil' : 'English'}.`;
+
+                await callGeminiAPI(promptText, exerciseRoutineOutput, 'exerciseRoutineLoading', 'error');
+            }
+
+            // Disease Prevention (AI-driven)
+            async function getRemedy() {
+                const concern = healthConcernInput.value.trim();
+                const t = translations[currentLanguage];
+                if (!concern) {
+                    remedyOutput.innerHTML = `<p class="text-red-600">${t.remedyOutputDefault}</p>`;
+                    return;
+                }
+                const promptText = `Suggest home remedies and preventive measures for "${concern}". Explain briefly. Respond in ${currentLanguage === 'ta' ? 'Tamil' : 'English'}.`;
+                await callGeminiAPI(promptText, remedyOutput, 'remedyLoading', 'remedyNotFound');
+            }
+
+            // Wellness Challenge (Simulated AI)
+            function generateChallenge() {
+                const currentHabit = currentHabitInput.value.trim();
+                const challengeGoal = challengeGoalInput.value.trim();
+                const t = translations[currentLanguage];
+
+                if (!currentHabit || !challengeGoal) {
+                    challengeOutput.innerHTML = `<p class="text-red-600">${t.challengeNoInput}</p>`;
+                    return;
+                }
+
+                const challengeText = t.challengeExample
+                    .replace('{{habit}}', currentHabit)
+                    .replace('{{goal}}', challengeGoal);
+
+                challengeOutput.innerHTML = `<pre class="whitespace-pre-wrap">${challengeText}</pre>`;
+                currentHabitInput.value = '';
+                challengeGoalInput.value = '';
+            }
+
+            // Medication Reminder
+            function setMedicationReminder() {
+                const name = medicationNameInput.value.trim();
+                const time = medicationTimeInput.value;
+                const frequency = medicationFrequencySelect.value;
+                const t = translations[currentLanguage];
+
+                if (!name || !time || !frequency) {
+                    medicationRemindersList.innerHTML = `<p class="text-red-600">${t.medicationReminderNoInput}</p>`;
+                    return;
+                }
+
+                const newReminder = { name, time, frequency, id: Date.now() }; // Add unique ID
+                medicationReminders.unshift(newReminder);
+                localStorage.setItem('wellnessBuddyMedications', JSON.stringify(medicationReminders));
+                medicationRemindersList.innerHTML = `<p>${t.medicationReminderSaved}</p>`;
+                medicationNameInput.value = '';
+                medicationTimeInput.value = '';
+                medicationFrequencySelect.value = '';
+                displayMedicationReminders();
+            }
+
+            function displayMedicationReminders() {
+                if (medicationReminders.length === 0) {
+                    medicationRemindersList.innerHTML = `<p>${translations[currentLanguage].medicationReminderListDefault}</p>`;
+                    clearMedicationRemindersBtn.style.display = 'none';
+                    return;
+                }
+
+                let html = `<ul class="list-none p-0 m-0">`;
+                medicationReminders.forEach(reminder => {
+                    const freqText = translations[currentLanguage][`medicationFrequency${reminder.frequency.charAt(0).toUpperCase() + reminder.frequency.slice(1)}`] || reminder.frequency;
+                    html += `<li class="mb-2 p-3 border border-gray-200 rounded-lg text-sm bg-gray-50 flex justify-between items-center">
+                                <span>${translations[currentLanguage].medicationReminderDisplay
+                                    .replace('{{name}}', reminder.name)
+                                    .replace('{{time}}', reminder.time)
+                                    .replace('{{frequency}}', freqText)}</span>
+                                <button data-id="${reminder.id}" class="text-red-500 hover:text-red-700 font-bold text-lg leading-none p-1 rounded-full">&times;</button>
+                            </li>`;
+                });
+                html += `</ul>`;
+                medicationRemindersList.innerHTML = html;
+                clearMedicationRemindersBtn.style.display = 'inline-flex';
+
+                // Add event listeners for delete buttons
+                medicationRemindersList.querySelectorAll('button').forEach(button => {
+                    button.addEventListener('click', (event) => {
+                        const idToDelete = parseInt(event.target.dataset.id);
+                        medicationReminders = medicationReminders.filter(r => r.id !== idToDelete);
+                        localStorage.setItem('wellnessBuddyMedications', JSON.stringify(medicationReminders));
+                        displayMedicationReminders();
+                    });
+                });
+            }
+
+            function clearMedicationReminders() {
+                medicationReminders = [];
+                localStorage.removeItem('wellnessBuddyMedications');
+                displayMedicationReminders();
+            }
+
+            // Body Pain Mapping
+            function displayPainMapEntries() {
+                // Clear existing dots
+                bodyMapContainer.querySelectorAll('.pain-dot').forEach(dot => dot.remove());
+
+                if (painMapEntries.length === 0) {
+                    painEntriesList.innerHTML = `<p>${translations[currentLanguage].painEntriesListDefault}</p>`;
+                    clearPainMapBtn.style.display = 'none';
+                    return;
+                }
+
+                let html = `<ul class="list-none p-0 m-0">`;
+                painMapEntries.forEach(entry => {
+                    // Recreate dots on the map
+                    const dot = document.createElement('div');
+                    dot.classList.add('pain-dot');
+                    dot.style.left = `${entry.x}%`;
+                    dot.style.top = `${entry.y}%`;
+                    dot.title = `${entry.location} (${entry.level})`;
+                    bodyMapContainer.appendChild(dot);
+
+                    const levelText = translations[currentLanguage][`painLevel${entry.level.charAt(0).toUpperCase() + entry.level.slice(1)}`] || entry.level;
+
+                    html += `<li class="mb-2 p-3 border border-gray-200 rounded-lg text-sm bg-gray-50 flex justify-between items-center">
+                                <span>${translations[currentLanguage].painEntryDisplay
+                                    .replace('{{location}}', entry.location)
+                                    .replace('{{level}}', levelText)
+                                    .replace('{{date}}', entry.date)
+                                    .replace('{{time}}', entry.time)}</span>
+                                <button data-id="${entry.id}" class="text-red-500 hover:text-red-700 font-bold text-lg leading-none p-1 rounded-full">&times;</button>
+                            </li>`;
+                });
+                html += `</ul>`;
+                painEntriesList.innerHTML = html;
+                clearPainMapBtn.style.display = 'inline-flex';
+
+                // Add event listeners for delete buttons
+                painEntriesList.querySelectorAll('button').forEach(button => {
+                    button.addEventListener('click', (event) => {
+                        const idToDelete = parseInt(event.target.dataset.id);
+                        painMapEntries = painMapEntries.filter(p => p.id !== idToDelete);
+                        localStorage.setItem('wellnessBuddyPainMap', JSON.stringify(painMapEntries));
+                        displayPainMapEntries();
+                    });
+                });
+            }
+
+            function handleBodyMapClick(event) {
+                // Calculate click position relative to the image
+                const rect = bodyMapImage.getBoundingClientRect();
+                const x = ((event.clientX - rect.left) / rect.width) * 100;
+                const y = ((event.clientY - rect.top) / rect.height) * 100;
+
+                // Store the selected point
+                selectedPainPoint = { x, y };
+
+                // Clear previous temporary dots and add a new one
+                bodyMapContainer.querySelectorAll('.pain-dot.selected').forEach(dot => dot.remove());
+                const dot = document.createElement('div');
+                dot.classList.add('pain-dot', 'selected');
+                dot.style.left = `${x}%`;
+                dot.style.top = `${y}%`;
+                bodyMapContainer.appendChild(dot);
+
+                // Optionally, try to infer location based on Y coordinate
+                let inferredLocation = '';
+                if (y < 20) inferredLocation = currentLanguage === 'ta' ? 'தலை' : 'Head';
+                else if (y < 40) inferredLocation = currentLanguage === 'ta' ? 'மார்பு' : 'Chest';
+                else if (y < 60) inferredLocation = currentLanguage === 'ta' ? 'அடிவயிறு' : 'Abdomen';
+                else if (y < 80) inferredLocation = currentLanguage === 'ta' ? 'கால்கள்' : 'Legs';
+                else inferredLocation = currentLanguage === 'ta' ? 'பாதங்கள்' : 'Feet';
+
+                painLocationInput.value = inferredLocation;
+            }
+
+            function addPainEntry() {
+                const location = painLocationInput.value.trim();
+                const level = painLevelSelect.value;
+                const t = translations[currentLanguage];
+
+                if (!location || !level || !selectedPainPoint) {
+                    painEntriesList.innerHTML = `<p class="text-red-600">${t.painEntryNoInput}</p>`;
+                    return;
+                }
+
+                const now = new Date();
+                const date = now.toLocaleDateString(currentLanguage === 'ta' ? 'ta-IN' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                const time = now.toLocaleTimeString(currentLanguage === 'ta' ? 'ta-IN' : 'en-US', { hour: '2-digit', minute: '2-digit' });
+
+                const newEntry = {
+                    id: Date.now(),
+                    location,
+                    level,
+                    x: selectedPainPoint.x,
+                    y: selectedPainPoint.y,
+                    date,
+                    time,
+                    timestamp: now.toISOString()
+                };
+
+                painMapEntries.unshift(newEntry);
+                localStorage.setItem('wellnessBuddyPainMap', JSON.stringify(painMapEntries));
+                painEntriesList.innerHTML = `<p>${t.painEntrySaved}</p>`;
+                painLocationInput.value = '';
+                painLevelSelect.value = '';
+                selectedPainPoint = null; // Clear selected point
+                displayPainMapEntries();
+            }
+
+            function clearPainMap() {
+                painMapEntries = [];
+                localStorage.removeItem('wellnessBuddyPainMap');
+                displayPainMapEntries();
+            }
+
+            // First Aid & Emergency (AI-driven)
+            async function getEmergencyAdvice() {
+                const situation = emergencySituationInput.value.trim();
+                const t = translations[currentLanguage];
+                if (!situation) {
+                    emergencyAdviceOutput.innerHTML = `<p class="text-red-600">${t.emergencyAdviceOutputDefault}</p>`;
+                    return;
+                }
+                const promptText = `Provide concise first aid advice for a situation involving "${situation}". Focus on immediate steps and safety. Respond in ${currentLanguage === 'ta' ? 'Tamil' : 'English'}.`;
+                await callGeminiAPI(promptText, emergencyAdviceOutput, 'emergencyAdviceLoading', 'emergencyAdviceError');
+            }
+
+
+            // --- Event Listeners ---
+
+            // Language selection
+            languageSelect.addEventListener('change', (event) => {
+                currentLanguage = event.target.value;
+                localStorage.setItem('wellnessBuddyLanguage', currentLanguage);
+                applyTranslations();
+                initSpeechSynthesis(); // Re-initialize TTS voices for new language
+            });
+
+            // Main AI Tip Generation
+            generateBtn.addEventListener('click', async () => {
+                const goal = goalInput.value.trim();
+                if (goal) {
+                    const tip = await getWellnessTip(goal);
+                    tipOutput.innerHTML = `<p>${tip}</p>`;
+                    aiVoiceBtn.style.display = 'inline-flex'; // Show AI voice button after tip generation
+                } else {
+                    tipOutput.innerHTML = `<p class="text-red-600">${translations[currentLanguage].tipOutputDefault}</p>`;
+                    aiVoiceBtn.style.display = 'none';
                 }
             });
 
-        } else {
-            micBtn.style.display = 'none';
-            console.warn('Web Speech API (SpeechRecognition) not supported in this browser.');
-        }
-
-        // Web Speech API (Speech Synthesis for AI Voice)
-        const SpeechSynthesis = window.speechSynthesis;
-        let tamilVoice = null;
-        let englishVoice = null;
-
-        function populateVoiceList() {
-            if (SpeechSynthesis) {
-                const voices = SpeechSynthesis.getVoices();
-                // Prioritize high-quality Tamil voice
-                tamilVoice = voices.find(voice => voice.lang === 'ta-IN' && (voice.name.includes('Google') || voice.name.includes('Android') || voice.name.includes('Enhanced'))) ||
-                             voices.find(voice => voice.lang.startsWith('ta'));
-
-                // Prioritize high-quality English voice
-                englishVoice = voices.find(voice => voice.lang === 'en-US' && (voice.name.includes('Google') || voice.name.includes('Enhanced'))) ||
-                               voices.find(voice => voice.lang.startsWith('en'));
-                
-                // For debugging, log available voices
-                console.log("Available voices:");
-                voices.forEach(voice => console.log(voice.name, voice.lang));
-            }
-        }
-
-        populateVoiceList(); // Call initially to get available voices
-        if (SpeechSynthesis) {
-            SpeechSynthesis.onvoiceschanged = populateVoiceList; // Update when voices are loaded/changed
-        }
-
-        aiVoiceBtn.addEventListener('click', () => {
-            const t = translations[currentLanguage];
-            const tipText = tipOutput.textContent.trim();
-
-            if (!SpeechSynthesis) {
-                tipOutput.innerHTML = `<p class="text-red-600">${t.speechSynthesisUnsupported}</p>`;
-                tipOutput.style.fontStyle = 'normal';
-                return;
-            }
-
-            if (!tipText || tipText === t.initialTip || tipText.includes(t.emptyGoalError) || tipText.includes(t.apiError) || tipText.includes(t.fetchError) || tipText.includes(t.noTipToSpeak)) {
-                tipOutput.innerHTML = `<p class="text-red-600">${t.noTipToSpeak}</p>`;
-                tipOutput.style.fontStyle = 'normal';
-                return;
-            }
-
-            if (SpeechSynthesis.speaking) {
-                SpeechSynthesis.cancel(); // Stop any ongoing speech
-                aiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path></svg>`;
-                return;
-            }
-
-            const utterance = new SpeechSynthesisUtterance(tipText);
-            utterance.lang = currentLanguage === 'ta' ? 'ta-IN' : 'en-US';
-
-            // Assign specific voice if found for the current language
-            if (currentLanguage === 'ta' && tamilVoice) {
-                utterance.voice = tamilVoice;
-                console.log("Using Tamil voice:", tamilVoice.name);
-            } else if (currentLanguage === 'en' && englishVoice) {
-                utterance.voice = englishVoice;
-                console.log("Using English voice:", englishVoice.name);
-            } else {
-                // If no specific voice found, browser will try to use a default
-                console.warn(`Specific voice for ${currentLanguage} not found, falling back to browser default.`);
-            }
-            
-            utterance.onstart = () => {
-                aiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-x"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="22" y1="9" x2="16" y2="15"></line><line x1="16" y1="9" x2="22" y2="15"></line></svg>`;
-            };
-
-            utterance.onend = () => {
-                aiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path></svg>`;
-            };
-
-            SpeechSynthesis.speak(utterance);
-        });
-
-        // Step Tracker Functions
-        function updateStepTrackerDisplay() {
-            const t = translations[currentLanguage];
-            const distanceKm = (currentSteps / stepsPerKm).toFixed(2);
-            currentStepsDisplay.value = currentSteps;
-            localStorage.setItem('currentSteps', currentSteps);
-
-            if (currentSteps >= stepsGoal) {
-                stepResultOutput.innerHTML = `<p>${t.stepsGoalReached(currentSteps, distanceKm)}</p>`;
-                if (trackingInterval) {
-                    clearInterval(trackingInterval);
-                    trackingInterval = null;
-                    toggleTrackingBtn.textContent = t.startTrackingButton;
-                }
-            } else if (currentSteps >= stepsGoal * 0.75) {
-                const remainingSteps = stepsGoal - currentSteps;
-                stepResultOutput.innerHTML = `<p>${t.stepsGoalNear(currentSteps, remainingSteps, distanceKm)}</p>`;
-            } else {
-                stepResultOutput.innerHTML = `<p>${t.stepsGoalFar(currentSteps, distanceKm)}</p>`;
-            }
-            stepResultOutput.style.fontStyle = 'normal';
-        }
-
-        function startTrackingSimulation() {
-            if (!trackingInterval && currentSteps < stepsGoal) {
-                const t = translations[currentLanguage];
-                toggleTrackingBtn.textContent = t.stopTrackingButton;
-                stepResultOutput.style.fontStyle = 'normal';
-                stepResultOutput.innerHTML = `<p>${t.stepsTracking(currentSteps, (currentSteps / stepsPerKm).toFixed(2))}</p>`;
-
-                trackingInterval = setInterval(() => {
-                    currentSteps += stepsPerIncrement;
-                    updateStepTrackerDisplay();
-                }, 1000); // Simulate 1 step every second
-            } else if (currentSteps >= stepsGoal) {
-                updateStepTrackerDisplay(); // Ensure goal reached message is displayed
-            }
-        }
-
-        function stopTrackingSimulation() {
-            if (trackingInterval) {
-                clearInterval(trackingInterval);
-                trackingInterval = null;
-                const t = translations[currentLanguage];
-                toggleTrackingBtn.textContent = t.startTrackingButton;
-                const distanceKm = (currentSteps / stepsPerKm).toFixed(2);
-                stepResultOutput.innerHTML = `<p>${t.stepsStopped(currentSteps, distanceKm)}</p>`;
-                stepResultOutput.style.fontStyle = 'normal';
-            }
-        }
-
-        function addOneStep() {
-            currentSteps += stepsPerIncrement;
-            updateStepTrackerDisplay();
-        }
-
-        function resetSteps() {
-            stopTrackingSimulation(); // Stop tracking if active
-            currentSteps = 0;
-            localStorage.removeItem('currentSteps');
-            updateStepTrackerDisplay();
-            stepResultOutput.innerHTML = `<p>${translations[currentLanguage].stepsResultInitial}</p>`;
-            stepResultOutput.style.fontStyle = 'italic';
-        }
-
-        function updateUI() {
-            const t = translations[currentLanguage];
-            mainTitle.textContent = t.mainTitle;
-            descriptionText.textContent = t.descriptionText;
-            goalInput.placeholder = t.goalPlaceholder;
-            generateBtn.textContent = t.generateButton;
-            loadingText.textContent = t.loadingText;
-            tipOutput.innerHTML = `<p>${t.initialTip}</p>`;
-            tipOutput.style.fontStyle = 'italic';
-
-            tipSectionTitle.textContent = t.tipSectionTitle;
-            stepSectionTitle.textContent = t.stepSectionTitle;
-            
-            // Update open/close tracker button text
-            const isTrackerOpen = stepTrackerSection.style.display !== 'none';
-            openStepTrackerBtn.textContent = isTrackerOpen ? t.closeStepTrackerButton : t.openStepTrackerButton;
-
-            addOneStepBtn.textContent = t.addOneStepButton;
-            toggleTrackingBtn.textContent = trackingInterval ? t.stopTrackingButton : t.startTrackingButton;
-            resetStepsBtn.textContent = t.resetStepsButton;
-            
-            currentStepsDisplay.value = currentSteps;
-            // Only update stepResultOutput if tracker is open, otherwise keep initial message
-            if (isTrackerOpen) {
-                updateStepTrackerDisplay();
-            } else {
-                stepResultOutput.innerHTML = `<p>${t.stepsResultInitial}</p>`;
-                stepResultOutput.style.fontStyle = 'italic';
-            }
-
-            // Update AI voice button text and icon
-            aiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path></svg>${t.aiVoiceButton}`;
-
-            if (recognition) {
-                recognition.lang = currentLanguage === 'ta' ? 'ta-IN' : 'en-US';
-            }
-        }
-
-        languageSelect.addEventListener('change', (event) => {
-            currentLanguage = event.target.value;
-            localStorage.setItem('wellnessAppLanguage', currentLanguage);
-            updateUI();
-            populateVoiceList(); // Repopulate voices for new language
-            // Stop any ongoing speech when language changes
-            if (SpeechSynthesis && SpeechSynthesis.speaking) {
-                SpeechSynthesis.cancel();
-                aiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path></svg>`;
-            }
-        });
-
-        generateBtn.addEventListener('click', async () => {
-            const userGoal = goalInput.value.trim();
-            const t = translations[currentLanguage];
-
-            if (!userGoal) {
-                tipOutput.innerHTML = `<p class="text-red-600">${t.emptyGoalError}</p>`;
-                tipOutput.style.fontStyle = 'normal';
-                return;
-            }
-
-            loadingIndicator.style.display = 'flex';
-            loadingText.textContent = t.loadingText;
-            tipOutput.innerHTML = ''; // Clear previous tip
-            tipOutput.style.fontStyle = 'italic';
-            generateBtn.disabled = true;
-            micBtn.disabled = true;
-            aiVoiceBtn.disabled = true;
-
-            try {
-                let chatHistory = [];
-                const promptText = t.aiPrompt(userGoal);
-                chatHistory.push({ role: "user", parts: [{ text: promptText }] });
-                const payload = { contents: chatHistory };
-                const apiKey = ""; // Leave this as-is; Canvas will provide it at runtime.
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                const result = await response.json();
-                let tip = t.apiError; // Default error message
-
-                if (result.candidates && result.candidates.length > 0 &&
-                    result.candidates[0].content && result.candidates[0].content.parts &&
-                    result.candidates[0].content.parts.length > 0) {
-                    tip = result.candidates[0].content.parts[0].text;
+            // Mic button for Speech-to-Text
+            micBtn.addEventListener('click', () => {
+                if (isListening) {
+                    recognition.stop();
                 } else {
-                    console.error("Unexpected API response structure:", result);
+                    startSpeechRecognition();
                 }
-                tipOutput.innerHTML = `<p>${tip}</p>`;
-                tipOutput.style.fontStyle = 'normal';
-                aiVoiceBtn.style.display = 'inline-flex'; // Show AI voice button after tip generation
+            });
 
-            } catch (error) {
-                console.error("Error fetching wellness tip:", error);
-                tipOutput.innerHTML = `<p class="text-red-600">${t.fetchError}</p>`;
-                tipOutput.style.fontStyle = 'normal';
-            } finally {
-                loadingIndicator.style.display = 'none';
-                generateBtn.disabled = false;
-                micBtn.disabled = false;
-                aiVoiceBtn.disabled = false;
-            }
-        });
+            // AI Voice button for Text-to-Speech
+            aiVoiceBtn.addEventListener('click', () => {
+                const textToSpeak = tipOutput.textContent;
+                if (textToSpeak && textToSpeak !== translations[currentLanguage].tipOutputDefault) {
+                    speakText(textToSpeak);
+                }
+            });
 
-        // Event Listeners for Step Tracker
-        addOneStepBtn.addEventListener('click', addOneStep);
-        toggleTrackingBtn.addEventListener('click', () => {
-            if (trackingInterval) {
-                stopTrackingSimulation();
-            } else {
-                startTrackingSimulation();
-            }
-        });
-        resetStepsBtn.addEventListener('click', resetSteps);
+            // Toggle Features button
+            toggleFeaturesBtn.addEventListener('click', showAllFeatureIcons);
 
-        openStepTrackerBtn.addEventListener('click', () => {
-            const t = translations[currentLanguage];
-            if (stepTrackerSection.style.display === 'none') {
-                stepTrackerSection.style.display = 'block';
-                openStepTrackerBtn.textContent = t.closeStepTrackerButton;
-                document.body.classList.add('main-content-active'); // Add class when tracker is open
-                updateStepTrackerDisplay(); // Update display when opened
-            } else {
-                stepTrackerSection.style.display = 'none';
-                openStepTrackerBtn.textContent = t.openStepTrackerButton;
-                document.body.classList.remove('main-content-active'); // Remove class when tracker is closed
-            }
-        });
+            // Back button from features container to main view
+            backToMainFromFeaturesContainer.addEventListener('click', returnToMainView);
 
-        // Initial setup on DOMContentLoaded
-        document.addEventListener('DOMContentLoaded', () => {
+            // Feature icon click listeners
+            featureIcons.forEach(icon => {
+                icon.addEventListener('click', (event) => {
+                    const sectionId = event.currentTarget.dataset.section;
+                    const sectionToShow = document.getElementById(sectionId);
+                    if (sectionToShow) {
+                        showFeatureSection(sectionToShow);
+                    }
+                });
+            });
+
+            // Back buttons within feature sections
+            backButtons.forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const targetSectionId = event.target.dataset.target;
+                    if (targetSectionId === 'allFeatureIconsContainer') {
+                        showAllFeatureIcons();
+                    } else {
+                        // This case might not be needed if all back buttons go to feature icons
+                        returnToMainView();
+                    }
+                });
+            });
+
+            // Step Tracker Events
+            addOneStepBtn.addEventListener('click', addStep);
+            toggleTrackingBtn.addEventListener('click', toggleStepTracking);
+            resetStepsBtn.addEventListener('click', resetSteps);
+
+            // Heart Rate Tracker Events
+            simulateHeartRateBtn.addEventListener('click', simulateHeartRate);
+            resetHeartRateBtn.addEventListener('click', resetHeartRate);
+
+            // Water Tracker Events
+            addWaterBtn.addEventListener('click', () => addWater(250)); // Add 250ml by default
+            resetWaterBtn.addEventListener('click', resetWater);
+
+            // Journal Events
+            saveJournalEntryBtn.addEventListener('click', saveJournalEntry);
+
+            // Local Tips Events
+            localTipCategory.addEventListener('input', showLocalTipCategoryDropdown);
+            localTipCategory.addEventListener('focus', showLocalTipCategoryDropdown);
+            localTipCategory.addEventListener('blur', () => {
+                // Delay hiding to allow click event on dropdown items
+                setTimeout(() => localTipCategoryDropdown.classList.add('hidden'), 200);
+            });
+            getLocalTipBtn.addEventListener('click', getLocalTip);
+
+            // Meal Plan Events
+            generateMealPlanBtn.addEventListener('click', generateMealPlan);
+
+            // Mood Analysis Events
+            analyzeMoodJournalBtn.addEventListener('click', analyzeMoodJournal);
+
+            // Exercise & Yoga Events
+            generateExerciseRoutineBtn.addEventListener('click', generateExerciseRoutine);
+
+            // Disease Prevention Events
+            getRemedyBtn.addEventListener('click', getRemedy);
+
+            // Wellness Challenge Events
+            generateChallengeBtn.addEventListener('click', generateChallenge);
+
+            // Medication Reminder Events
+            setReminderBtn.addEventListener('click', setMedicationReminder);
+            clearMedicationRemindersBtn.addEventListener('click', clearMedicationReminders);
+
+            // Body Pain Mapping Events
+            bodyMapContainer.addEventListener('click', handleBodyMapClick);
+            addPainEntryBtn.addEventListener('click', addPainEntry);
+            clearPainMapBtn.addEventListener('click', clearPainMap);
+
+            // First Aid & Emergency Events
+            getEmergencyAdviceBtn.addEventListener('click', getEmergencyAdvice);
+
+
+            // --- Initial Setup ---
             // Hide splash screen and show main content after a delay
             setTimeout(() => {
                 splashScreen.classList.add('fade-out');
                 splashScreen.addEventListener('transitionend', () => {
                     splashScreen.style.display = 'none';
                     mainContent.style.display = 'block';
-                    document.body.classList.add('main-content-active'); // Add class to body when main content is active
+                    // Initialize TTS after main content is visible
+                    initSpeechSynthesis();
                 }, { once: true });
             }, 1000); // Show splash for 1 second
 
-            updateUI(); // Initial UI update
-            updateStepTrackerDisplay(); // Initial display for step tracker
+            // Apply translations and load initial data
+            languageSelect.value = currentLanguage; // Set dropdown to saved language
+            applyTranslations();
+            updateStepDisplay();
+            updateWaterDisplay();
+            displayJournalEntries();
+            displayMedicationReminders();
+            displayPainMapEntries();
+
+            // Ensure initial display of default messages for outputs
+            if (tipOutput.textContent.trim() === '' || tipOutput.textContent.includes("Enter a goal") || tipOutput.textContent.includes("இலக்கை உள்ளிடவும்")) {
+                tipOutput.innerHTML = `<p>${translations[currentLanguage].tipOutputDefault}</p>`;
+            }
+            if (stepResultOutput.textContent.trim() === '' || stepResultOutput.textContent.includes("Start tracking") || stepResultOutput.textContent.includes("கண்காணிக்கத் தொடங்குங்கள்")) {
+                stepResultOutput.innerHTML = `<p>${translations[currentLanguage].stepResultOutputInitial}</p>`;
+            }
+            if (heartRateResultOutput.textContent.trim() === '' || heartRateResultOutput.textContent.includes("Start monitoring") || heartRateResultOutput.textContent.includes("கண்காணிக்கத் தொடங்குங்கள்")) {
+                heartRateResultOutput.innerHTML = `<p>${translations[currentLanguage].heartRateResultOutputInitial}</p>`; 
+            }
+            if (waterResultOutput.textContent.trim() === '' || waterResultOutput.textContent.includes("Track your water intake") || waterResultOutput.textContent.includes("தண்ணீர் உட்கொள்ளலை கண்காணிக்கவும்")) {
+                waterResultOutput.innerHTML = `<p>${translations[currentLanguage].waterResultOutputInitial.replace('{{goal}}', waterGoalMl)}</p>`;
+            }
+            if (localTipOutput.textContent.trim() === '' || localTipOutput.textContent.includes("Enter a category") || localTipOutput.textContent.includes("ஒரு வகையை உள்ளிடவும்")) {
+                localTipOutput.innerHTML = `<p>${translations[currentLanguage].localTipOutputDefault}</p>`;
+            }
+            if (mealPlanOutput.textContent.trim() === '' || mealPlanOutput.textContent.includes("Enter your details") || mealPlanOutput.textContent.includes("உங்கள் விவரங்களை உள்ளிடவும்")) {
+                mealPlanOutput.innerHTML = `<p>${translations[currentLanguage].mealPlanOutputDefault}</p>`;
+            }
+            if (moodAnalysisOutput.textContent.trim() === '' || moodAnalysisOutput.textContent.includes("Results will appear here") || moodAnalysisOutput.textContent.includes("முடிவுகள் தோன்றும்")) {
+                moodAnalysisOutput.innerHTML = `<p>${translations[currentLanguage].moodAnalysisOutputDefault}</p>`;
+            }
+            if (exerciseRoutineOutput.textContent.trim() === '' || exerciseRoutineOutput.textContent.includes("Enter your details") || exerciseRoutineOutput.textContent.includes("உங்கள் விவரங்களை உள்ளிடவும்")) {
+                exerciseRoutineOutput.innerHTML = `<p>${translations[currentLanguage].exerciseRoutineOutputDefault}</p>`;
+            }
+            if (remedyOutput.textContent.trim() === '' || remedyOutput.textContent.includes("Enter a health concern") || remedyOutput.textContent.includes("உடல்நலக் கவலையை உள்ளிடவும்")) {
+                remedyOutput.innerHTML = `<p>${translations[currentLanguage].remedyOutputDefault}</p>`;
+            }
+            if (challengeOutput.textContent.trim() === '' || challengeOutput.textContent.includes("Enter your current habit") || challengeOutput.textContent.includes("உங்கள் தற்போதைய பழக்கம்")) {
+                challengeOutput.innerHTML = `<p>${translations[currentLanguage].challengeOutputDefault}</p>`;
+            }
+            if (emergencyAdviceOutput.textContent.trim() === '' || emergencyAdviceOutput.textContent.includes("Enter an emergency situation") || emergencyAdviceOutput.textContent.includes("அவசர சூழ்நிலையை உள்ளிடவும்")) {
+                emergencyAdviceOutput.innerHTML = `<p>${translations[currentLanguage].emergencyAdviceOutputDefault}</p>`;
+            }
         });
     </script>
 </body>
 </html>
+�
