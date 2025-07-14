@@ -543,10 +543,24 @@
                 <p id="localTipsDescription" class="text-gray-600 mb-4 text-lg"></p>
                 <div class="input-wrapper mb-4">
                     <input type="text" id="localTipCategory" class="input-field" aria-label="உதவிக்குறிப்பு வகையை உள்ளிடவும்" placeholder="எ.கா. மஞ்சள், முருங்கை, தியானம்...">
+                    <button id="localTipMicBtn" class="mic-button" title="உதவிக்குறிப்பு வகையை பேசவும்" aria-label="உதவிக்குறிப்பு வகையைப் பதிவு செய்யவும்">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mic">
+                            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                            <line x1="12" y1="19" x2="12" y2="23"></line>
+                            <line x1="8" y1="23" x2="16" y2="23"></line>
+                        </svg>
+                    </button>
                     <div id="localTipCategoryDropdown" class="dropdown-menu hidden mt-2 top-full left-0"></div>
                 </div>
                 <button id="getLocalTipBtn" class="generate-button"></button>
                 <div id="localTipOutput" class="tip-box" aria-live="polite"></div>
+                <button id="localTipAiVoiceBtn" class="ai-voice-button mt-4" style="display: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path>
+                    </svg>
+                </button>
             </div>
 
             <div id="mealPlanSection" class="feature-section">
@@ -555,7 +569,17 @@
                 <p id="mealPlanDescription" class="text-gray-600 mb-4 text-lg"></p>
                 <div class="input-wrapper flex-col items-stretch">
                     <label for="dietGoalInput" class="sr-only">உணவு இலக்கு</label>
-                    <input type="text" id="dietGoalInput" class="input-field mb-4" placeholder="எ.கா. எடை குறைப்பு, தசை வளர்ச்சி..." aria-label="உணவு இலக்கு">
+                    <div class="input-wrapper mb-4"> <!-- Nested input-wrapper for mic -->
+                        <input type="text" id="dietGoalInput" class="input-field" placeholder="எ.கா. எடை குறைப்பு, தசை வளர்ச்சி..." aria-label="உணவு இலக்கு">
+                        <button id="dietGoalMicBtn" class="mic-button" title="உணவு இலக்கைப் பேசவும்" aria-label="உணவு இலக்கைப் பதிவு செய்யவும்">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mic">
+                                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                                <line x1="12" y1="19" x2="12" y2="23"></line>
+                                <line x1="8" y1="23" x2="16" y2="23"></line>
+                            </svg>
+                        </button>
+                    </div>
 
                     <label for="dietPreferenceSelect" class="sr-only">உணவு விருப்பம்</label>
                     <select id="dietPreferenceSelect" class="input-field mb-4" aria-label="உணவு விருப்பம்">
@@ -566,10 +590,26 @@
                     </select>
 
                     <label for="allergiesInput" class="sr-only">ஒவ்வாமைகள் (இருப்பின்)</label>
-                    <input type="text" id="allergiesInput" class="input-field mb-4" placeholder="எ.கா. நிலக்கடலை, பால்..." aria-label="ஒவ்வாமைகள்">
+                    <div class="input-wrapper mb-4"> <!-- Nested input-wrapper for mic -->
+                        <input type="text" id="allergiesInput" class="input-field" placeholder="எ.கா. நிலக்கடலை, பால்..." aria-label="ஒவ்வாமைகள்">
+                        <button id="allergiesMicBtn" class="mic-button" title="ஒவ்வாமைகளைப் பேசவும்" aria-label="ஒவ்வாமைகளைப் பதிவு செய்யவும்">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mic">
+                                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                                <line x1="12" y1="19" x2="12" y2="23"></line>
+                                <line x1="8" y1="23" x2="16" y2="23"></line>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
                 <button id="generateMealPlanBtn" class="action-button mt-4"></button>
                 <div id="mealPlanOutput" class="result-box mt-4 text-left" aria-live="polite"></div>
+                <button id="mealPlanAiVoiceBtn" class="ai-voice-button mt-4" style="display: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path>
+                    </svg>
+                </button>
             </div>
 
             <div id="moodAnalysisSection" class="feature-section">
@@ -597,10 +637,26 @@
                     <input type="number" id="timeAvailableInput" class="input-field mb-4" placeholder="கிடைக்கக்கூடிய நேரம் (நிமிடங்கள்)..." aria-label="கிடைக்கக்கூடிய நேரம்">
 
                     <label for="exerciseGoalInput" class="sr-only">உடற்பயிற்சி இலக்கு</label>
-                    <input type="text" id="exerciseGoalInput" class="input-field mb-4" placeholder="எ.கா. உடல் நெகிழ்வுத்தன்மை, தசைகளை உருவாக்குதல்..." aria-label="உடற்பயிற்சி இலக்கு">
+                    <div class="input-wrapper mb-4"> <!-- Nested input-wrapper for mic -->
+                        <input type="text" id="exerciseGoalInput" class="input-field" placeholder="எ.கா. உடல் நெகிழ்வுத்தன்மை, தசைகளை உருவாக்குதல்..." aria-label="உடற்பயிற்சி இலக்கு">
+                        <button id="exerciseGoalMicBtn" class="mic-button" title="உடற்பயிற்சி இலக்கைப் பேசவும்" aria-label="உடற்பயிற்சி இலக்கைப் பதிவு செய்யவும்">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mic">
+                                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                                <line x1="12" y1="19" x2="12" y2="23"></line>
+                                <line x1="8" y1="23" x2="16" y2="23"></line>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
                 <button id="generateExerciseRoutineBtn" class="action-button mt-4"></button>
                 <div id="exerciseRoutineOutput" class="result-box mt-4 text-left" aria-live="polite"></div>
+                <button id="exerciseRoutineAiVoiceBtn" class="ai-voice-button mt-4" style="display: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path>
+                    </svg>
+                </button>
             </div>
 
             <div id="diseasePreventionSection" class="feature-section">
@@ -609,9 +665,23 @@
                 <p id="diseasePreventionDescription" class="text-gray-600 mb-4 text-lg"></p>
                 <div class="input-wrapper mb-4">
                     <input type="text" id="healthConcernInput" class="input-field" aria-label="உடல்நலக் கவலையை உள்ளிடவும்" placeholder="எ.கா. ஜலதோஷம், செரிமானப் பிரச்சனை...">
+                    <button id="healthConcernMicBtn" class="mic-button" title="உடல்நலக் கவலையைப் பேசவும்" aria-label="உடல்நலக் கவலையைப் பதிவு செய்யவும்">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mic">
+                            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                            <line x1="12" y1="19" x2="12" y2="23"></line>
+                            <line x1="8" y1="23" x2="16" y2="23"></line>
+                        </svg>
+                    </button>
                 </div>
                 <button id="getRemedyBtn" class="generate-button"></button>
                 <div id="remedyOutput" class="tip-box" aria-live="polite"></div>
+                <button id="remedyAiVoiceBtn" class="ai-voice-button mt-4" style="display: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path>
+                    </svg>
+                </button>
             </div>
 
             <div id="wellnessChallengeSection" class="feature-section">
@@ -659,12 +729,22 @@
                 <h2 id="bodyPainMappingSectionTitle" class="text-2xl font-semibold text-gray-700 mb-4 mt-4"></h2>
                 <p id="bodyPainMappingDescription" class="text-gray-600 mb-4 text-lg"></p>
 
-                <div id="bodyMapContainer" class="body-map-container mb-6"> <!-- Added id="bodyMapContainer" here -->
+                <div id="bodyMapContainer" class="body-map-container mb-6">
                     <img id="bodyMapImage" class="body-map-image" src="https://placehold.co/300x500/E0F2FE/000000?text=Body+Map" alt="Human Body Map for Pain Tracking">
                 </div>
                 <div class="input-wrapper flex-col items-stretch mb-4">
                     <label for="painLocationInput" class="sr-only">வலி இடம்</label>
-                    <input type="text" id="painLocationInput" class="input-field mb-4" placeholder="வலி இடம் (எ.கா. அடிவயிறு, முதுகு...)" aria-label="வலி இடம்">
+                    <div class="input-wrapper mb-4"> <!-- Nested input-wrapper for mic -->
+                        <input type="text" id="painLocationInput" class="input-field" placeholder="வலி இடம் (எ.கா. அடிவயிறு, முதுகு...)" aria-label="வலி இடம்">
+                        <button id="painLocationMicBtn" class="mic-button" title="வலி இடத்தைப் பேசவும்" aria-label="வலி இடத்தைப் பதிவு செய்யவும்">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mic">
+                                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                                <line x1="12" y1="19" x2="12" y2="23"></line>
+                                <line x1="8" y1="23" x2="16" y2="23"></line>
+                            </svg>
+                        </button>
+                    </div>
 
                     <label for="painLevelSelect" class="sr-only">வலி நிலை</label>
                     <select id="painLevelSelect" class="input-field mb-4" aria-label="வலி நிலை">
@@ -679,6 +759,13 @@
                     <button id="clearPainMapBtn" class="action-button bg-red-500 hover:bg-red-700 text-white"></button>
                 </div>
                 <div id="painEntriesList" class="result-box mt-4 text-left" aria-live="polite"></div>
+                <div id="painAdviceOutput" class="tip-box mt-4" aria-live="polite" style="display: none;"></div>
+                <button id="painAdviceAiVoiceBtn" class="ai-voice-button mt-4" style="display: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path>
+                    </svg>
+                </button>
             </div>
 
             <div id="firstAidEmergencySection" class="feature-section">
@@ -687,9 +774,23 @@
                 <p id="firstAidEmergencyDescription" class="text-gray-600 mb-4 text-lg"></p>
                 <div class="input-wrapper mb-4">
                     <input type="text" id="emergencySituationInput" class="input-field" aria-label="அவசர சூழ்நிலையை உள்ளிடவும்" placeholder="எ.கா. தீக்காயம், எலும்பு முறிவு, மூச்சுத்திணறல்...">
+                    <button id="emergencySituationMicBtn" class="mic-button" title="அவசர சூழ்நிலையைப் பேசவும்" aria-label="அவசர சூழ்நிலையைப் பதிவு செய்யவும்">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mic">
+                            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                            <line x1="12" y1="19" x2="12" y2="23"></line>
+                            <line x1="8" y1="23" x2="16" y2="23"></line>
+                        </svg>
+                    </button>
                 </div>
                 <button id="getEmergencyAdviceBtn" class="generate-button"></button>
                 <div id="emergencyAdviceOutput" class="tip-box" aria-live="polite"></div>
+                <button id="emergencyAdviceAiVoiceBtn" class="ai-voice-button mt-4" style="display: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path>
+                    </svg>
+                </button>
             </div>
 
         </div>
@@ -707,9 +808,9 @@
             const descriptionText = document.getElementById('descriptionText');
             const tipSectionTitle = document.getElementById('tipSectionTitle');
             const goalInput = document.getElementById('goalInput');
-            const micBtn = document.getElementById('micBtn');
+            const micBtn = document.getElementById('micBtn'); // Main mic button
             const generateBtn = document.getElementById('generateBtn');
-            const aiVoiceBtn = document.getElementById('aiVoiceBtn');
+            const aiVoiceBtn = document.getElementById('aiVoiceBtn'); // Main AI voice button
             const ttsVoiceSelect = document.getElementById('ttsVoiceSelect');
             const loadingIndicator = document.getElementById('loading');
             const loadingText = document.getElementById('loadingText');
@@ -765,19 +866,24 @@
             const localTipsSectionTitle = document.getElementById('localTipsSectionTitle'); 
             const localTipsDescription = document.getElementById('localTipsDescription');
             const localTipCategory = document.getElementById('localTipCategory');
+            const localTipMicBtn = document.getElementById('localTipMicBtn'); // New mic button for local tips
             const localTipCategoryDropdown = document.getElementById('localTipCategoryDropdown');
             const getLocalTipBtn = document.getElementById('getLocalTipBtn');
             const localTipOutput = document.getElementById('localTipOutput');
+            const localTipAiVoiceBtn = document.getElementById('localTipAiVoiceBtn'); // New AI voice button for local tips
 
             // Meal Plan
             const mealPlanSection = document.getElementById('mealPlanSection');
             const mealPlanSectionTitle = document.getElementById('mealPlanSectionTitle');
             const mealPlanDescription = document.getElementById('mealPlanDescription');
             const dietGoalInput = document.getElementById('dietGoalInput');
+            const dietGoalMicBtn = document.getElementById('dietGoalMicBtn'); // New mic button for diet goal
             const dietPreferenceSelect = document.getElementById('dietPreferenceSelect');
-            const allergiesInput = document = document.getElementById('allergiesInput');
+            const allergiesInput = document.getElementById('allergiesInput');
+            const allergiesMicBtn = document.getElementById('allergiesMicBtn'); // New mic button for allergies
             const generateMealPlanBtn = document.getElementById('generateMealPlanBtn');
             const mealPlanOutput = document.getElementById('mealPlanOutput');
+            const mealPlanAiVoiceBtn = document.getElementById('mealPlanAiVoiceBtn'); // New AI voice button for meal plan
 
             // Mood Analysis
             const moodAnalysisSection = document.getElementById('moodAnalysisSection');
@@ -793,16 +899,20 @@
             const fitnessLevelSelect = document.getElementById('fitnessLevelSelect');
             const timeAvailableInput = document.getElementById('timeAvailableInput');
             const exerciseGoalInput = document.getElementById('exerciseGoalInput');
+            const exerciseGoalMicBtn = document.getElementById('exerciseGoalMicBtn'); // New mic button for exercise goal
             const generateExerciseRoutineBtn = document.getElementById('generateExerciseRoutineBtn');
             const exerciseRoutineOutput = document.getElementById('exerciseRoutineOutput');
+            const exerciseRoutineAiVoiceBtn = document.getElementById('exerciseRoutineAiVoiceBtn'); // New AI voice button for exercise routine
 
             // Disease Prevention
             const diseasePreventionSection = document.getElementById('diseasePreventionSection');
             const diseasePreventionSectionTitle = document.getElementById('diseasePreventionSectionTitle');
             const diseasePreventionDescription = document.getElementById('diseasePreventionDescription');
             const healthConcernInput = document.getElementById('healthConcernInput');
+            const healthConcernMicBtn = document.getElementById('healthConcernMicBtn'); // New mic button for health concern
             const getRemedyBtn = document.getElementById('getRemedyBtn');
             const remedyOutput = document.getElementById('remedyOutput');
+            const remedyAiVoiceBtn = document.getElementById('remedyAiVoiceBtn'); // New AI voice button for remedy
 
             // Wellness Challenge
             const wellnessChallengeSection = document.getElementById('wellnessChallengeSection');
@@ -831,18 +941,23 @@
             const bodyMapContainer = document.getElementById('bodyMapContainer'); 
             const bodyMapImage = document.getElementById('bodyMapImage');
             const painLocationInput = document.getElementById('painLocationInput');
+            const painLocationMicBtn = document.getElementById('painLocationMicBtn'); // New mic button for pain location
             const painLevelSelect = document.getElementById('painLevelSelect');
             const addPainEntryBtn = document.getElementById('addPainEntryBtn');
             const clearPainMapBtn = document.getElementById('clearPainMapBtn');
             const painEntriesList = document.getElementById('painEntriesList');
+            const painAdviceOutput = document.getElementById('painAdviceOutput'); // New AI advice output for body pain
+            const painAdviceAiVoiceBtn = document.getElementById('painAdviceAiVoiceBtn'); // New AI voice button for pain advice
 
             // First Aid & Emergency
             const firstAidEmergencySection = document.getElementById('firstAidEmergencySection');
             const firstAidEmergencySectionTitle = document.getElementById('firstAidEmergencySectionTitle');
             const firstAidEmergencyDescription = document.getElementById('firstAidEmergencyDescription');
             const emergencySituationInput = document.getElementById('emergencySituationInput');
+            const emergencySituationMicBtn = document.getElementById('emergencySituationMicBtn'); // New mic button for emergency situation
             const getEmergencyAdviceBtn = document.getElementById('getEmergencyAdviceBtn');
             const emergencyAdviceOutput = document.getElementById('emergencyAdviceOutput');
+            const emergencyAdviceAiVoiceBtn = document.getElementById('emergencyAdviceAiVoiceBtn'); // New AI voice button for emergency advice
 
 
             // --- Global Variables ---
@@ -899,6 +1014,12 @@
                     medicationReminderLabel: "மருந்து நினைவூட்டல்",
                     bodyPainMappingLabel: "உடல் வலி மேப்பிங்",
                     firstAidEmergencyLabel: "முதலுதவி & அவசர உதவி",
+
+                    // Mic/Voice button titles for features
+                    micSpeakTitle: "பேசுங்கள்",
+                    micRecordAriaLabel: "{{label}} பதிவு செய்யவும்",
+                    aiVoiceListenAriaLabel: "AI குரலில் கேளுங்கள்",
+
 
                     // Step Tracker Section
                     stepSectionTitle: "படி டிராக்கர்",
@@ -1049,6 +1170,11 @@
                     painEntriesListDefault: "இன்னும் வலி பதிவுகள் இல்லை. வரைபடத்தில் கிளிக் செய்யவும் அல்லது விவரங்களை உள்ளிடவும்.",
                     painEntryDisplay: "இடம்: {{location}} | நிலை: {{level}} | நாள்: {{date}} | நேரம்: {{time}}",
                     painEntryNoInput: "வலி இடம், வலி நிலை மற்றும் வரைபடத்தில் ஒரு புள்ளி தேவை.",
+                    painAdviceLoading: "வலி ஆலோசனை உருவாக்கப்படுகிறது...",
+                    painAdviceDefault: "வலி இருப்பிடம் மற்றும் நிலையின் அடிப்படையில் AI ஆலோசனை இங்கே தோன்றும்.",
+                    painAdviceError: "வலி ஆலோசனை பெற முடியவில்லை. தயவுசெய்து மீண்டும் முயற்சிக்கவும்.",
+                    painAdviceText: "உங்கள் {{location}} பகுதியில் உள்ள {{level}} வலிக்கு, {{advice}} போன்றவற்றை முயற்சி செய்யலாம். இது ஒரு பொதுவான ஆலோசனை மட்டுமே, மருத்துவரை அணுகுவது நல்லது.",
+
 
                     // First Aid & Emergency Section
                     firstAidEmergencySectionTitle: "முதலுதவி & அவசர உதவி",
@@ -1066,7 +1192,7 @@
                     micStop: "பதிவு நிறுத்தப்பட்டது.",
                     noSpeech: "பேச்சு கண்டறியப்படவில்லை. தயவுசெய்து மீண்டும் முயற்சிக்கவும்.",
                     speechError: "குரல் அங்கீகாரத்தில் பிழை: {{error}}",
-                    noTTSVoice: "குரல் அங்கீகாரத்திற்கு எந்தக் குரல்களும் கிடைக்கவில்லை. வேறு உலாவியை முயற்சிக்கவும் அல்லது உங்கள் சாதன அமைப்புகளைச் சரிபார்க்கவும்."
+                    noTTSVoice: "குரல் அங்கீகாரத்திற்கு எந்தக் குரல்களும் கிடைக்கவில்லை. வேறு உலாவியை முயற்சிக்கவும் அல்லது உங்கள் சாதன அமைப்புகளைச் சரிபார்க்கவும்।"
                 },
                 en: {
                     appTitle: "Wellness Buddy - Your Health Guide",
@@ -1098,6 +1224,11 @@
                     medicationReminderLabel: "Medication Reminder",
                     bodyPainMappingLabel: "Body Pain Mapping",
                     firstAidEmergencyLabel: "First Aid & Emergency",
+
+                    // Mic/Voice button titles for features
+                    micSpeakTitle: "Speak",
+                    micRecordAriaLabel: "Record {{label}}",
+                    aiVoiceListenAriaLabel: "Listen in AI Voice",
 
                     // Step Tracker Section
                     stepSectionTitle: "Step Tracker",
@@ -1248,6 +1379,11 @@
                     painEntriesListDefault: "No pain entries yet. Click on the map or enter details.",
                     painEntryDisplay: "Location: {{location}} | Level: {{level}} | Date: {{date}} | Time: {{time}}",
                     painEntryNoInput: "Pain location, pain level, and a point on the map are required.",
+                    painAdviceLoading: "Generating pain advice...",
+                    painAdviceDefault: "AI advice based on pain location and level will appear here.",
+                    painAdviceError: "Could not retrieve pain advice. Please try again.",
+                    painAdviceText: "For your {{level}} pain in the {{location}} area, you might try {{advice}}. This is general advice only; it's best to consult a doctor.",
+
 
                     // First Aid & Emergency Section
                     firstAidEmergencySectionTitle: "First Aid & Emergency",
@@ -1257,6 +1393,7 @@
                     emergencyAdviceOutputDefault: "Enter an emergency situation, and I'll provide first aid advice.",
                     emergencyAdviceLoading: "Generating advice...",
                     emergencyAdviceError: "Could not retrieve first aid advice. Please try again.",
+
 
                     // General messages
                     error: "Something went wrong. Please try again.",
@@ -1343,7 +1480,7 @@
                 moodSelect.querySelector('option[value=""]').textContent = t.moodSelectPlaceholder;
                 moodSelect.querySelector('option[value="happy"]').textContent = t.moodHappy + ' 😄';
                 moodSelect.querySelector('option[value="neutral"]').textContent = t.moodNeutral + ' 😐';
-                moodSelect.querySelector('option[value="sad"]').textContent = t.moodSad + ' �';
+                moodSelect.querySelector('option[value="sad"]').textContent = t.moodSad + ' 😔';
                 moodSelect.querySelector('option[value="stressed"]').textContent = t.moodStressed + ' 😩';
                 moodSelect.querySelector('option[value="energetic"]').textContent = t.moodEnergetic + ' 💪';
                 gratitudeInput.placeholder = t.gratitudeInputPlaceholder;
@@ -1354,24 +1491,34 @@
                 localTipsSectionTitle.textContent = t.localTipsSectionTitle;
                 localTipsDescription.textContent = t.localTipsDescription;
                 localTipCategory.placeholder = t.localTipCategoryPlaceholder;
+                localTipMicBtn.title = t.micSpeakTitle;
+                localTipMicBtn.setAttribute('aria-label', t.micRecordAriaLabel.replace('{{label}}', t.localTipsLabel));
                 getLocalTipBtn.textContent = t.getLocalTipBtn;
                 if (localTipOutput.textContent.trim() === '' || localTipOutput.textContent.includes("Enter a category") || localTipOutput.textContent.includes("ஒரு வகையை உள்ளிடவும்")) {
                     localTipOutput.innerHTML = `<p>${t.localTipOutputDefault}</p>`;
                 }
+                localTipAiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path></svg>${t.aiVoiceListenAriaLabel}`;
+
 
                 // Meal Plan
                 mealPlanSectionTitle.textContent = t.mealPlanSectionTitle;
                 mealPlanDescription.textContent = t.mealPlanDescription;
                 dietGoalInput.placeholder = t.dietGoalInputPlaceholder;
+                dietGoalMicBtn.title = t.micSpeakTitle;
+                dietGoalMicBtn.setAttribute('aria-label', t.micRecordAriaLabel.replace('{{label}}', t.mealPlanLabel));
                 dietPreferenceSelect.querySelector('option[value=""]').textContent = t.dietPreferenceSelectPlaceholder;
                 dietPreferenceSelect.querySelector('option[value="vegetarian"]').textContent = t.dietPreferenceVegetarian;
                 dietPreferenceSelect.querySelector('option[value="non-vegetarian"]').textContent = t.dietPreferenceNonVegetarian;
                 dietPreferenceSelect.querySelector('option[value="vegan"]').textContent = t.dietPreferenceVegan;
                 allergiesInput.placeholder = t.allergiesInputPlaceholder;
+                allergiesMicBtn.title = t.micSpeakTitle;
+                allergiesMicBtn.setAttribute('aria-label', t.micRecordAriaLabel.replace('{{label}}', t.allergiesInputPlaceholder));
                 generateMealPlanBtn.textContent = t.generateMealPlanBtn;
                 if (mealPlanOutput.textContent.trim() === '' || mealPlanOutput.textContent.includes("Enter your details") || mealPlanOutput.textContent.includes("உங்கள் விவரங்களை உள்ளிடவும்")) {
                     mealPlanOutput.innerHTML = `<p>${t.mealPlanOutputDefault}</p>`;
                 }
+                mealPlanAiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path></svg>${t.aiVoiceListenAriaLabel}`;
+
 
                 // Mood Analysis
                 moodAnalysisSectionTitle.textContent = t.moodAnalysisSectionTitle;
@@ -1390,19 +1537,25 @@
                 fitnessLevelSelect.querySelector('option[value="advanced"]').textContent = t.fitnessLevelAdvanced;
                 timeAvailableInput.placeholder = t.timeAvailableInputPlaceholder;
                 exerciseGoalInput.placeholder = t.exerciseGoalInputPlaceholder;
+                exerciseGoalMicBtn.title = t.micSpeakTitle;
+                exerciseGoalMicBtn.setAttribute('aria-label', t.micRecordAriaLabel.replace('{{label}}', t.exerciseYogaLabel));
                 generateExerciseRoutineBtn.textContent = t.generateExerciseRoutineBtn;
                 if (exerciseRoutineOutput.textContent.trim() === '' || exerciseRoutineOutput.textContent.includes("Enter your details") || exerciseRoutineOutput.textContent.includes("உங்கள் விவரங்களை உள்ளிடவும்")) {
                     exerciseRoutineOutput.innerHTML = `<p>${t.exerciseRoutineOutputDefault}</p>`;
                 }
+                exerciseRoutineAiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path></svg>${t.aiVoiceListenAriaLabel}`;
 
                 // Disease Prevention
                 diseasePreventionSectionTitle.textContent = t.diseasePreventionSectionTitle;
                 diseasePreventionDescription.textContent = t.diseasePreventionDescription;
                 healthConcernInput.placeholder = t.healthConcernInputPlaceholder;
+                healthConcernMicBtn.title = t.micSpeakTitle;
+                healthConcernMicBtn.setAttribute('aria-label', t.micRecordAriaLabel.replace('{{label}}', t.diseasePreventionLabel));
                 getRemedyBtn.textContent = t.getRemedyBtn;
                 if (remedyOutput.textContent.trim() === '' || remedyOutput.textContent.includes("Enter a health concern") || remedyOutput.textContent.includes("உடல்நலக் கவலையை உள்ளிடவும்")) {
                     remedyOutput.innerHTML = `<p>${t.remedyOutputDefault}</p>`;
                 }
+                remedyAiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path></svg>${t.aiVoiceListenAriaLabel}`;
 
                 // Wellness Challenge
                 wellnessChallengeSectionTitle.textContent = t.wellnessChallengeSectionTitle;
@@ -1431,6 +1584,8 @@
                 bodyPainMappingSectionTitle.textContent = t.bodyPainMappingSectionTitle;
                 bodyPainMappingDescription.textContent = t.bodyPainMappingDescription;
                 painLocationInput.placeholder = t.painLocationInputPlaceholder;
+                painLocationMicBtn.title = t.micSpeakTitle;
+                painLocationMicBtn.setAttribute('aria-label', t.micRecordAriaLabel.replace('{{label}}', t.bodyPainMappingLabel));
                 painLevelSelect.querySelector('option[value=""]').textContent = t.painLevelSelectPlaceholder;
                 painLevelSelect.querySelector('option[value="mild"]').textContent = t.painLevelMild;
                 painLevelSelect.querySelector('option[value="moderate"]').textContent = t.painLevelModerate;
@@ -1438,15 +1593,24 @@
                 addPainEntryBtn.textContent = t.addPainEntryBtn;
                 clearPainMapBtn.textContent = t.clearPainMapBtn;
                 displayPainMapEntries(); // Re-render pain map entries with new translations
+                if (painAdviceOutput.textContent.trim() === '' || painAdviceOutput.textContent.includes("AI advice based on pain location") || painAdviceOutput.textContent.includes("வலி இருப்பிடம் மற்றும் நிலையின் அடிப்படையில் AI ஆலோசனை")) {
+                    painAdviceOutput.innerHTML = `<p>${t.painAdviceDefault}</p>`;
+                }
+                painAdviceAiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path></svg>${t.aiVoiceListenAriaLabel}`;
+
 
                 // First Aid & Emergency
                 firstAidEmergencySectionTitle.textContent = t.firstAidEmergencySectionTitle;
                 firstAidEmergencyDescription.textContent = t.firstAidEmergencyDescription;
                 emergencySituationInput.placeholder = t.emergencySituationInputPlaceholder;
+                emergencySituationMicBtn.title = t.micSpeakTitle;
+                emergencySituationMicBtn.setAttribute('aria-label', t.micRecordAriaLabel.replace('{{label}}', t.firstAidEmergencyLabel));
                 getEmergencyAdviceBtn.textContent = t.getEmergencyAdviceBtn;
                 if (emergencyAdviceOutput.textContent.trim() === '' || emergencyAdviceOutput.textContent.includes("Enter an emergency situation") || emergencyAdviceOutput.textContent.includes("அவசர சூழ்நிலையை உள்ளிடவும்")) {
                     emergencyAdviceOutput.innerHTML = `<p>${t.emergencyAdviceOutputDefault}</p>`;
                 }
+                emergencyAdviceAiVoiceBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path></svg>${t.aiVoiceListenAriaLabel}`;
+
 
                 // Update all back buttons
                 document.querySelectorAll('.back-button').forEach(button => {
@@ -1459,73 +1623,51 @@
              * @param {boolean} show - Whether to show or hide the loading indicator.
              * @param {HTMLElement} outputElement - The specific output element to show loading for.
              * @param {string} loadingMessageKey - Key for the loading message in translations.
+             * @param {Array<HTMLElement>} buttonsToDisable - An array of buttons to disable/enable.
              */
-            function showLoadingAI(show, outputElement, loadingMessageKey) {
+            function showLoadingAI(show, outputElement, loadingMessageKey, buttonsToDisable = []) {
                 const t = translations[currentLanguage];
                 if (show) {
                     loadingIndicator.style.display = 'flex';
                     loadingText.textContent = t[loadingMessageKey];
                     outputElement.innerHTML = `<p class="text-gray-500 italic">${t[loadingMessageKey]}</p>`;
-                    // Disable all AI-related buttons during loading
-                    generateBtn.disabled = true;
-                    micBtn.disabled = true;
-                    aiVoiceBtn.disabled = true;
-                    ttsVoiceSelect.disabled = true;
-                    getLocalTipBtn.disabled = true;
-                    generateMealPlanBtn.disabled = true;
-                    generateExerciseRoutineBtn.disabled = true;
-                    getRemedyBtn.disabled = true;
-                    getEmergencyAdviceBtn.disabled = true;
+                    buttonsToDisable.forEach(btn => btn.disabled = true);
                 } else {
                     loadingIndicator.style.display = 'none';
                     loadingText.textContent = ''; // Clear loading text
-                    // Re-enable buttons
-                    generateBtn.disabled = false;
-                    micBtn.disabled = false;
-                    aiVoiceBtn.disabled = false;
-                    ttsVoiceSelect.disabled = false;
-                    getLocalTipBtn.disabled = false;
-                    generateMealPlanBtn.disabled = false;
-                    generateExerciseRoutineBtn.disabled = false;
-                    getRemedyBtn.disabled = false;
-                    getEmergencyAdviceBtn.disabled = false;
+                    buttonsToDisable.forEach(btn => btn.disabled = false);
                 }
             }
 
             /**
-             * Generic function to call Gemini API.
+             * Generic function to call Gemini API via Netlify Function.
              * @param {string} promptText - The prompt to send to the AI.
              * @param {HTMLElement} outputElement - The DOM element to display the output.
              * @param {string} loadingMessageKey - The key for the loading message in translations.
              * @param {string} errorMessageKey - The key for the error message in translations.
-             * @returns {Promise<string>} A promise that resolves with the generated text or an error message.
+             * @param {Array<HTMLElement>} buttonsToControl - An array of buttons to disable/enable during loading.
+             * @returns {Promise<string>} A promise that resolves with the generated text or an an error message.
              */
-            async function callGeminiAPI(promptText, outputElement, loadingMessageKey, errorMessageKey) {
-                showLoadingAI(true, outputElement, loadingMessageKey);
+            async function callGeminiAPI(promptText, outputElement, loadingMessageKey, errorMessageKey, buttonsToControl = []) {
+                showLoadingAI(true, outputElement, loadingMessageKey, buttonsToControl);
                 const t = translations[currentLanguage];
 
                 try {
-                    let chatHistory = [];
-                    chatHistory.push({ role: "user", parts: [{ text: promptText }] });
-                    const payload = { contents: chatHistory };
-                    const apiKey = ""; // Leave this as-is; Canvas will provide it at runtime.
-                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-                    const response = await fetch(apiUrl, {
+                    const response = await fetch('/.netlify/functions/gemini-proxy', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ promptText: promptText, currentLanguage: currentLanguage }),
                     });
 
                     const result = await response.json();
                     let generatedText = t[errorMessageKey]; // Default error message
 
-                    if (result.candidates && result.candidates.length > 0 &&
-                        result.candidates[0].content && result.candidates[0].content.parts &&
-                        result.candidates[0].content.parts.length > 0) {
-                        generatedText = result.candidates[0].content.parts[0].text;
+                    if (response.ok && result.generatedText) {
+                        generatedText = result.generatedText;
                     } else {
-                        console.error("Unexpected API response structure:", result);
+                        console.error("Netlify Function or Gemini API error:", result.error || "Unknown error");
                     }
                     outputElement.innerHTML = `<p>${generatedText}</p>`;
                     return generatedText;
@@ -1535,7 +1677,7 @@
                     outputElement.innerHTML = `<p class="text-red-600">${t[errorMessageKey]}</p>`;
                     return t[errorMessageKey];
                 } finally {
-                    showLoadingAI(false);
+                    showLoadingAI(false, outputElement, loadingMessageKey, buttonsToControl); // Ensure buttons are re-enabled
                 }
             }
 
@@ -1594,15 +1736,19 @@
             async function getWellnessTip(goal) {
                 const t = translations[currentLanguage];
                 const promptText = `Generate a wellness tip for the goal: "${goal}". Respond in ${currentLanguage === 'ta' ? 'Tamil' : 'English'}. Briefly explain the tip and include a motivational aspect.`;
-                return callGeminiAPI(promptText, tipOutput, 'loadingText', 'error');
+                return callGeminiAPI(promptText, tipOutput, 'loadingText', 'error', [generateBtn, micBtn, aiVoiceBtn, ttsVoiceSelect]);
             }
 
             /**
-             * Handles speech recognition for the goal input.
+             * Handles speech recognition for a given input field.
+             * @param {HTMLInputElement|HTMLTextAreaElement} inputField - The input field to populate.
+             * @param {HTMLButtonElement} micButton - The microphone button to control.
+             * @param {HTMLElement} outputElement - The output element to display errors.
+             * @param {string} originalPlaceholder - The original placeholder text for the input field.
              */
-            function startSpeechRecognition() {
+            function startSpeechRecognitionForField(inputField, micButton, outputElement, originalPlaceholder) {
                 if (!('webkitSpeechRecognition' in window)) {
-                    tipOutput.innerHTML = `<p class="text-red-600">${translations[currentLanguage].speechError.replace('{{error}}', 'Browser not supported. Use Chrome.')}</p>`;
+                    outputElement.innerHTML = `<p class="text-red-600">${translations[currentLanguage].speechError.replace('{{error}}', 'Browser not supported. Use Chrome.')}</p>`;
                     return;
                 }
 
@@ -1617,32 +1763,32 @@
 
                 recognition.onstart = () => {
                     isListening = true;
-                    micBtn.classList.add('recording');
-                    goalInput.placeholder = translations[currentLanguage].micStart;
-                    goalInput.value = ''; // Clear previous input when starting
-                    tipOutput.innerHTML = ''; // Clear previous tip output
+                    micButton.classList.add('recording');
+                    inputField.placeholder = translations[currentLanguage].micStart;
+                    inputField.value = ''; // Clear previous input when starting
+                    outputElement.innerHTML = ''; // Clear previous output
                 };
 
                 recognition.onresult = (event) => {
                     const transcript = event.results[0][0].transcript;
-                    goalInput.value = transcript;
+                    inputField.value = transcript;
                     console.log('Speech result:', transcript);
                 };
 
                 recognition.onerror = (event) => {
                     console.error('Speech recognition error', event.error);
-                    tipOutput.innerHTML = `<p class="text-red-600">${translations[currentLanguage].speechError.replace('{{error}}', event.error)}</p>`;
-                    goalInput.placeholder = translations[currentLanguage].goalInputPlaceholder; // Revert placeholder
+                    outputElement.innerHTML = `<p class="text-red-600">${translations[currentLanguage].speechError.replace('{{error}}', event.error)}</p>`;
+                    inputField.placeholder = originalPlaceholder; // Revert placeholder
                     isListening = false;
-                    micBtn.classList.remove('recording');
+                    micButton.classList.remove('recording');
                 };
 
                 recognition.onend = () => {
                     isListening = false;
-                    micBtn.classList.remove('recording');
-                    goalInput.placeholder = translations[currentLanguage].goalInputPlaceholder; // Revert placeholder
-                    if (goalInput.value.trim() === '') { // If nothing was recorded
-                        tipOutput.innerHTML = `<p class="text-red-600">${translations[currentLanguage].noSpeech}</p>`;
+                    micButton.classList.remove('recording');
+                    inputField.placeholder = originalPlaceholder; // Revert placeholder
+                    if (inputField.value.trim() === '') { // If nothing was recorded
+                        outputElement.innerHTML = `<p class="text-red-600">${translations[currentLanguage].noSpeech}</p>`;
                     }
                 };
 
@@ -1655,7 +1801,8 @@
             function initSpeechSynthesis() {
                 speechSynth = window.speechSynthesis;
                 if (!speechSynth) {
-                    aiVoiceBtn.style.display = 'none';
+                    // Hide all AI voice buttons if TTS is not supported
+                    document.querySelectorAll('.ai-voice-button').forEach(btn => btn.style.display = 'none');
                     ttsVoiceSelect.style.display = 'none';
                     console.warn('SpeechSynthesis not supported in this browser.');
                     return;
@@ -1696,10 +1843,11 @@
                     }
 
                     if (ttsVoiceSelect.options.length === 0) {
-                        aiVoiceBtn.style.display = 'none';
+                        document.querySelectorAll('.ai-voice-button').forEach(btn => btn.style.display = 'none');
                         ttsVoiceSelect.style.display = 'none';
                         tipOutput.innerHTML = `<p class="text-red-600">${translations[currentLanguage].noTTSVoice}</p>`;
                     } else {
+                        // Only show the main AI voice button initially. Others will be shown when content is generated.
                         aiVoiceBtn.style.display = 'inline-flex';
                         ttsVoiceSelect.style.display = 'inline-block';
                     }
@@ -1714,8 +1862,9 @@
             /**
              * Speaks the given text using Text-to-Speech.
              * @param {string} text - The text to speak.
+             * @param {HTMLButtonElement} aiVoiceButton - The AI voice button to control display.
              */
-            function speakText(text) {
+            function speakText(text, aiVoiceButton) {
                 if (!speechSynth || text.trim() === '') {
                     return;
                 }
@@ -1732,8 +1881,15 @@
                 currentUtterance.pitch = 1;
                 currentUtterance.rate = 1;
 
+                currentUtterance.onstart = () => {
+                    aiVoiceButton.classList.add('recording');
+                };
+                currentUtterance.onend = () => {
+                    aiVoiceButton.classList.remove('recording');
+                };
                 currentUtterance.onerror = (event) => {
                     console.error('Speech synthesis error', event);
+                    aiVoiceButton.classList.remove('recording');
                     // Handle error, e.g., display a message
                 };
 
@@ -1901,10 +2057,16 @@
                 const t = translations[currentLanguage];
                 if (!category) {
                     localTipOutput.innerHTML = `<p class="text-red-600">${t.localTipOutputDefault}</p>`;
+                    localTipAiVoiceBtn.style.display = 'none';
                     return;
                 }
                 const promptText = `Provide a wellness tip related to "${category}", suitable for ${currentLanguage === 'ta' ? 'Tamil' : 'English'} speakers. Briefly explain its benefits and how to use it.`;
-                await callGeminiAPI(promptText, localTipOutput, 'localTipLoading', 'localTipNotFound');
+                const generatedText = await callGeminiAPI(promptText, localTipOutput, 'localTipLoading', 'localTipNotFound', [getLocalTipBtn, localTipMicBtn, localTipAiVoiceBtn]);
+                if (generatedText && generatedText !== t.localTipNotFound) {
+                    localTipAiVoiceBtn.style.display = 'inline-flex';
+                } else {
+                    localTipAiVoiceBtn.style.display = 'none';
+                }
             }
 
             function showLocalTipCategoryDropdown() {
@@ -1960,6 +2122,7 @@
 
                 if (!goal || !preference) {
                     mealPlanOutput.innerHTML = `<p class="text-red-600">${t.mealPlanNoInput}</p>`;
+                    mealPlanAiVoiceBtn.style.display = 'none';
                     return;
                 }
 
@@ -1969,7 +2132,12 @@
                 }
                 promptText += ` Include breakfast, lunch, dinner, and snacks. Respond in ${currentLanguage === 'ta' ? 'Tamil' : 'English'}.`;
                 
-                await callGeminiAPI(promptText, mealPlanOutput, 'mealPlanLoading', 'error');
+                const generatedText = await callGeminiAPI(promptText, mealPlanOutput, 'mealPlanLoading', 'error', [generateMealPlanBtn, dietGoalMicBtn, allergiesMicBtn, mealPlanAiVoiceBtn]);
+                if (generatedText && generatedText !== t.error) {
+                    mealPlanAiVoiceBtn.style.display = 'inline-flex';
+                } else {
+                    mealPlanAiVoiceBtn.style.display = 'none';
+                }
             }
 
             // Mood Analysis (Simulated AI)
@@ -2014,12 +2182,18 @@
 
                 if (!fitnessLevel || isNaN(timeAvailable) || timeAvailable <= 0 || !exerciseGoal) {
                     exerciseRoutineOutput.innerHTML = `<p class="text-red-600">${t.exerciseRoutineNoInput}</p>`;
+                    exerciseRoutineAiVoiceBtn.style.display = 'none';
                     return;
                 }
 
                 const promptText = `Generate a ${t[`fitnessLevel${fitnessLevel.charAt(0).toUpperCase() + fitnessLevel.slice(1)}`]} level exercise and yoga routine for ${timeAvailable} minutes, focusing on "${exerciseGoal}". Provide a warm-up, main exercises, and a cool-down, plus a relevant yoga suggestion. Respond in ${currentLanguage === 'ta' ? 'Tamil' : 'English'}.`;
 
-                await callGeminiAPI(promptText, exerciseRoutineOutput, 'exerciseRoutineLoading', 'error');
+                const generatedText = await callGeminiAPI(promptText, exerciseRoutineOutput, 'exerciseRoutineLoading', 'error', [generateExerciseRoutineBtn, exerciseGoalMicBtn, exerciseRoutineAiVoiceBtn]);
+                if (generatedText && generatedText !== t.error) {
+                    exerciseRoutineAiVoiceBtn.style.display = 'inline-flex';
+                } else {
+                    exerciseRoutineAiVoiceBtn.style.display = 'none';
+                }
             }
 
             // Disease Prevention (AI-driven)
@@ -2028,10 +2202,16 @@
                 const t = translations[currentLanguage];
                 if (!concern) {
                     remedyOutput.innerHTML = `<p class="text-red-600">${t.remedyOutputDefault}</p>`;
+                    remedyAiVoiceBtn.style.display = 'none';
                     return;
                 }
                 const promptText = `Suggest home remedies and preventive measures for "${concern}". Explain briefly. Respond in ${currentLanguage === 'ta' ? 'Tamil' : 'English'}.`;
-                await callGeminiAPI(promptText, remedyOutput, 'remedyLoading', 'remedyNotFound');
+                const generatedText = await callGeminiAPI(promptText, remedyOutput, 'remedyLoading', 'remedyNotFound', [getRemedyBtn, healthConcernMicBtn, remedyAiVoiceBtn]);
+                if (generatedText && generatedText !== t.remedyNotFound) {
+                    remedyAiVoiceBtn.style.display = 'inline-flex';
+                } else {
+                    remedyAiVoiceBtn.style.display = 'none';
+                }
             }
 
             // Wellness Challenge (Simulated AI)
@@ -2190,7 +2370,7 @@
                 painLocationInput.value = inferredLocation;
             }
 
-            function addPainEntry() {
+            async function addPainEntry() {
                 const location = painLocationInput.value.trim();
                 const level = painLevelSelect.value;
                 const t = translations[currentLanguage];
@@ -2218,6 +2398,10 @@
                 painMapEntries.unshift(newEntry);
                 localStorage.setItem('wellnessBuddyPainMap', JSON.stringify(painMapEntries));
                 painEntriesList.innerHTML = `<p>${t.painEntrySaved}</p>`;
+                
+                // Get AI advice for the pain
+                await getPainAdvice(location, level);
+
                 painLocationInput.value = '';
                 painLevelSelect.value = '';
                 selectedPainPoint = null; // Clear selected point
@@ -2227,8 +2411,24 @@
             function clearPainMap() {
                 painMapEntries = [];
                 localStorage.removeItem('wellnessBuddyPainMap');
+                painAdviceOutput.innerHTML = `<p>${translations[currentLanguage].painAdviceDefault}</p>`;
+                painAdviceAiVoiceBtn.style.display = 'none';
                 displayPainMapEntries();
             }
+
+            async function getPainAdvice(location, level) {
+                const t = translations[currentLanguage];
+                const promptText = `Provide a concise general advice for a person experiencing "${level}" pain in the "${location}" area. Suggest simple, non-medical remedies or actions. Respond in ${currentLanguage === 'ta' ? 'Tamil' : 'English'}.`;
+                const generatedText = await callGeminiAPI(promptText, painAdviceOutput, 'painAdviceLoading', 'painAdviceError', [addPainEntryBtn, clearPainMapBtn, painLocationMicBtn, painAdviceAiVoiceBtn]);
+                if (generatedText && generatedText !== t.painAdviceError) {
+                    painAdviceOutput.style.display = 'block';
+                    painAdviceAiVoiceBtn.style.display = 'inline-flex';
+                } else {
+                    painAdviceOutput.style.display = 'none';
+                    painAdviceAiVoiceBtn.style.display = 'none';
+                }
+            }
+
 
             // First Aid & Emergency (AI-driven)
             async function getEmergencyAdvice() {
@@ -2236,10 +2436,16 @@
                 const t = translations[currentLanguage];
                 if (!situation) {
                     emergencyAdviceOutput.innerHTML = `<p class="text-red-600">${t.emergencyAdviceOutputDefault}</p>`;
+                    emergencyAdviceAiVoiceBtn.style.display = 'none';
                     return;
                 }
                 const promptText = `Provide concise first aid advice for a situation involving "${situation}". Focus on immediate steps and safety. Respond in ${currentLanguage === 'ta' ? 'Tamil' : 'English'}.`;
-                await callGeminiAPI(promptText, emergencyAdviceOutput, 'emergencyAdviceLoading', 'emergencyAdviceError');
+                const generatedText = await callGeminiAPI(promptText, emergencyAdviceOutput, 'emergencyAdviceLoading', 'emergencyAdviceError', [getEmergencyAdviceBtn, emergencySituationMicBtn, emergencyAdviceAiVoiceBtn]);
+                if (generatedText && generatedText !== t.emergencyAdviceError) {
+                    emergencyAdviceAiVoiceBtn.style.display = 'inline-flex';
+                } else {
+                    emergencyAdviceAiVoiceBtn.style.display = 'none';
+                }
             }
 
 
@@ -2266,20 +2472,20 @@
                 }
             });
 
-            // Mic button for Speech-to-Text
+            // Mic button for Speech-to-Text (Main)
             micBtn.addEventListener('click', () => {
                 if (isListening) {
                     recognition.stop();
                 } else {
-                    startSpeechRecognition();
+                    startSpeechRecognitionForField(goalInput, micBtn, tipOutput, translations[currentLanguage].goalInputPlaceholder);
                 }
             });
 
-            // AI Voice button for Text-to-Speech
+            // AI Voice button for Text-to-Speech (Main)
             aiVoiceBtn.addEventListener('click', () => {
                 const textToSpeak = tipOutput.textContent;
                 if (textToSpeak && textToSpeak !== translations[currentLanguage].tipOutputDefault) {
-                    speakText(textToSpeak);
+                    speakText(textToSpeak, aiVoiceBtn);
                 }
             });
 
@@ -2337,18 +2543,58 @@
                 setTimeout(() => localTipCategoryDropdown.classList.add('hidden'), 200);
             });
             getLocalTipBtn.addEventListener('click', getLocalTip);
+            localTipMicBtn.addEventListener('click', () => {
+                startSpeechRecognitionForField(localTipCategory, localTipMicBtn, localTipOutput, translations[currentLanguage].localTipCategoryPlaceholder);
+            });
+            localTipAiVoiceBtn.addEventListener('click', () => {
+                const textToSpeak = localTipOutput.textContent;
+                if (textToSpeak && textToSpeak !== translations[currentLanguage].localTipOutputDefault && textToSpeak !== translations[currentLanguage].localTipNotFound) {
+                    speakText(textToSpeak, localTipAiVoiceBtn);
+                }
+            });
+
 
             // Meal Plan Events
             generateMealPlanBtn.addEventListener('click', generateMealPlan);
+            dietGoalMicBtn.addEventListener('click', () => {
+                startSpeechRecognitionForField(dietGoalInput, dietGoalMicBtn, mealPlanOutput, translations[currentLanguage].dietGoalInputPlaceholder);
+            });
+            allergiesMicBtn.addEventListener('click', () => {
+                startSpeechRecognitionForField(allergiesInput, allergiesMicBtn, mealPlanOutput, translations[currentLanguage].allergiesInputPlaceholder);
+            });
+            mealPlanAiVoiceBtn.addEventListener('click', () => {
+                const textToSpeak = mealPlanOutput.textContent;
+                if (textToSpeak && textToSpeak !== translations[currentLanguage].mealPlanOutputDefault && textToSpeak !== translations[currentLanguage].mealPlanNoInput) {
+                    speakText(textToSpeak, mealPlanAiVoiceBtn);
+                }
+            });
 
             // Mood Analysis Events
             analyzeMoodJournalBtn.addEventListener('click', analyzeMoodJournal);
 
             // Exercise & Yoga Events
             generateExerciseRoutineBtn.addEventListener('click', generateExerciseRoutine);
+            exerciseGoalMicBtn.addEventListener('click', () => {
+                startSpeechRecognitionForField(exerciseGoalInput, exerciseGoalMicBtn, exerciseRoutineOutput, translations[currentLanguage].exerciseGoalInputPlaceholder);
+            });
+            exerciseRoutineAiVoiceBtn.addEventListener('click', () => {
+                const textToSpeak = exerciseRoutineOutput.textContent;
+                if (textToSpeak && textToSpeak !== translations[currentLanguage].exerciseRoutineOutputDefault && textToSpeak !== translations[currentLanguage].exerciseRoutineNoInput) {
+                    speakText(textToSpeak, exerciseRoutineAiVoiceBtn);
+                }
+            });
 
             // Disease Prevention Events
             getRemedyBtn.addEventListener('click', getRemedy);
+            healthConcernMicBtn.addEventListener('click', () => {
+                startSpeechRecognitionForField(healthConcernInput, healthConcernMicBtn, remedyOutput, translations[currentLanguage].healthConcernInputPlaceholder);
+            });
+            remedyAiVoiceBtn.addEventListener('click', () => {
+                const textToSpeak = remedyOutput.textContent;
+                if (textToSpeak && textToSpeak !== translations[currentLanguage].remedyOutputDefault && textToSpeak !== translations[currentLanguage].remedyNotFound) {
+                    speakText(textToSpeak, remedyAiVoiceBtn);
+                }
+            });
 
             // Wellness Challenge Events
             generateChallengeBtn.addEventListener('click', generateChallenge);
@@ -2361,9 +2607,28 @@
             bodyMapContainer.addEventListener('click', handleBodyMapClick);
             addPainEntryBtn.addEventListener('click', addPainEntry);
             clearPainMapBtn.addEventListener('click', clearPainMap);
+            painLocationMicBtn.addEventListener('click', () => {
+                startSpeechRecognitionForField(painLocationInput, painLocationMicBtn, painEntriesList, translations[currentLanguage].painLocationInputPlaceholder);
+            });
+            painAdviceAiVoiceBtn.addEventListener('click', () => {
+                const textToSpeak = painAdviceOutput.textContent;
+                if (textToSpeak && textToSpeak !== translations[currentLanguage].painAdviceDefault && textToSpeak !== translations[currentLanguage].painAdviceError) {
+                    speakText(textToSpeak, painAdviceAiVoiceBtn);
+                }
+            });
+
 
             // First Aid & Emergency Events
             getEmergencyAdviceBtn.addEventListener('click', getEmergencyAdvice);
+            emergencySituationMicBtn.addEventListener('click', () => {
+                startSpeechRecognitionForField(emergencySituationInput, emergencySituationMicBtn, emergencyAdviceOutput, translations[currentLanguage].emergencySituationInputPlaceholder);
+            });
+            emergencyAdviceAiVoiceBtn.addEventListener('click', () => {
+                const textToSpeak = emergencyAdviceOutput.textContent;
+                if (textToSpeak && textToSpeak !== translations[currentLanguage].emergencyAdviceOutputDefault && textToSpeak !== translations[currentLanguage].emergencyAdviceError) {
+                    speakText(textToSpeak, emergencyAdviceAiVoiceBtn);
+                }
+            });
 
 
             // --- Initial Setup ---
@@ -2421,8 +2686,10 @@
             if (emergencyAdviceOutput.textContent.trim() === '' || emergencyAdviceOutput.textContent.includes("Enter an emergency situation") || emergencyAdviceOutput.textContent.includes("அவசர சூழ்நிலையை உள்ளிடவும்")) {
                 emergencyAdviceOutput.innerHTML = `<p>${translations[currentLanguage].emergencyAdviceOutputDefault}</p>`;
             }
+            if (painAdviceOutput.textContent.trim() === '' || painAdviceOutput.textContent.includes("AI advice based on pain location") || painAdviceOutput.textContent.includes("வலி இருப்பிடம் மற்றும் நிலையின் அடிப்படையில் AI ஆலோசனை")) {
+                painAdviceOutput.innerHTML = `<p>${translations[currentLanguage].painAdviceDefault}</p>`;
+            }
         });
     </script>
 </body>
 </html>
-�
