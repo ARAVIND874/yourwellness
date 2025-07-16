@@ -6,6 +6,8 @@
     <title>ஆரோக்கிய நண்பன் - உங்கள் ஆரோக்கிய வழிகாட்டி</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- Tone.js for sound generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -393,6 +395,65 @@
         .back-button:hover {
             color: #4B0A7B;
         }
+
+        /* Alarm Modal Styles */
+        .alarm-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .alarm-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .alarm-modal-content {
+            background-color: #ffffff;
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 90%;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+        .alarm-modal.show .alarm-modal-content {
+            transform: translateY(0);
+        }
+        .alarm-modal-content h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #6A0DAD;
+            margin-bottom: 1rem;
+        }
+        .alarm-modal-content p {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 1.5rem;
+        }
+        .alarm-modal-content button {
+            background-color: #6A0DAD;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            border: none;
+        }
+        .alarm-modal-content button:hover {
+            background-color: #4B0A7B;
+        }
     </style>
 </head>
 <body>
@@ -419,13 +480,13 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mic">
                         <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
                         <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-                        <line x1="12" y1="19" x2="12" y2="23"></line>
+                        <line x1="12" y1="19" y2="23"></line>
                         <line x1="8" y1="23" x2="16" y2="23"></line>
                     </svg>
                 </button>
             </div>
             <div class="flex flex-wrap justify-center gap-4 mt-4">
-                <button id="generateBtn" class="generate-button"></button>
+                <button id="generateBtn" class="generate-button">✨ <span data-label-key="generateBtn"></span></button>
                 <button id="aiVoiceBtn" class="ai-voice-button" style="display: none;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2">
                         <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
@@ -486,6 +547,7 @@
                     <button id="resetStepsBtn" class="action-button"></button>
                 </div>
                 <div id="stepResultOutput" class="result-box" aria-live="polite"></div>
+                <div id="stepTipOutput" class="tip-box" aria-live="polite"></div> <!-- Dedicated tip output -->
             </div>
 
             <div id="heartRateTrackerSection" class="feature-section">
@@ -500,6 +562,7 @@
                     <button id="resetHeartRateBtn" class="action-button"></button>
                 </div>
                 <div id="heartRateResultOutput" class="result-box" aria-live="polite"></div>
+                <div id="heartRateTipOutput" class="tip-box" aria-live="polite"></div> <!-- Dedicated tip output -->
             </div>
 
             <div id="waterTrackerSection" class="feature-section">
@@ -514,6 +577,7 @@
                     <button id="resetWaterBtn" class="action-button"></button>
                 </div>
                 <div id="waterResultOutput" class="result-box" aria-live="polite"></div>
+                <div id="waterTipOutput" class="tip-box" aria-live="polite"></div> <!-- Dedicated tip output -->
             </div>
 
             <div id="journalSection" class="feature-section">
@@ -535,6 +599,8 @@
                 </div>
                 <button id="saveJournalEntryBtn" class="action-button mt-4"></button>
                 <div id="journalEntriesOutput" class="result-box mt-4 text-left"></div>
+                <button id="analyzeMoodJournalBtn" class="action-button mt-4">✨ <span data-label-key="analyzeMoodJournalBtn"></span></button>
+                <div id="moodAnalysisOutput" class="result-box mt-4 text-left" aria-live="polite"></div>
             </div>
 
             <div id="localTipsSection" class="feature-section">
@@ -547,13 +613,13 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mic">
                             <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
                             <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-                            <line x1="12" y1="19" x2="12" y2="23"></line>
+                            <line x1="12" y1="19" y2="23"></line>
                             <line x1="8" y1="23" x2="16" y2="23"></line>
                         </svg>
                     </button>
                     <div id="localTipCategoryDropdown" class="dropdown-menu hidden mt-2 top-full left-0"></div>
                 </div>
-                <button id="getLocalTipBtn" class="generate-button"></button>
+                <button id="getLocalTipBtn" class="generate-button">✨ <span data-label-key="getLocalTipBtn"></span></button>
                 <div id="localTipOutput" class="tip-box" aria-live="polite"></div>
                 <button id="localTipAiVoiceBtn" class="ai-voice-button mt-4" style="display: none;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2">
@@ -575,7 +641,7 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mic">
                                 <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
                                 <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-                                <line x1="12" y1="19" x2="12" y2="23"></line>
+                                <line x1="12" y1="19" y2="23"></line>
                                 <line x1="8" y1="23" x2="16" y2="23"></line>
                             </svg>
                         </button>
@@ -596,13 +662,13 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mic">
                                 <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
                                 <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-                                <line x1="12" y1="19" x2="12" y2="23"></line>
+                                <line x1="12" y1="19" y2="23"></line>
                                 <line x1="8" y1="23" x2="16" y2="23"></line>
                             </svg>
                         </button>
                     </div>
                 </div>
-                <button id="generateMealPlanBtn" class="action-button mt-4"></button>
+                <button id="generateMealPlanBtn" class="action-button mt-4">✨ <span data-label-key="generateMealPlanBtn"></span></button>
                 <div id="mealPlanOutput" class="result-box mt-4 text-left" aria-live="polite"></div>
                 <button id="mealPlanAiVoiceBtn" class="ai-voice-button mt-4" style="display: none;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2">
@@ -616,7 +682,7 @@
                 <button class="back-button" data-target="allFeatureIconsContainer">← பின்செல்</button>
                 <h2 id="moodAnalysisSectionTitle" class="text-2xl font-semibold text-gray-700 mb-4 mt-4"></h2>
                 <p id="moodAnalysisDescription" class="text-gray-600 mb-4 text-lg"></p>
-                <button id="analyzeMoodJournalBtn" class="action-button mt-4"></button>
+                <button id="analyzeMoodJournalBtn" class="action-button mt-4">✨ <span data-label-key="analyzeMoodJournalBtn"></span></button>
                 <div id="moodAnalysisOutput" class="result-box mt-4 text-left" aria-live="polite"></div>
             </div>
 
@@ -641,7 +707,7 @@
                         <option value="flexibility">நெகிழ்வுத்தன்மை</option>
                     </select>
                 </div>
-                <button id="generateExercisePlanBtn" class="action-button mt-4"></button>
+                <button id="generateExercisePlanBtn" class="action-button mt-4">✨ <span data-label-key="generateExercisePlanBtn"></span></button>
                 <div id="exercisePlanOutput" class="result-box mt-4 text-left" aria-live="polite"></div>
                 <button id="exerciseYogaAiVoiceBtn" class="ai-voice-button mt-4" style="display: none;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2">
@@ -661,12 +727,12 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mic">
                             <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
                             <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-                            <line x1="12" y1="19" x2="12" y2="23"></line>
+                            <line x1="12" y1="19" y2="23"></line>
                             <line x1="8" y1="23" x2="16" y2="23"></line>
                         </svg>
                     </button>
                 </div>
-                <button id="getPreventionTipsBtn" class="action-button mt-4"></button>
+                <button id="getPreventionTipsBtn" class="action-button mt-4">✨ <span data-label-key="getPreventionTipsBtn"></span></button>
                 <div id="preventionTipsOutput" class="result-box mt-4 text-left" aria-live="polite"></div>
                 <button id="diseasePreventionAiVoiceBtn" class="ai-voice-button mt-4" style="display: none;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2">
@@ -686,12 +752,12 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mic">
                             <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
                             <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-                            <line x1="12" y1="19" x2="12" y2="23"></line>
+                            <line x1="12" y1="19" y2="23"></line>
                             <line x1="8" y1="23" x2="16" y2="23"></line>
                         </svg>
                     </button>
                 </div>
-                <button id="generateChallengeBtn" class="action-button mt-4"></button>
+                <button id="generateChallengeBtn" class="action-button mt-4">✨ <span data-label-key="generateChallengeBtn"></span></button>
                 <div id="challengeOutput" class="result-box mt-4 text-left" aria-live="polite"></div>
                 <button id="wellnessChallengeAiVoiceBtn" class="ai-voice-button mt-4" style="display: none;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2">
@@ -710,8 +776,15 @@
                     <input type="text" id="medicationNameInput" class="input-field mb-4" placeholder="மருந்தின் பெயர்" aria-label="மருந்தின் பெயர்">
                     <label for="medicationTimeInput" class="sr-only">நேரம் (எ.கா. 08:00, 20:00)</label>
                     <input type="time" id="medicationTimeInput" class="input-field mb-4" aria-label="நேரம் (எ.கா. 08:00, 20:00)">
+                    <label for="ringtoneSelect" class="sr-only">ரிங்டோன்</label>
+                    <select id="ringtoneSelect" class="input-field mb-4" aria-label="ரிங்டோன் தேர்ந்தெடுக்கவும்">
+                        <!-- Options populated by JS -->
+                    </select>
                 </div>
-                <button id="addMedicationReminderBtn" class="action-button mt-4"></button>
+                <div class="flex flex-wrap justify-center gap-4 mt-4">
+                    <button id="addMedicationReminderBtn" class="action-button"></button>
+                    <button id="testRingtoneBtn" class="action-button"></button>
+                </div>
                 <div id="medicationRemindersOutput" class="result-box mt-4 text-left" aria-live="polite"></div>
             </div>
 
@@ -724,7 +797,7 @@
                     <!-- Pain dots will be added here dynamically -->
                 </div>
                 <button id="clearPainDotsBtn" class="action-button mt-4"></button>
-                <button id="analyzePainBtn" class="action-button mt-4"></button>
+                <button id="analyzePainBtn" class="action-button mt-4">✨ <span data-label-key="analyzePainBtn"></span></button>
                 <div id="painAnalysisOutput" class="result-box mt-4 text-left" aria-live="polite"></div>
             </div>
 
@@ -738,12 +811,12 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mic">
                             <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
                             <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-                            <line x1="12" y1="19" x2="12" y2="23"></line>
+                            <line x1="12" y1="19" y2="23"></line>
                             <line x1="8" y1="23" x2="16" y2="23"></line>
                         </svg>
                     </button>
                 </div>
-                <button id="getEmergencyGuideBtn" class="action-button mt-4"></button>
+                <button id="getEmergencyGuideBtn" class="action-button mt-4">✨ <span data-label-key="getEmergencyGuideBtn"></span></button>
                 <div id="emergencyGuideOutput" class="result-box mt-4 text-left" aria-live="polite"></div>
                 <button id="firstAidEmergencyAiVoiceBtn" class="ai-voice-button mt-4" style="display: none;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2">
@@ -755,11 +828,20 @@
         </div>
     </div>
 
+    <!-- Alarm Modal Structure -->
+    <div id="alarmModal" class="alarm-modal">
+        <div class="alarm-modal-content">
+            <h3 id="alarmModalTitle"></h3>
+            <p id="alarmModalMessage"></p>
+            <button id="dismissAlarmBtn"></button>
+        </div>
+    </div>
+
     <script type="module">
         // Firebase imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, collection, query, onSnapshot, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, collection, query, onSnapshot, addDoc, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // Global Firebase variables
         let app;
@@ -767,6 +849,12 @@
         let auth;
         let userId;
 
+        // IMPORTANT: For Netlify deployment, you need to set this API key as an Environment Variable in Netlify.
+        // Go to your Netlify site settings -> Build & deploy -> Environment variables.
+        // Add a new variable: Key = GEMINI_API_KEY, Value = Your_Gemini_API_Key_Here
+        // This variable will be injected into the window object by Netlify.
+        const apiKey = window.GEMINI_API_KEY || ""; 
+        
         // Initialize Firebase
         const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
@@ -793,6 +881,7 @@
                 console.log("Firebase User ID:", userId);
                 // Now that auth is ready, you can start listening to Firestore data
                 setupFirestoreListeners();
+                startMedicationReminderChecker(); // Start checking reminders once auth is ready
             });
         } else {
             console.warn("Firebase config not found. Running without Firestore persistence.");
@@ -832,24 +921,30 @@
                 toggleTrackingBtn: "டிராக்கிங்கை தொடங்கு/நிறுத்து",
                 resetStepsBtn: "படிகளை மீட்டமை",
                 stepResultOutputPlaceholder: "உங்கள் படிகள் இங்கே தோன்றும்...",
+                stepTipOutputPlaceholder: "நடவடிக்கைக்கான AI குறிப்பு இங்கே தோன்றும்...",
+
 
                 // Heart Rate Tracker
                 heartRateSectionTitle: "இதயத் துடிப்பு டிராக்கர்",
                 simulateHeartRateBtn: "இதயத் துடிப்பை உருவகப்படுத்து",
                 resetHeartRateBtn: "இதயத் துடிப்பை மீட்டமை",
                 heartRateResultOutputPlaceholder: "உங்கள் இதயத் துடிப்பு இங்கே தோன்றும்...",
+                heartRateTipOutputPlaceholder: "இதய ஆரோக்கியத்திற்கான AI குறிப்பு இங்கே தோன்றும்...",
 
                 // Water Tracker
                 waterSectionTitle: "தண்ணீர் டிராக்கர்",
                 addWaterBtn: "250ml சேர்",
                 resetWaterBtn: "தண்ணீரை மீட்டமை",
                 waterResultOutputPlaceholder: "உங்கள் தண்ணீர் உட்கொள்ளல் இங்கே தோன்றும்...",
+                waterTipOutputPlaceholder: "நீரேற்றத்திற்கான AI குறிப்பு இங்கே தோன்றும்...",
 
                 // Journal
                 journalSectionTitle: "மனநிலை & நன்றியுணர்வு ஜர்னல்",
                 journalDescription: "உங்கள் மனநிலையைப் பதிவுசெய்து, நீங்கள் நன்றியுள்ள ஒரு விஷயத்தை எழுதுங்கள்.",
                 saveJournalEntryBtn: "பதிவைச் சேமி",
                 journalEntriesOutputPlaceholder: "உங்கள் ஜர்னல் பதிவுகள் இங்கே தோன்றும்...",
+                analyzeMoodJournalBtn: "மனநிலையை பகுப்பாய்வு செய்",
+                moodAnalysisOutputPlaceholder: "உங்கள் மனநிலை பகுப்பாய்வு இங்கே தோன்றும்...",
 
                 // Local Tips
                 localTipsSectionTitle: "உள்ளூர் ஆரோக்கிய குறிப்புகள்",
@@ -862,12 +957,6 @@
                 mealPlanDescription: "உங்கள் உணவு இலக்குகள், விருப்பங்கள் மற்றும் ஒவ்வாமைகளின் அடிப்படையில் தனிப்பயனாக்கப்பட்ட உணவுத் திட்டங்களைப் பெறுங்கள்.",
                 generateMealPlanBtn: "உணவுத் திட்டத்தை உருவாக்கு",
                 mealPlanOutputPlaceholder: "உங்கள் உணவுத் திட்டம் இங்கே தோன்றும்...",
-
-                // Mood Analysis
-                moodAnalysisSectionTitle: "உணர்வுப் பதிவேடு பகுப்பாய்வு",
-                moodAnalysisDescription: "உங்கள் ஜர்னல் பதிவுகளிலிருந்து உங்கள் மனநிலை போக்குகளைப் பகுப்பாய்வு செய்யுங்கள்.",
-                analyzeMoodJournalBtn: "மனநிலையை பகுப்பாய்வு செய்",
-                moodAnalysisOutputPlaceholder: "உங்கள் மனநிலை பகுப்பாய்வு இங்கே தோன்றும்...",
 
                 // Exercise & Yoga
                 exerciseYogaSectionTitle: "உடற்பயிற்சி & யோகா",
@@ -888,10 +977,19 @@
                 challengeOutputPlaceholder: "ஆரோக்கிய சவால்கள் இங்கே தோன்றும்...",
 
                 // Medication Reminder
-                medicationReminderSectionTitle: "மருந்து நினைவூட்டல்",
+                medicationReminderLabel: "மருந்து நினைவூட்டல்",
                 medicationReminderDescription: "உங்கள் மருந்துகளுக்கான நினைவூட்டல்களைச் சேர்க்கவும்.",
                 addMedicationReminderBtn: "நினைவூட்டலைச் சேர்",
+                testRingtoneBtn: "ரிங்டோனை சோதி",
                 medicationRemindersOutputPlaceholder: "உங்கள் மருந்து நினைவூட்டல்கள் இங்கே தோன்றும்...",
+                ringtoneSelectPlaceholder: "ரிங்டோனைத் தேர்ந்தெடுக்கவும்",
+                ringtoneNormal: "சாதாரண அலாரம்",
+                ringtoneSoft: "மென்மையான மெல்லிசை",
+                ringtoneQuick: "விரைவான பீப்",
+                alarmModalTitle: "மருந்து நினைவூட்டல்!",
+                alarmModalMessage: "உங்கள் மருந்தை உட்கொள்ள வேண்டிய நேரம் இது: ",
+                dismissAlarmBtn: "நிறுத்து",
+
 
                 // Body Pain Mapping
                 bodyPainMappingSectionTitle: "உடல் வலி மேப்பிங்",
@@ -908,6 +1006,7 @@
 
                 // AI Voice Button
                 aiVoiceButton: "AI குரலில் கேளுங்கள்",
+                noContentGenerated: "உள்ளடக்கத்தை உருவாக்க முடியவில்லை. பதில் காலியாக உள்ளது அல்லது எதிர்பார்க்கப்படாத வடிவத்தில் உள்ளது."
             },
             en: {
                 mainTitle: "Arogya Nanban - Your Health Companion",
@@ -939,24 +1038,29 @@
                 toggleTrackingBtn: "Start/Stop Tracking",
                 resetStepsBtn: "Reset Steps",
                 stepResultOutputPlaceholder: "Your steps will appear here...",
+                stepTipOutputPlaceholder: "AI tip for activity will appear here...",
 
                 // Heart Rate Tracker
                 heartRateSectionTitle: "Heart Rate Tracker",
                 simulateHeartRateBtn: "Simulate Heart Rate",
                 resetHeartRateBtn: "Reset Heart Rate",
                 heartRateResultOutputPlaceholder: "Your heart rate will appear here...",
+                heartRateTipOutputPlaceholder: "AI tip for heart health will appear here...",
 
                 // Water Tracker
                 waterSectionTitle: "Water Tracker",
                 addWaterBtn: "Add 250ml",
                 resetWaterBtn: "Reset Water",
                 waterResultOutputPlaceholder: "Your water intake will appear here...",
+                waterTipOutputPlaceholder: "AI tip for hydration will appear here...",
 
                 // Journal
                 journalSectionTitle: "Mood & Gratitude Journal",
                 journalDescription: "Log your mood and write down something you are grateful for.",
                 saveJournalEntryBtn: "Save Entry",
                 journalEntriesOutputPlaceholder: "Your journal entries will appear here...",
+                analyzeMoodJournalBtn: "Analyze Mood",
+                moodAnalysisOutputPlaceholder: "Your mood analysis will appear here...",
 
                 // Local Tips
                 localTipsSectionTitle: "Local Health Tips",
@@ -969,12 +1073,6 @@
                 mealPlanDescription: "Get personalized meal plans based on your dietary goals, preferences, and allergies.",
                 generateMealPlanBtn: "Generate Meal Plan",
                 mealPlanOutputPlaceholder: "Your meal plan will appear here...",
-
-                // Mood Analysis
-                moodAnalysisSectionTitle: "Mood Journal Analysis",
-                moodAnalysisDescription: "Analyze your mood trends from your journal entries.",
-                analyzeMoodJournalBtn: "Analyze Mood",
-                moodAnalysisOutputPlaceholder: "Your mood analysis will appear here...",
 
                 // Exercise & Yoga
                 exerciseYogaSectionTitle: "Exercise & Yoga",
@@ -995,10 +1093,18 @@
                 challengeOutputPlaceholder: "Wellness challenges will appear here...",
 
                 // Medication Reminder
-                medicationReminderSectionTitle: "Medication Reminder",
+                medicationReminderLabel: "Medication Reminder",
                 medicationReminderDescription: "Add reminders for your medications.",
                 addMedicationReminderBtn: "Add Reminder",
+                testRingtoneBtn: "Test Ringtone",
                 medicationRemindersOutputPlaceholder: "Your medication reminders will appear here...",
+                ringtoneSelectPlaceholder: "Select Ringtone",
+                ringtoneNormal: "Normal Alarm",
+                ringtoneSoft: "Soft Melody",
+                ringtoneQuick: "Quick Beeps",
+                alarmModalTitle: "Medication Reminder!",
+                alarmModalMessage: "It's time to take your medication: ",
+                dismissAlarmBtn: "Dismiss",
 
                 // Body Pain Mapping
                 bodyPainMappingSectionTitle: "Body Pain Mapping",
@@ -1015,6 +1121,7 @@
 
                 // AI Voice Button
                 aiVoiceButton: "Listen in AI Voice",
+                noContentGenerated: "Could not generate content. Response is empty or in an unexpected format."
             }
         };
 
@@ -1029,7 +1136,7 @@
             document.getElementById('goalInput').placeholder = translations[lang].tipSectionTitle;
             document.getElementById('micBtn').title = translations[lang].tipSectionTitle;
             document.getElementById('micBtn').setAttribute('aria-label', translations[lang].tipSectionTitle);
-            document.getElementById('generateBtn').textContent = translations[lang].generateBtn;
+            document.querySelector('#generateBtn span').textContent = translations[lang].generateBtn;
             document.getElementById('loadingText').textContent = translations[lang].loadingText;
             document.getElementById('tipOutput').innerHTML = `<p>${translations[lang].tipOutputPlaceholder}</p>`;
             document.getElementById('featuresTitle').textContent = translations[lang].featuresTitle;
@@ -1058,103 +1165,102 @@
             document.getElementById('toggleTrackingBtn').textContent = translations[lang].toggleTrackingBtn;
             document.getElementById('resetStepsBtn').textContent = translations[lang].resetStepsBtn;
             document.getElementById('stepResultOutput').innerHTML = `<p>${translations[lang].stepResultOutputPlaceholder}</p>`;
+            document.getElementById('stepTipOutput').innerHTML = `<p>${translations[lang].stepTipOutputPlaceholder}</p>`;
+
 
             document.getElementById('heartRateSectionTitle').textContent = translations[lang].heartRateTrackerLabel;
             document.getElementById('simulateHeartRateBtn').textContent = translations[lang].simulateHeartRateBtn;
             document.getElementById('resetHeartRateBtn').textContent = translations[lang].resetHeartRateBtn;
             document.getElementById('heartRateResultOutput').innerHTML = `<p>${translations[lang].heartRateResultOutputPlaceholder}</p>`;
+            document.getElementById('heartRateTipOutput').innerHTML = `<p>${translations[lang].heartRateTipOutputPlaceholder}</p>`;
+
 
             document.getElementById('waterSectionTitle').textContent = translations[lang].waterTrackerLabel;
             document.getElementById('addWaterBtn').textContent = translations[lang].addWaterBtn;
             document.getElementById('resetWaterBtn').textContent = translations[lang].resetWaterBtn;
             document.getElementById('waterResultOutput').innerHTML = `<p>${translations[lang].waterResultOutputPlaceholder}</p>`;
+            document.getElementById('waterTipOutput').innerHTML = `<p>${translations[lang].waterTipOutputPlaceholder}</p>`;
+
 
             document.getElementById('journalSectionTitle').textContent = translations[lang].journalLabel;
             document.getElementById('journalDescription').textContent = translations[lang].journalDescription;
             document.getElementById('saveJournalEntryBtn').textContent = translations[lang].saveJournalEntryBtn;
             document.getElementById('gratitudeInput').placeholder = translations[lang].journalDescription;
             document.getElementById('journalEntriesOutput').innerHTML = `<p>${translations[lang].journalEntriesOutputPlaceholder}</p>`;
+            document.querySelector('#analyzeMoodJournalBtn span').textContent = translations[lang].analyzeMoodJournalBtn;
+            document.getElementById('moodAnalysisOutput').innerHTML = `<p>${translations[lang].moodAnalysisOutputPlaceholder}</p>`;
+
 
             document.getElementById('localTipsSectionTitle').textContent = translations[lang].localTipsLabel;
             document.getElementById('localTipsDescription').textContent = translations[lang].localTipsDescription;
-            document.getElementById('getLocalTipBtn').textContent = translations[lang].getLocalTipBtn;
+            document.querySelector('#getLocalTipBtn span').textContent = translations[lang].getLocalTipBtn;
             document.getElementById('localTipOutput').innerHTML = `<p>${translations[lang].localTipOutputPlaceholder}</p>`;
-            document.getElementById('localTipCategory').placeholder = "எ.கா. மஞ்சள், முருங்கை, தியானம்..."; // Example text for Tamil
+            localTipCategoryInput.placeholder = currentLanguage === 'ta' ? "எ.கா. மஞ்சள், முருங்கை, தியானம்..." : "e.g., Turmeric, Moringa, Meditation...";
+
 
             document.getElementById('mealPlanSectionTitle').textContent = translations[lang].mealPlanLabel;
             document.getElementById('mealPlanDescription').textContent = translations[lang].mealPlanDescription;
-            document.getElementById('generateMealPlanBtn').textContent = translations[lang].generateMealPlanBtn;
-            document.getElementById('dietGoalInput').placeholder = "எ.கா. எடை குறைப்பு, தசை வளர்ச்சி..."; // Example text for Tamil
-            document.getElementById('allergiesInput').placeholder = "எ.கா. நிலக்கடலை, பால்..."; // Example text for Tamil
+            document.querySelector('#generateMealPlanBtn span').textContent = translations[lang].generateMealPlanBtn;
+            dietGoalInput.placeholder = currentLanguage === 'ta' ? "எ.கா. எடை குறைப்பு, தசை வளர்ச்சி..." : "e.g., Weight loss, Muscle gain...";
+            allergiesInput.placeholder = currentLanguage === 'ta' ? "எ.கா. நிலக்கடலை, பால்..." : "e.g., Peanuts, Dairy...";
             document.getElementById('mealPlanOutput').innerHTML = `<p>${translations[lang].mealPlanOutputPlaceholder}</p>`;
-
-            document.getElementById('moodAnalysisSectionTitle').textContent = translations[lang].moodAnalysisLabel;
-            document.getElementById('moodAnalysisDescription').textContent = translations[lang].moodAnalysisDescription;
-            document.getElementById('analyzeMoodJournalBtn').textContent = translations[lang].analyzeMoodJournalBtn;
-            document.getElementById('moodAnalysisOutput').innerHTML = `<p>${translations[lang].moodAnalysisOutputPlaceholder}</p>`;
 
             document.getElementById('exerciseYogaSectionTitle').textContent = translations[lang].exerciseYogaLabel;
             document.getElementById('exerciseYogaDescription').textContent = translations[lang].exerciseYogaDescription;
-            document.getElementById('generateExercisePlanBtn').textContent = translations[lang].generateExercisePlanBtn;
+            document.querySelector('#generateExercisePlanBtn span').textContent = translations[lang].generateExercisePlanBtn;
             document.getElementById('exercisePlanOutput').innerHTML = `<p>${translations[lang].exercisePlanOutputPlaceholder}</p>`;
 
             document.getElementById('diseasePreventionSectionTitle').textContent = translations[lang].diseasePreventionLabel;
             document.getElementById('diseasePreventionDescription').textContent = translations[lang].diseasePreventionDescription;
-            document.getElementById('getPreventionTipsBtn').textContent = translations[lang].getPreventionTipsBtn;
-            document.getElementById('diseaseInput').placeholder = "எ.கா. நீரிழிவு, உயர் இரத்த அழுத்தம்..."; // Example text for Tamil
+            document.querySelector('#getPreventionTipsBtn span').textContent = translations[lang].getPreventionTipsBtn;
+            diseaseInput.placeholder = currentLanguage === 'ta' ? "எ.கா. நீரிழிவு, உயர் இரத்த அழுத்தம்..." : "e.g., Diabetes, High blood pressure...";
             document.getElementById('preventionTipsOutput').innerHTML = `<p>${translations[lang].preventionTipsOutputPlaceholder}</p>`;
 
             document.getElementById('wellnessChallengeSectionTitle').textContent = translations[lang].wellnessChallengeLabel;
             document.getElementById('wellnessChallengeDescription').textContent = translations[lang].wellnessChallengeDescription;
-            document.getElementById('generateChallengeBtn').textContent = translations[lang].generateChallengeBtn;
-            document.getElementById('challengeTopicInput').placeholder = "எ.கா. 30 நாள் நடைபயிற்சி, சர்க்கரை இல்லாத சவால்..."; // Example text for Tamil
+            document.querySelector('#generateChallengeBtn span').textContent = translations[lang].generateChallengeBtn;
+            challengeTopicInput.placeholder = currentLanguage === 'ta' ? "எ.கா. 30 நாள் நடைபயிற்சி, சர்க்கரை இல்லாத சவால்..." : "e.g., 30-day walking, Sugar-free challenge...";
             document.getElementById('challengeOutput').innerHTML = `<p>${translations[lang].challengeOutputPlaceholder}</p>`;
 
             document.getElementById('medicationReminderSectionTitle').textContent = translations[lang].medicationReminderLabel;
             document.getElementById('medicationReminderDescription').textContent = translations[lang].medicationReminderDescription;
             document.getElementById('addMedicationReminderBtn').textContent = translations[lang].addMedicationReminderBtn;
+            document.getElementById('testRingtoneBtn').textContent = translations[lang].testRingtoneBtn;
             document.getElementById('medicationRemindersOutput').innerHTML = `<p>${translations[lang].medicationRemindersOutputPlaceholder}</p>`;
+            document.getElementById('ringtoneSelect').options[0].textContent = translations[lang].ringtoneSelectPlaceholder;
+            // Update specific ringtone option texts
+            document.querySelector('#ringtoneSelect option[value="normalAlarm"]').textContent = translations[lang].ringtoneNormal;
+            document.querySelector('#ringtoneSelect option[value="softMelody"]').textContent = translations[lang].ringtoneSoft;
+            document.querySelector('#ringtoneSelect option[value="quickBeeps"]').textContent = translations[lang].ringtoneQuick;
+            document.getElementById('alarmModalTitle').textContent = translations[lang].alarmModalTitle;
+            document.getElementById('dismissAlarmBtn').textContent = translations[lang].dismissAlarmBtn;
+
 
             document.getElementById('bodyPainMappingSectionTitle').textContent = translations[lang].bodyPainMappingLabel;
             document.getElementById('bodyPainMappingDescription').textContent = translations[lang].bodyPainMappingDescription;
             document.getElementById('clearPainDotsBtn').textContent = translations[lang].clearPainDotsBtn;
-            document.getElementById('analyzePainBtn').textContent = translations[lang].analyzePainBtn;
+            document.querySelector('#analyzePainBtn span').textContent = translations[lang].analyzePainBtn;
             document.getElementById('painAnalysisOutput').innerHTML = `<p>${translations[lang].painAnalysisOutputPlaceholder}</p>`;
 
             document.getElementById('firstAidEmergencySectionTitle').textContent = translations[lang].firstAidEmergencyLabel;
             document.getElementById('firstAidEmergencyDescription').textContent = translations[lang].firstAidEmergencyDescription;
-            document.getElementById('getEmergencyGuideBtn').textContent = translations[lang].getEmergencyGuideBtn;
-            document.getElementById('emergencyTopicInput').placeholder = "எ.கா. தீக்காயம், மூச்சுத்திணறல்..."; // Example text for Tamil
+            document.querySelector('#getEmergencyGuideBtn span').textContent = translations[lang].getEmergencyGuideBtn;
+            emergencyTopicInput.placeholder = currentLanguage === 'ta' ? "எ.கா. தீக்காயம், மூச்சுத்திணறல்..." : "e.g., Burns, Choking...";
             document.getElementById('emergencyGuideOutput').innerHTML = `<p>${translations[lang].emergencyGuideOutputPlaceholder}</p>`;
 
-            document.getElementById('aiVoiceBtn').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2">
+            // Update AI Voice Button text
+            const aiVoiceSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2">
                         <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
                         <path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path>
-                    </svg> ${translations[lang].aiVoiceButton}`;
-            document.getElementById('localTipAiVoiceBtn').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2">
-                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path>
-                    </svg> ${translations[lang].aiVoiceButton}`;
-            document.getElementById('mealPlanAiVoiceBtn').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2">
-                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path>
-                    </svg> ${translations[lang].aiVoiceButton}`;
-            document.getElementById('exerciseYogaAiVoiceBtn').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2">
-                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path>
-                    </svg> ${translations[lang].aiVoiceButton}`;
-            document.getElementById('diseasePreventionAiVoiceBtn').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2">
-                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path>
-                    </svg> ${translations[lang].aiVoiceButton}`;
-            document.getElementById('wellnessChallengeAiVoiceBtn').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2">
-                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path>
-                    </svg> ${translations[lang].aiVoiceButton}`;
-            document.getElementById('firstAidEmergencyAiVoiceBtn').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume-2">
-                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M23.31 1.69a16 16 0 0 1 0 20.62"></path>
-                    </svg> ${translations[lang].aiVoiceButton}`;
+                    </svg>`;
+
+            document.getElementById('aiVoiceBtn').innerHTML = `${aiVoiceSvg} ${translations[lang].aiVoiceButton}`;
+            document.getElementById('localTipAiVoiceBtn').innerHTML = `${aiVoiceSvg} ${translations[lang].aiVoiceButton}`;
+            document.getElementById('mealPlanAiVoiceBtn').innerHTML = `${aiVoiceSvg} ${translations[lang].aiVoiceButton}`;
+            document.getElementById('exerciseYogaAiVoiceBtn').innerHTML = `${aiVoiceSvg} ${translations[lang].aiVoiceButton}`;
+            document.getElementById('diseasePreventionAiVoiceBtn').innerHTML = `${aiVoiceSvg} ${translations[lang].aiVoiceButton}`;
+            document.getElementById('wellnessChallengeAiVoiceBtn').innerHTML = `${aiVoiceSvg} ${translations[lang].aiVoiceButton}`;
+            document.getElementById('firstAidEmergencyAiVoiceBtn').innerHTML = `${aiVoiceSvg} ${translations[lang].aiVoiceButton}`;
 
             // Update back buttons
             document.querySelectorAll('.back-button').forEach(button => {
@@ -1182,6 +1288,7 @@
                     document.body.classList.add('main-content-active'); // Adjust body styling for main content
                     updateContent(); // Initial content update
                     populateVoiceList(); // Populate voices after content is loaded
+                    populateRingtoneSelect(); // Populate ringtones
                 });
             }, 1000); // Show splash screen for 1 second
         };
@@ -1355,6 +1462,13 @@
             }
         }
 
+        const localTipCategoryInput = document.getElementById('localTipCategory');
+        const dietGoalInput = document.getElementById('dietGoalInput');
+        const allergiesInput = document.getElementById('allergiesInput');
+        const diseaseInput = document.getElementById('diseaseInput');
+        const challengeTopicInput = document.getElementById('challengeTopicInput');
+        const emergencyTopicInput = document.getElementById('emergencyTopicInput');
+
         setupMicButton('localTipMicBtn', 'localTipCategory');
         setupMicButton('dietGoalMicBtn', 'dietGoalInput');
         setupMicButton('allergiesMicBtn', 'allergiesInput');
@@ -1457,31 +1571,33 @@
         setupAiVoiceButton('wellnessChallengeAiVoiceBtn', 'challengeOutput');
         setupAiVoiceButton('firstAidEmergencyAiVoiceBtn', 'emergencyGuideOutput');
 
+        // New AI Voice buttons for trackers
+        setupAiVoiceButton('stepTipAiVoiceBtn', 'stepTipOutput');
+        setupAiVoiceButton('heartRateTipAiVoiceBtn', 'heartRateTipOutput');
+        setupAiVoiceButton('waterTipAiVoiceBtn', 'waterTipOutput');
 
-        // Main Generate Tip functionality
-        document.getElementById('generateBtn').addEventListener('click', async () => {
-            const goal = document.getElementById('goalInput').value.trim();
-            const tipOutput = document.getElementById('tipOutput');
+
+        // Function to handle Gemini API calls and display results/errors
+        async function callGeminiAPI(prompt, outputElement, aiVoiceButtonElement, placeholderText) {
             const loading = document.getElementById('loading');
+            loading.style.display = 'flex';
+            outputElement.innerHTML = ''; // Clear previous output
+            if (aiVoiceButtonElement) { // Check if element exists before trying to hide
+                aiVoiceButtonElement.style.display = 'none'; // Hide AI voice button during loading
+            }
 
-            if (!goal) {
-                tipOutput.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "உங்கள் ஆரோக்கிய இலக்கை உள்ளிடவும்." : "Please enter your health goal."}</p>`;
+            // Check if API key is available
+            if (!apiKey) {
+                outputElement.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "AI குறிப்புகளைப் பெற API விசை கிடைக்கவில்லை. Netlify சூழல் மாறிகளைச் சரிபார்க்கவும்." : "API key not available to fetch AI tips. Please check Netlify environment variables."}</p>`;
+                loading.style.display = 'none';
                 return;
             }
 
-            loading.style.display = 'flex';
-            tipOutput.innerHTML = ''; // Clear previous output
-            aiVoiceBtn.style.display = 'none'; // Hide AI voice button during loading
-
             try {
                 let chatHistory = [];
-                const prompt = currentLanguage === 'ta' ?
-                    `எனக்கு ஒரு ஆரோக்கியமான குறிப்பை கொடுங்கள்: ${goal}. பதில் தமிழில் இருக்க வேண்டும்.` :
-                    `Give me a healthy tip for: ${goal}. The response should be in English.`;
-
                 chatHistory.push({ role: "user", parts: [{ text: prompt }] });
                 const payload = { contents: chatHistory };
-                const apiKey = ""; // Canvas will automatically provide it
+                // Use the dynamically accessed API key
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
                 const response = await fetch(apiUrl, {
@@ -1490,22 +1606,94 @@
                     body: JSON.stringify(payload)
                 });
 
-                const result = await response.json();
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('API Error:', response.status, errorText);
+                    outputElement.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "உள்ளடக்கத்தை உருவாக்க முடியவில்லை. API பிழை: " : "Could not generate content. API Error: "}${response.status} - ${response.statusText || ''}</p>`;
+                    if (aiVoiceButtonElement) {
+                        aiVoiceButtonElement.style.display = 'none'; // Hide on API error
+                    }
+                    return;
+                }
+
+                const responseText = await response.text();
+                if (!responseText) {
+                    outputElement.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "உள்ளடக்கத்தை உருவாக்க முடியவில்லை. காலியான பதில்." : "Could not generate content. Empty response."}</p>`;
+                    if (aiVoiceButtonElement) {
+                        aiVoiceButtonElement.style.display = 'none'; // Hide on empty response
+                    }
+                    return;
+                }
+
+                let result;
+                try {
+                    result = JSON.parse(responseText);
+                } catch (jsonError) {
+                    console.error('JSON Parse Error:', jsonError, 'Response Text:', responseText);
+                    outputElement.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "உள்ளடக்கத்தை உருவாக்க முடியவில்லை. தவறான பதில் வடிவம்." : "Could not generate content. Invalid response format."}</p>`;
+                    if (aiVoiceButtonElement) {
+                        aiVoiceButtonElement.style.display = 'none'; // Hide on JSON parse error
+                    }
+                    return;
+                }
+                
                 if (result.candidates && result.candidates.length > 0 &&
                     result.candidates[0].content && result.candidates[0].content.parts &&
                     result.candidates[0].content.parts.length > 0) {
                     const text = result.candidates[0].content.parts[0].text;
-                    tipOutput.innerHTML = `<p>${text}</p>`;
-                    aiVoiceBtn.style.display = 'inline-flex'; // Show AI voice button after generation
-                } else {
-                    tipOutput.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "குறிப்பை உருவாக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்." : "Could not generate a tip. Please try again."}</p>`;
+                    outputElement.innerHTML = `<p>${text}</p>`;
+                    if (aiVoiceButtonElement) {
+                        aiVoiceButtonElement.style.display = 'inline-flex'; // Show AI voice button after successful generation
+                    }
+                } else if (result.promptFeedback && result.promptFeedback.blockReason) {
+                    const blockReason = result.promptFeedback.blockReason;
+                    outputElement.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "உங்கள் உள்ளீடு பாதுகாப்பு வடிப்பான்களால் தடுக்கப்பட்டது. காரணம்: " : "Your input was blocked by safety filters. Reason: "}${blockReason}. ${currentLanguage === 'ta' ? "வேறு வார்த்தைகளில் முயற்சி செய்யவும்." : "Please try with different wording."}</p>`;
+                    if (aiVoiceButtonElement) {
+                        aiVoiceButtonElement.style.display = 'none'; // Hide on blocked reason
+                    }
+                } else if (result.candidates && result.candidates.length > 0 && result.candidates[0].finishReason) {
+                    // Handle cases where content might be empty but there's a finishReason (e.g., STOP, SAFETY, RECITATION)
+                    const finishReason = result.candidates[0].finishReason;
+                    outputElement.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "உள்ளடக்கத்தை உருவாக்க முடியவில்லை. காரணம்: " : "Could not generate content. Reason: "}${finishReason}. ${currentLanguage === 'ta' ? "மீண்டும் முயற்சிக்கவும் அல்லது வேறு தலைப்பில் முயற்சிக்கவும்." : "Please try again or with a different topic."}</p>`;
+                    if (aiVoiceButtonElement) {
+                        aiVoiceButtonElement.style.display = 'none'; // Hide on specific finish reason
+                    }
+                }
+                else {
+                    outputElement.innerHTML = `<p class="text-red-600">${translations[currentLanguage].noContentGenerated}</p>`;
+                    console.warn("Unexpected Gemini API response structure (no candidates or feedback):", result);
+                    if (aiVoiceButtonElement) {
+                        aiVoiceButtonElement.style.display = 'none'; // Hide on generic unknown failure
+                    }
                 }
             } catch (error) {
-                console.error('Error generating tip:', error);
-                tipOutput.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "குறிப்பை உருவாக்கும் போது பிழை ஏற்பட்டது. இணைய இணைப்பைச் சரிபார்க்கவும்." : "An error occurred while generating the tip. Please check your internet connection."}</p>`;
+                console.error('Error calling Gemini API:', error);
+                outputElement.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "API அழைக்கும் போது பிழை ஏற்பட்டது. இணைய இணைப்பைச் சரிபார்க்கவும் அல்லது வேறு தலைப்பில் முயற்சிக்கவும்." : "An error occurred while calling the API. Please check your internet connection or try a different topic."}</p>`;
+                if (aiVoiceButtonElement) {
+                    aiVoiceButtonElement.style.display = 'none'; // Hide on general catch-all error
+                }
             } finally {
                 loading.style.display = 'none';
             }
+        }
+
+
+        // Main Generate Tip functionality
+        document.getElementById('generateBtn').addEventListener('click', async () => {
+            const goal = document.getElementById('goalInput').value.trim();
+            const tipOutput = document.getElementById('tipOutput');
+            const aiVoiceButton = document.getElementById('aiVoiceBtn');
+
+            if (!goal) {
+                tipOutput.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "உங்கள் ஆரோக்கிய இலக்கை உள்ளிடவும்." : "Please enter your health goal."}</p>`;
+                return;
+            }
+
+            const prompt = currentLanguage === 'ta' ?
+                `எனக்கு ஒரு ஆரோக்கியமான குறிப்பை கொடுங்கள்: ${goal}. பதில் தமிழில் இருக்க வேண்டும்.` :
+                `Give me a healthy tip for: ${goal}. The response should be in English.`;
+
+            await callGeminiAPI(prompt, tipOutput, aiVoiceButton, translations[currentLanguage].tipOutputPlaceholder);
         });
 
         // Firestore Listener Setup (for features that will use Firestore)
@@ -1583,6 +1771,14 @@
             document.getElementById('currentStepsDisplay').value = currentSteps;
             document.getElementById('stepResultOutput').innerHTML = `<p>${currentLanguage === 'ta' ? `ஒரு படி சேர்க்கப்பட்டது. மொத்த படிகள்: ${currentSteps}` : `One step added. Total steps: ${currentSteps}`}</p>`;
             await saveStepData(currentSteps);
+
+            // AI Tip for Step Tracker
+            const stepTipOutput = document.getElementById('stepTipOutput');
+            const stepTipAiVoiceBtn = document.getElementById('stepTipAiVoiceBtn');
+            const prompt = currentLanguage === 'ta' ?
+                `நடவடிக்கை மற்றும் சுறுசுறுப்பாக இருப்பதற்கான ஒரு குறுகிய ஊக்கமளிக்கும் குறிப்பை கொடுங்கள். தற்போதைய படிகள்: ${currentSteps}. பதில் தமிழில் இருக்க வேண்டும்.` :
+                `Give a short motivational tip about walking and staying active. Current steps: ${currentSteps}. Response in English.`;
+            await callGeminiAPI(prompt, stepTipOutput, stepTipAiVoiceBtn, translations[currentLanguage].stepTipOutputPlaceholder);
         });
 
         document.getElementById('toggleTrackingBtn').addEventListener('click', () => {
@@ -1613,6 +1809,14 @@
                 document.getElementById('toggleTrackingBtn').textContent = translations[currentLanguage].toggleTrackingBtn;
             }
             await saveStepData(currentSteps);
+
+            // AI Tip for Step Tracker after reset
+            const stepTipOutput = document.getElementById('stepTipOutput');
+            const stepTipAiVoiceBtn = document.getElementById('stepTipAiVoiceBtn');
+            const prompt = currentLanguage === 'ta' ?
+                `புதிய தொடக்கத்திற்கான ஒரு குறுகிய ஊக்கமளிக்கும் குறிப்பை கொடுங்கள். பதில் தமிழில் இருக்க வேண்டும்.` :
+                `Give a short motivational tip for a fresh start. Response in English.`;
+            await callGeminiAPI(prompt, stepTipOutput, stepTipAiVoiceBtn, translations[currentLanguage].stepTipOutputPlaceholder);
         });
 
         async function saveStepData(steps) {
@@ -1633,7 +1837,7 @@
         let currentHeartRate = 0;
         let heartRateInterval;
 
-        document.getElementById('simulateHeartRateBtn').addEventListener('click', () => {
+        document.getElementById('simulateHeartRateBtn').addEventListener('click', async () => {
             if (heartRateInterval) {
                 clearInterval(heartRateInterval);
                 heartRateInterval = null;
@@ -1649,9 +1853,17 @@
                 document.getElementById('simulateHeartRateBtn').textContent = currentLanguage === 'ta' ? "உருவகப்படுத்துதலை நிறுத்து" : "Stop Simulation";
                 document.getElementById('heartRateResultOutput').innerHTML = `<p>${currentLanguage === 'ta' ? "இதயத் துடிப்பு உருவகப்படுத்துதல் தொடங்கப்பட்டது." : "Heart rate simulation started."}</p>`;
             }
+
+            // AI Tip for Heart Rate Tracker
+            const heartRateTipOutput = document.getElementById('heartRateTipOutput');
+            const heartRateTipAiVoiceBtn = document.getElementById('heartRateTipAiVoiceBtn');
+            const prompt = currentLanguage === 'ta' ?
+                `ஆரோக்கியமான இதயத் துடிப்பு மற்றும் இருதய ஆரோக்கியத்தை பராமரிப்பதற்கான ஒரு குறுகிய குறிப்பை கொடுங்கள். பதில் தமிழில் இருக்க வேண்டும்.` :
+                `Give a short tip about maintaining a healthy heart rate and cardiovascular health. Response in English.`;
+            await callGeminiAPI(prompt, heartRateTipOutput, heartRateTipAiVoiceBtn, translations[currentLanguage].heartRateTipOutputPlaceholder);
         });
 
-        document.getElementById('resetHeartRateBtn').addEventListener('click', () => {
+        document.getElementById('resetHeartRateBtn').addEventListener('click', async () => {
             currentHeartRate = 0;
             document.getElementById('currentHeartRateDisplay').value = currentHeartRate;
             document.getElementById('heartRateResultOutput').innerHTML = `<p>${currentLanguage === 'ta' ? "இதயத் துடிப்பு மீட்டமைக்கப்பட்டது." : "Heart rate reset."}</p>`;
@@ -1660,6 +1872,14 @@
                 heartRateInterval = null;
                 document.getElementById('simulateHeartRateBtn').textContent = translations[currentLanguage].simulateHeartRateBtn;
             }
+
+            // AI Tip for Heart Rate Tracker after reset
+            const heartRateTipOutput = document.getElementById('heartRateTipOutput');
+            const heartRateTipAiVoiceBtn = document.getElementById('heartRateTipAiVoiceBtn');
+            const prompt = currentLanguage === 'ta' ?
+                `இதய ஆரோக்கியத்திற்கான ஒரு பொதுவான குறிப்பை கொடுங்கள். பதில் தமிழில் இருக்க வேண்டும்.` :
+                `Give a general tip for heart health. Response in English.`;
+            await callGeminiAPI(prompt, heartRateTipOutput, heartRateTipAiVoiceBtn, translations[currentLanguage].heartRateTipOutputPlaceholder);
         });
 
         // Water Tracker Functionality
@@ -1671,6 +1891,14 @@
             document.getElementById('waterIntakeDisplay').value = `${currentWaterIntake} ml`;
             document.getElementById('waterResultOutput').innerHTML = `<p>${currentLanguage === 'ta' ? `${waterPerClick} ml தண்ணீர் சேர்க்கப்பட்டது. மொத்த உட்கொள்ளல்: ${currentWaterIntake} ml` : `${waterPerClick} ml water added. Total intake: ${currentWaterIntake} ml`}</p>`;
             await saveWaterData(currentWaterIntake);
+
+            // AI Tip for Water Tracker
+            const waterTipOutput = document.getElementById('waterTipOutput');
+            const waterTipAiVoiceBtn = document.getElementById('waterTipAiVoiceBtn');
+            const prompt = currentLanguage === 'ta' ?
+                `தினசரி நீரேற்றத்தின் முக்கியத்துவம் மற்றும் போதுமான தண்ணீர் குடிப்பதற்கான ஒரு குறுகிய குறிப்பை கொடுங்கள். பதில் தமிழில் இருக்க வேண்டும்.` :
+                `Give a short tip about the importance of daily hydration and drinking enough water. Response in English.`;
+            await callGeminiAPI(prompt, waterTipOutput, waterTipAiVoiceBtn, translations[currentLanguage].waterTipOutputPlaceholder);
         });
 
         document.getElementById('resetWaterBtn').addEventListener('click', async () => {
@@ -1678,6 +1906,14 @@
             document.getElementById('waterIntakeDisplay').value = `0 ml`;
             document.getElementById('waterResultOutput').innerHTML = `<p>${currentLanguage === 'ta' ? "தண்ணீர் உட்கொள்ளல் மீட்டமைக்கப்பட்டது." : "Water intake reset."}</p>`;
             await saveWaterData(currentWaterIntake);
+
+            // AI Tip for Water Tracker after reset
+            const waterTipOutput = document.getElementById('waterTipOutput');
+            const waterTipAiVoiceBtn = document.getElementById('waterTipAiVoiceBtn');
+            const prompt = currentLanguage === 'ta' ?
+                `நீரேற்றத்தின் நன்மைகள் பற்றிய ஒரு பொதுவான குறிப்பை கொடுங்கள். பதில் தமிழில் இருக்க வேண்டும்.` :
+                `Give a general tip about the benefits of hydration. Response in English.`;
+            await callGeminiAPI(prompt, waterTipOutput, waterTipAiVoiceBtn, translations[currentLanguage].waterTipOutputPlaceholder);
         });
 
         async function saveWaterData(waterIntake) {
@@ -1790,7 +2026,6 @@
             }
         };
 
-        const localTipCategoryInput = document.getElementById('localTipCategory');
         const localTipCategoryDropdown = document.getElementById('localTipCategoryDropdown');
 
         localTipCategoryInput.addEventListener('input', () => {
@@ -1827,57 +2062,25 @@
         document.getElementById('getLocalTipBtn').addEventListener('click', async () => {
             const category = document.getElementById('localTipCategory').value.trim().toLowerCase();
             const localTipOutput = document.getElementById('localTipOutput');
-            const loading = document.getElementById('loading');
-            const localTipAiVoiceBtn = document.getElementById('localTipAiVoiceBtn');
+            const aiVoiceButton = document.getElementById('localTipAiVoiceBtn');
 
             if (!category) {
                 localTipOutput.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "உதவிக்குறிப்பு வகையை உள்ளிடவும்." : "Please enter a tip category."}</p>`;
                 return;
             }
 
-            loading.style.display = 'flex';
-            localTipOutput.innerHTML = '';
-            localTipAiVoiceBtn.style.display = 'none';
-
-            try {
-                const tip = predefinedLocalTips[currentLanguage][category];
-                if (tip) {
-                    localTipOutput.innerHTML = `<p>${tip}</p>`;
-                    localTipAiVoiceBtn.style.display = 'inline-flex';
-                } else {
-                    let chatHistory = [];
-                    const prompt = currentLanguage === 'ta' ?
-                        `உள்ளூர் ஆரோக்கிய குறிப்பு பற்றி எனக்கு சொல்லுங்கள்: ${category}. பதில் தமிழில் இருக்க வேண்டும்.` :
-                        `Tell me about a local health tip regarding: ${category}. The response should be in English.`;
-
-                    chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-                    const payload = { contents: chatHistory };
-                    const apiKey = "";
-                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    const result = await response.json();
-                    if (result.candidates && result.candidates.length > 0 &&
-                        result.candidates[0].content && result.candidates[0].content.parts &&
-                        result.candidates[0].content.parts.length > 0) {
-                        const text = result.candidates[0].content.parts[0].text;
-                        localTipOutput.innerHTML = `<p>${text}</p>`;
-                        localTipAiVoiceBtn.style.display = 'inline-flex';
-                    } else {
-                        localTipOutput.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "குறிப்பை உருவாக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்." : "Could not generate a tip. Please try again."}</p>`;
-                    }
-                }
-            } catch (error) {
-                console.error('Error generating local tip:', error);
-                localTipOutput.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "குறிப்பை உருவாக்கும் போது பிழை ஏற்பட்டது. இணைய இணைப்பைச் சரிபார்க்கவும்." : "An error occurred while generating the tip. Please check your internet connection."}</p>`;
-            } finally {
-                loading.style.display = 'none';
+            const tip = predefinedLocalTips[currentLanguage][category];
+            if (tip) {
+                localTipOutput.innerHTML = `<p>${tip}</p>`;
+                aiVoiceButton.style.display = 'inline-flex';
+                return;
             }
+
+            const prompt = currentLanguage === 'ta' ?
+                `உள்ளூர் ஆரோக்கிய குறிப்பு பற்றி எனக்கு சொல்லுங்கள்: ${category}. பதில் தமிழில் இருக்க வேண்டும்.` :
+                `Tell me about a local health tip regarding: ${category}. The response should be in English.`;
+
+            await callGeminiAPI(prompt, localTipOutput, aiVoiceButton, translations[currentLanguage].localTipOutputPlaceholder);
         });
 
         // Meal Plan Functionality
@@ -1886,57 +2089,24 @@
             const dietPreference = document.getElementById('dietPreferenceSelect').value;
             const allergies = document.getElementById('allergiesInput').value.trim();
             const mealPlanOutput = document.getElementById('mealPlanOutput');
-            const loading = document.getElementById('loading');
-            const mealPlanAiVoiceBtn = document.getElementById('mealPlanAiVoiceBtn');
+            const aiVoiceButton = document.getElementById('mealPlanAiVoiceBtn');
 
             if (!dietGoal && !dietPreference) {
                 mealPlanOutput.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "உணவு இலக்கு அல்லது உணவு விருப்பத்தை உள்ளிடவும்." : "Please enter a diet goal or preference."}</p>`;
                 return;
             }
 
-            loading.style.display = 'flex';
-            mealPlanOutput.innerHTML = '';
-            mealPlanAiVoiceBtn.style.display = 'none';
+            const prompt = currentLanguage === 'ta' ?
+                `எனக்கு ஒரு உணவுத் திட்டத்தை உருவாக்குங்கள். இலக்கு: ${dietGoal || 'பொது ஆரோக்கியம்'}. விருப்பம்: ${dietPreference || 'எதுவும் இல்லை'}. ஒவ்வாமைகள்: ${allergies || 'எதுவும் இல்லை'}. பதில் தமிழில் இருக்க வேண்டும்.` :
+                `Generate a meal plan for me. Goal: ${dietGoal || 'general health'}. Preference: ${dietPreference || 'none'}. Allergies: ${allergies || 'none'}. The response should be in English.`;
 
-            try {
-                let chatHistory = [];
-                const prompt = currentLanguage === 'ta' ?
-                    `எனக்கு ஒரு உணவுத் திட்டத்தை உருவாக்குங்கள். இலக்கு: ${dietGoal || 'பொது ஆரோக்கியம்'}. விருப்பம்: ${dietPreference || 'எதுவும் இல்லை'}. ஒவ்வாமைகள்: ${allergies || 'எதுவும் இல்லை'}. பதில் தமிழில் இருக்க வேண்டும்.` :
-                    `Generate a meal plan for me. Goal: ${dietGoal || 'general health'}. Preference: ${dietPreference || 'none'}. Allergies: ${allergies || 'none'}. The response should be in English.`;
-
-                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-                const payload = { contents: chatHistory };
-                const apiKey = "";
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                const result = await response.json();
-                if (result.candidates && result.candidates.length > 0 &&
-                    result.candidates[0].content && result.candidates[0].content.parts &&
-                    result.candidates[0].content.parts.length > 0) {
-                    const text = result.candidates[0].content.parts[0].text;
-                    mealPlanOutput.innerHTML = `<p>${text}</p>`;
-                    mealPlanAiVoiceBtn.style.display = 'inline-flex';
-                } else {
-                    mealPlanOutput.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "உணவுத் திட்டத்தை உருவாக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்." : "Could not generate a meal plan. Please try again."}</p>`;
-                }
-            } catch (error) {
-                console.error('Error generating meal plan:', error);
-                mealPlanOutput.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "உணவுத் திட்டத்தை உருவாக்கும் போது பிழை ஏற்பட்டது. இணைய இணைப்பைச் சரிபார்க்கவும்." : "An error occurred while generating the meal plan. Please check your internet connection."}</p>`;
-            } finally {
-                loading.style.display = 'none';
-            }
+            await callGeminiAPI(prompt, mealPlanOutput, aiVoiceButton, translations[currentLanguage].mealPlanOutputPlaceholder);
         });
 
         // Mood Analysis Functionality
         document.getElementById('analyzeMoodJournalBtn').addEventListener('click', async () => {
             const moodAnalysisOutput = document.getElementById('moodAnalysisOutput');
-            const loading = document.getElementById('loading');
+            const aiVoiceButton = document.getElementById('aiVoiceBtn'); // Reusing main AI voice button for this example
 
             if (!db || !userId) {
                 moodAnalysisOutput.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "தரவுத்தளம் கிடைக்கவில்லை. பகுப்பாய்வு செய்ய முடியவில்லை." : "Database not available. Cannot perform analysis."}</p>`;
@@ -1944,6 +2114,7 @@
                 return;
             }
 
+            const loading = document.getElementById('loading');
             loading.style.display = 'flex';
             moodAnalysisOutput.innerHTML = '';
 
@@ -1957,6 +2128,7 @@
 
                 if (entries.length === 0) {
                     moodAnalysisOutput.innerHTML = `<p>${currentLanguage === 'ta' ? "பகுப்பாய்வு செய்ய ஜர்னல் பதிவுகள் இல்லை." : "No journal entries to analyze."}</p>`;
+                    loading.style.display = 'none';
                     return;
                 }
 
@@ -1972,35 +2144,21 @@
                     analysisText += `${mood}: ${moodCounts[mood]} ${currentLanguage === 'ta' ? "முறை" : "times"}\n`;
                 }
 
-                let chatHistory = [];
                 const prompt = currentLanguage === 'ta' ?
-                    `இந்த மனநிலை பதிவுகளின் அடிப்படையில் ஒரு சுருக்கமான மனநிலை பகுப்பாய்வை கொடுங்கள்: ${JSON.stringify(moodCounts)}. பதில் தமிழில் இருக்க வேண்டும்.` :
-                    `Provide a brief mood analysis based on these mood entries: ${JSON.stringify(moodCounts)}. The response should be in English.`;
+                    `இந்த மனநிலை பதிவுகளின் அடிப்படையில் ஒரு சுருக்கமான மனநிலை பகுப்பாய்வை கொடுங்கள்: ${JSON.stringify(moodCounts)}. ஒரு உளவியல் நோயறிதலை வழங்க வேண்டாம், பொதுவான போக்குகள் அல்லது மேம்பாட்டுக்கான பரிந்துரைகளை வழங்கவும். பதில் தமிழில் இருக்க வேண்டும்.` :
+                    `Provide a brief mood analysis based on these mood entries: ${JSON.stringify(moodCounts)}. Do not provide a psychological diagnosis, just offer general trends or suggestions for improvement. The response should be in English.`;
 
-                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-                const payload = { contents: chatHistory };
-                const apiKey = "";
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                const result = await response.json();
-                if (result.candidates && result.candidates.length > 0 &&
-                    result.candidates[0].content && result.candidates[0].content.parts &&
-                    result.candidates[0].content.parts.length > 0) {
-                    const text = result.candidates[0].content.parts[0].text;
-                    moodAnalysisOutput.innerHTML = `<p>${analysisText}<br>${text}</p>`;
+                await callGeminiAPI(prompt, moodAnalysisOutput, aiVoiceButton, translations[currentLanguage].moodAnalysisOutputPlaceholder);
+                // Prepend the mood counts to the AI generated analysis
+                if (moodAnalysisOutput.innerHTML.includes("text-red-600")) {
+                    // If AI call failed, don't prepend
                 } else {
-                    moodAnalysisOutput.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "மனநிலை பகுப்பாய்வை உருவாக்க முடியவில்லை." : "Could not generate mood analysis."}</p>`;
+                    moodAnalysisOutput.innerHTML = `<p>${analysisText.replace(/\n/g, '<br>')}<br>${moodAnalysisOutput.innerHTML}</p>`;
                 }
 
             } catch (error) {
                 console.error('Error analyzing mood:', error);
-                moodAnalysisOutput.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "மனநிலை பகுப்பாய்வு செய்யும் போது பிழை ஏற்பட்டது." : "An error occurred while analyzing mood."}</p>`;
+                moodAnalysisOutput.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "மனநிலை பகுப்பாய்வு செய்யும் போது பிழை ஏற்பட்டது. இணைய இணைப்பைச் சரிபார்க்கவும்." : "An error occurred while analyzing mood."}</p>`;
             } finally {
                 loading.style.display = 'none';
             }
@@ -2011,169 +2169,169 @@
             const fitnessLevel = document.getElementById('fitnessLevelSelect').value;
             const exerciseType = document.getElementById('exerciseTypeSelect').value;
             const exercisePlanOutput = document.getElementById('exercisePlanOutput');
-            const loading = document.getElementById('loading');
-            const exerciseYogaAiVoiceBtn = document.getElementById('exerciseYogaAiVoiceBtn');
+            const aiVoiceButton = document.getElementById('exerciseYogaAiVoiceBtn');
 
             if (!fitnessLevel && !exerciseType) {
                 exercisePlanOutput.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "உடற்பயிற்சி நிலை அல்லது வகையைத் தேர்ந்தெடுக்கவும்." : "Please select a fitness level or exercise type."}</p>`;
                 return;
             }
 
-            loading.style.display = 'flex';
-            exercisePlanOutput.innerHTML = '';
-            exerciseYogaAiVoiceBtn.style.display = 'none';
+            const prompt = currentLanguage === 'ta' ?
+                `எனக்கு ஒரு உடற்பயிற்சி திட்டத்தை உருவாக்குங்கள். நிலை: ${fitnessLevel || 'எதுவும் இல்லை'}. வகை: ${exerciseType || 'எதுவும் இல்லை'}. பதில் தமிழில் இருக்க வேண்டும்.` :
+                `Generate an exercise plan for me. Level: ${fitnessLevel || 'any'}. Type: ${exerciseType || 'any'}. The response should be in English.`;
 
-            try {
-                let chatHistory = [];
-                const prompt = currentLanguage === 'ta' ?
-                    `எனக்கு ஒரு உடற்பயிற்சி திட்டத்தை உருவாக்குங்கள். நிலை: ${fitnessLevel || 'எதுவும் இல்லை'}. வகை: ${exerciseType || 'எதுவும் இல்லை'}. பதில் தமிழில் இருக்க வேண்டும்.` :
-                    `Generate an exercise plan for me. Level: ${fitnessLevel || 'any'}. Type: ${exerciseType || 'any'}. The response should be in English.`;
-
-                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-                const payload = { contents: chatHistory };
-                const apiKey = "";
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                const result = await response.json();
-                if (result.candidates && result.candidates.length > 0 &&
-                    result.candidates[0].content && result.candidates[0].content.parts &&
-                    result.candidates[0].content.parts.length > 0) {
-                    const text = result.candidates[0].content.parts[0].text;
-                    exercisePlanOutput.innerHTML = `<p>${text}</p>`;
-                    exerciseYogaAiVoiceBtn.style.display = 'inline-flex';
-                } else {
-                    exercisePlanOutput.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "உடற்பயிற்சி திட்டத்தை உருவாக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்." : "Could not generate an exercise plan. Please try again."}</p>`;
-                }
-            } catch (error) {
-                console.error('Error generating exercise plan:', error);
-                exercisePlanOutput.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "உடற்பயிற்சி திட்டத்தை உருவாக்கும் போது பிழை ஏற்பட்டது. இணைய இணைப்பைச் சரிபார்க்கவும்." : "An error occurred while generating the exercise plan. Please check your internet connection."}</p>`;
-            } finally {
-                loading.style.display = 'none';
-            }
+            await callGeminiAPI(prompt, exercisePlanOutput, aiVoiceButton, translations[currentLanguage].exercisePlanOutputPlaceholder);
         });
 
         // Disease Prevention Functionality
         document.getElementById('getPreventionTipsBtn').addEventListener('click', async () => {
             const disease = document.getElementById('diseaseInput').value.trim();
             const preventionTipsOutput = document.getElementById('preventionTipsOutput');
-            const loading = document.getElementById('loading');
-            const diseasePreventionAiVoiceBtn = document.getElementById('diseasePreventionAiVoiceBtn');
+            const aiVoiceButton = document.getElementById('diseasePreventionAiVoiceBtn');
 
             if (!disease) {
                 preventionTipsOutput.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "நோய் அல்லது நிலையை உள்ளிடவும்." : "Please enter a disease or condition."}</p>`;
                 return;
             }
 
-            loading.style.display = 'flex';
-            preventionTipsOutput.innerHTML = '';
-            diseasePreventionAiVoiceBtn.style.display = 'none';
+            const prompt = currentLanguage === 'ta' ?
+                `இந்த நோயைத் தடுப்பதற்கான குறிப்புகளைக் கொடுங்கள்: ${disease}. பதில் தமிழில் இருக்க வேண்டும்.` :
+                `Give me tips for preventing this disease: ${disease}. The response should be in English.`;
 
-            try {
-                let chatHistory = [];
-                const prompt = currentLanguage === 'ta' ?
-                    `இந்த நோயைத் தடுப்பதற்கான குறிப்புகளைக் கொடுங்கள்: ${disease}. பதில் தமிழில் இருக்க வேண்டும்.` :
-                    `Give me tips for preventing this disease: ${disease}. The response should be in English.`;
-
-                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-                const payload = { contents: chatHistory };
-                const apiKey = "";
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                const result = await response.json();
-                if (result.candidates && result.candidates.length > 0 &&
-                    result.candidates[0].content && result.candidates[0].content.parts &&
-                    result.candidates[0].content.parts.length > 0) {
-                    const text = result.candidates[0].content.parts[0].text;
-                    preventionTipsOutput.innerHTML = `<p>${text}</p>`;
-                    diseasePreventionAiVoiceBtn.style.display = 'inline-flex';
-                } else {
-                    preventionTipsOutput.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "தடுப்பு குறிப்புகளை உருவாக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்." : "Could not generate prevention tips. Please try again."}</p>`;
-                }
-            } catch (error) {
-                console.error('Error generating prevention tips:', error);
-                preventionTipsOutput.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "தடுப்பு குறிப்புகளை உருவாக்கும் போது பிழை ஏற்பட்டது. இணைய இணைப்பைச் சரிபார்க்கவும்." : "An error occurred while generating prevention tips. Please check your internet connection."}</p>`;
-            } finally {
-                loading.style.display = 'none';
-            }
+            await callGeminiAPI(prompt, preventionTipsOutput, aiVoiceButton, translations[currentLanguage].preventionTipsOutputPlaceholder);
         });
 
         // Wellness Challenge Functionality
         document.getElementById('generateChallengeBtn').addEventListener('click', async () => {
             const challengeTopic = document.getElementById('challengeTopicInput').value.trim();
             const challengeOutput = document.getElementById('challengeOutput');
-            const loading = document.getElementById('loading');
-            const wellnessChallengeAiVoiceBtn = document.getElementById('wellnessChallengeAiVoiceBtn');
+            const aiVoiceButton = document.getElementById('wellnessChallengeAiVoiceBtn');
 
             if (!challengeTopic) {
                 challengeOutput.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "சவால் தலைப்பை உள்ளிடவும்." : "Please enter a challenge topic."}</p>`;
                 return;
             }
 
-            loading.style.display = 'flex';
-            challengeOutput.innerHTML = '';
-            wellnessChallengeAiVoiceBtn.style.display = 'none';
+            const prompt = currentLanguage === 'ta' ?
+                `எனக்கு ஒரு ஆரோக்கிய சவாலை உருவாக்குங்கள்: ${challengeTopic}. பதில் தமிழில் இருக்க வேண்டும்.` :
+                `Generate a wellness challenge for me about: ${challengeTopic}. The response should be in English.`;
 
-            try {
-                let chatHistory = [];
-                const prompt = currentLanguage === 'ta' ?
-                    `எனக்கு ஒரு ஆரோக்கிய சவாலை உருவாக்குங்கள்: ${challengeTopic}. பதில் தமிழில் இருக்க வேண்டும்.` :
-                    `Generate a wellness challenge for me about: ${challengeTopic}. The response should be in English.`;
-
-                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-                const payload = { contents: chatHistory };
-                const apiKey = "";
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                const result = await response.json();
-                if (result.candidates && result.candidates.length > 0 &&
-                    result.candidates[0].content && result.candidates[0].content.parts &&
-                    result.candidates[0].content.parts.length > 0) {
-                    const text = result.candidates[0].content.parts[0].text;
-                    challengeOutput.innerHTML = `<p>${text}</p>`;
-                    wellnessChallengeAiVoiceBtn.style.display = 'inline-flex';
-                } else {
-                    challengeOutput.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "சவாலை உருவாக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்." : "Could not generate a challenge. Please try again."}</p>`;
-                }
-            } catch (error) {
-                console.error('Error generating challenge:', error);
-                challengeOutput.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "சவாலை உருவாக்கும் போது பிழை ஏற்பட்டது. இணைய இணைப்பைச் சரிபார்க்கவும்." : "An error occurred while generating the challenge. Please check your internet connection."}</p>`;
-            } finally {
-                loading.style.display = 'none';
-            }
+            await callGeminiAPI(prompt, challengeOutput, aiVoiceButton, translations[currentLanguage].challengeOutputPlaceholder);
         });
 
         // Medication Reminder Functionality
+        const ringtoneSelect = document.getElementById('ringtoneSelect');
+        const testRingtoneBtn = document.getElementById('testRingtoneBtn');
+        const alarmModal = document.getElementById('alarmModal');
+        const alarmModalTitle = document.getElementById('alarmModalTitle');
+        const alarmModalMessage = document.getElementById('alarmModalMessage');
+        const dismissAlarmBtn = document.getElementById('dismissAlarmBtn');
+
+        let currentAlarmSynth = null; // To keep track of the playing synth
+
+        // Define ringtone patterns using Tone.js
+        const ringtonePatterns = {
+            normalAlarm: [
+                { note: 'C4', duration: '8n' }, { note: 'C4', duration: '8n' }, { note: 'G4', duration: '8n' }, { note: 'G4', duration: '8n' },
+                { note: 'A4', duration: '8n' }, { note: 'A4', duration: '8n' }, { note: 'G4', duration: '4n' },
+                { note: 'F4', duration: '8n' }, { note: 'F4', duration: '8n' }, { note: 'E4', duration: '8n' }, { note: 'E4', duration: '8n' },
+                { note: 'D4', duration: '8n' }, { note: 'D4', duration: '8n' }, { note: 'C4', duration: '4n' }
+            ],
+            softMelody: [
+                { note: 'C5', duration: '4n' }, { note: 'E5', duration: '4n' }, { note: 'G5', duration: '4n' }, { note: 'C6', duration: '2n' },
+                { note: 'G5', duration: '4n' }, { note: 'E5', duration: '4n' }, { note: 'C5', duration: '2n' }
+            ],
+            quickBeeps: [
+                { note: 'C5', duration: '16n' }, { note: 'C5', duration: '16n' }, { note: 'C5', duration: '16n' }, { note: 'C5', duration: '16n' },
+                { note: 'C5', duration: '16n' }, { note: 'C5', duration: '16n' }, { note: 'C5', duration: '16n' }, { note: 'C5', duration: '16n' }
+            ]
+        };
+
+        function populateRingtoneSelect() {
+            ringtoneSelect.innerHTML = '';
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = translations[currentLanguage].ringtoneSelectPlaceholder;
+            ringtoneSelect.appendChild(defaultOption);
+
+            const ringtoneOptions = [
+                { value: 'normalAlarm', textKey: 'ringtoneNormal' },
+                { value: 'softMelody', textKey: 'ringtoneSoft' },
+                { value: 'quickBeeps', textKey: 'ringtoneQuick' }
+            ];
+
+            ringtoneOptions.forEach(optionData => {
+                const option = document.createElement('option');
+                option.value = optionData.value;
+                option.textContent = translations[currentLanguage][optionData.textKey];
+                ringtoneSelect.appendChild(option);
+            });
+        }
+
+        async function playRingtone(ringtoneName) {
+            // Stop any currently playing alarm
+            if (currentAlarmSynth) {
+                currentAlarmSynth.dispose();
+                currentAlarmSynth = null;
+            }
+
+            // Ensure Tone.js audio context is started
+            if (Tone.context.state !== 'running') {
+                await Tone.start();
+                console.log('AudioContext started');
+            }
+
+            const pattern = ringtonePatterns[ringtoneName];
+            if (!pattern) {
+                console.warn(`Ringtone pattern '${ringtoneName}' not found.`);
+                return;
+            }
+
+            // Create a new synth for each playback
+            const synth = new Tone.Synth().toDestination();
+            currentAlarmSynth = synth; // Store reference to the current synth
+
+            let currentTime = Tone.now();
+            pattern.forEach(noteData => {
+                synth.triggerAttackRelease(noteData.note, noteData.duration, currentTime);
+                currentTime += Tone.Time(noteData.duration).toSeconds();
+            });
+        }
+
+        testRingtoneBtn.addEventListener('click', () => {
+            const selectedRingtone = ringtoneSelect.value;
+            if (selectedRingtone) {
+                playRingtone(selectedRingtone);
+            } else {
+                // Using a custom modal/div for alerts instead of alert()
+                const outputElement = document.getElementById('medicationRemindersOutput');
+                outputElement.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "ரிங்டோனைத் தேர்ந்தெடுக்கவும்." : "Please select a ringtone."}</p>`;
+            }
+        });
+
+        dismissAlarmBtn.addEventListener('click', () => {
+            if (currentAlarmSynth) {
+                currentAlarmSynth.dispose(); // Stop and dispose the synth
+                currentAlarmSynth = null;
+            }
+            alarmModal.classList.remove('show');
+        });
+
         document.getElementById('addMedicationReminderBtn').addEventListener('click', async () => {
             const medicationName = document.getElementById('medicationNameInput').value.trim();
             const medicationTime = document.getElementById('medicationTimeInput').value.trim();
+            const selectedRingtone = ringtoneSelect.value;
             const medicationRemindersOutput = document.getElementById('medicationRemindersOutput');
 
-            if (!medicationName || !medicationTime) {
-                medicationRemindersOutput.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "மருந்தின் பெயர் மற்றும் நேரத்தை உள்ளிடவும்." : "Please enter medication name and time."}</p>`;
+            if (!medicationName || !medicationTime || !selectedRingtone) {
+                medicationRemindersOutput.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "மருந்தின் பெயர், நேரம் மற்றும் ரிங்டோனை உள்ளிடவும்." : "Please enter medication name, time, and select a ringtone."}</p>`;
                 return;
             }
 
             const reminder = {
                 name: medicationName,
                 time: medicationTime,
+                ringtone: selectedRingtone,
                 addedAt: new Date().toISOString()
             };
 
@@ -2187,6 +2345,7 @@
                 await addDoc(collection(db, `artifacts/${appId}/users/${userId}/medicationReminders`), reminder);
                 document.getElementById('medicationNameInput').value = '';
                 document.getElementById('medicationTimeInput').value = '';
+                ringtoneSelect.value = ''; // Reset ringtone selection
                 medicationRemindersOutput.innerHTML = `<p>${currentLanguage === 'ta' ? "மருந்து நினைவூட்டல் வெற்றிகரமாகச் சேர்க்கப்பட்டது!" : "Medication reminder added successfully!"}</p>`;
             } catch (e) {
                 console.error("Error adding medication reminder: ", e);
@@ -2203,7 +2362,7 @@
 
             let html = `<h3 class="font-semibold mb-2">${currentLanguage === 'ta' ? "உங்கள் மருந்து நினைவூட்டல்கள்:" : "Your Medication Reminders:"}</h3><ul class="list-disc pl-5 space-y-2">`;
             reminders.sort((a, b) => a.time.localeCompare(b.time)).forEach(reminder => {
-                html += `<li><strong>${reminder.name}</strong> - ${reminder.time} `;
+                html += `<li><strong>${reminder.name}</strong> - ${reminder.time} (${translations[currentLanguage][reminder.ringtone.replace(/([A-Z])/g, (g) => `-${g[0].toLowerCase()}`).replace(/-/g, '')] || reminder.ringtone}) `;
                 html += `<button class="text-red-500 ml-2" onclick="deleteMedicationReminder('${reminder.id}')">(${currentLanguage === 'ta' ? "அழி" : "Delete"})</button></li>`;
             });
             html += `</ul>`;
@@ -2224,6 +2383,53 @@
                 document.getElementById('medicationRemindersOutput').innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "நினைவூட்டலை நீக்கும் போது பிழை ஏற்பட்டது." : "Error deleting reminder."}</p>`;
             }
         };
+
+        let medicationReminderInterval;
+
+        function startMedicationReminderChecker() {
+            if (medicationReminderInterval) {
+                clearInterval(medicationReminderInterval);
+            }
+            medicationReminderInterval = setInterval(async () => {
+                if (!db || !userId) {
+                    console.warn("Firestore not initialized. Cannot check reminders.");
+                    return;
+                }
+
+                try {
+                    const medicationCollectionRef = collection(db, `artifacts/${appId}/users/${userId}/medicationReminders`);
+                    const querySnapshot = await getDocs(medicationCollectionRef);
+                    const now = new Date();
+                    const currentHour = String(now.getHours()).padStart(2, '0');
+                    const currentMinute = String(now.getMinutes()).padStart(2, '0');
+                    const currentTime = `${currentHour}:${currentMinute}`;
+
+                    querySnapshot.forEach(async (docSnap) => {
+                        const reminder = docSnap.data();
+                        const reminderId = docSnap.id;
+
+                        if (reminder.time === currentTime) {
+                            // Check if already triggered in the last minute to avoid multiple triggers
+                            const lastTriggered = reminder.lastTriggered ? new Date(reminder.lastTriggered.toDate()) : null;
+                            if (!lastTriggered || (now.getTime() - lastTriggered.getTime()) > 60 * 1000) { // Trigger if not triggered in last 60 seconds
+                                console.log(`Medication Reminder: ${reminder.name} at ${reminder.time}`);
+                                alarmModalTitle.textContent = translations[currentLanguage].alarmModalTitle;
+                                alarmModalMessage.textContent = translations[currentLanguage].alarmModalMessage + reminder.name;
+                                alarmModal.classList.add('show');
+                                playRingtone(reminder.ringtone);
+
+                                // Update Firestore to mark as triggered, preventing immediate re-trigger
+                                await setDoc(doc(db, `artifacts/${appId}/users/${userId}/medicationReminders`, reminderId), {
+                                    lastTriggered: new Date()
+                                }, { merge: true });
+                            }
+                        }
+                    });
+                } catch (error) {
+                    console.error("Error checking medication reminders:", error);
+                }
+            }, 10 * 1000); // Check every 10 seconds
+        }
 
         // Body Pain Mapping Functionality
         const bodyMapImage = document.getElementById('bodyMapImage');
@@ -2263,103 +2469,40 @@
 
         document.getElementById('analyzePainBtn').addEventListener('click', async () => {
             const painAnalysisOutput = document.getElementById('painAnalysisOutput');
-            const loading = document.getElementById('loading');
+            const aiVoiceButton = document.getElementById('aiVoiceBtn'); // Reusing main AI voice button for this example
 
             if (painDots.length === 0) {
                 painAnalysisOutput.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "பகுப்பாய்வு செய்ய வலி புள்ளிகள் இல்லை." : "No pain points to analyze."}</p>`;
                 return;
             }
 
-            loading.style.display = 'flex';
-            painAnalysisOutput.innerHTML = '';
+            // In a real application, you'd send these coordinates to a more sophisticated AI for analysis
+            // For this example, we'll just list them and ask for a general interpretation.
+            const painPointsDescription = painDots.map(p => `(X: ${p.x.toFixed(1)}%, Y: ${p.y.toFixed(1)}%)`).join(', ');
 
-            try {
-                // In a real application, you'd send these coordinates to a more sophisticated AI for analysis
-                // For this example, we'll just list them and ask for a general interpretation.
-                const painPointsDescription = painDots.map(p => `(X: ${p.x.toFixed(1)}%, Y: ${p.y.toFixed(1)}%)`).join(', ');
+            const prompt = currentLanguage === 'ta' ?
+                `இந்த உடல் வலி புள்ளிகளின் அடிப்படையில் ஒரு பொதுவான பகுப்பாய்வை கொடுங்கள்: ${painPointsDescription}. ஒரு மருத்துவ நோயறிதலை வழங்க வேண்டாம், பொதுவான சாத்தியமான காரணங்கள் அல்லது அடுத்த படிகளை பரிந்துரைக்கவும். பதில் தமிழில் இருக்க வேண்டும்.` :
+                `Provide a general analysis based on these body pain points: ${painPointsDescription}. Do not provide a medical diagnosis, just suggest general possible causes or next steps. The response should be in English.`;
 
-                let chatHistory = [];
-                const prompt = currentLanguage === 'ta' ?
-                    `இந்த உடல் வலி புள்ளிகளின் அடிப்படையில் ஒரு பொதுவான பகுப்பாய்வை கொடுங்கள்: ${painPointsDescription}. ஒரு மருத்துவ நோயறிதலை வழங்க வேண்டாம், பொதுவான சாத்தியமான காரணங்கள் அல்லது அடுத்த படிகளை பரிந்துரைக்கவும். பதில் தமிழில் இருக்க வேண்டும்.` :
-                    `Provide a general analysis based on these body pain points: ${painPointsDescription}. Do not provide a medical diagnosis, just suggest general possible causes or next steps. The response should be in English.`;
-
-                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-                const payload = { contents: chatHistory };
-                const apiKey = "";
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                const result = await response.json();
-                if (result.candidates && result.candidates.length > 0 &&
-                    result.candidates[0].content && result.candidates[0].content.parts &&
-                    result.candidates[0].content[0].parts.length > 0) {
-                    const text = result.candidates[0].content.parts[0].text;
-                    painAnalysisOutput.innerHTML = `<p>${text}</p>`;
-                } else {
-                    painAnalysisOutput.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "வலி பகுப்பாய்வை உருவாக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்." : "Could not generate pain analysis. Please try again."}</p>`;
-                }
-            } catch (error) {
-                console.error('Error analyzing pain:', error);
-                painAnalysisOutput.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "வலி பகுப்பாய்வு செய்யும் போது பிழை ஏற்பட்டது. இணைய இணைப்பைச் சரிபார்க்கவும்." : "An error occurred while analyzing pain. Please check your internet connection."}</p>`;
-            } finally {
-                loading.style.display = 'none';
-            }
+            await callGeminiAPI(prompt, painAnalysisOutput, aiVoiceButton, translations[currentLanguage].painAnalysisOutputPlaceholder);
         });
 
         // First Aid & Emergency Functionality
         document.getElementById('getEmergencyGuideBtn').addEventListener('click', async () => {
             const emergencyTopic = document.getElementById('emergencyTopicInput').value.trim();
             const emergencyGuideOutput = document.getElementById('emergencyGuideOutput');
-            const loading = document.getElementById('loading');
-            const firstAidEmergencyAiVoiceBtn = document.getElementById('firstAidEmergencyAiVoiceBtn');
+            const aiVoiceButton = document.getElementById('firstAidEmergencyAiVoiceBtn');
 
             if (!emergencyTopic) {
                 emergencyGuideOutput.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "அவசர தலைப்பை உள்ளிடவும்." : "Please enter an emergency topic."}</p>`;
                 return;
             }
 
-            loading.style.display = 'flex';
-            emergencyGuideOutput.innerHTML = '';
-            firstAidEmergencyAiVoiceBtn.style.display = 'none';
+            const prompt = currentLanguage === 'ta' ?
+                `இந்த அவசரநிலைக்கான முதலுதவி வழிகாட்டியை எனக்கு கொடுங்கள்: ${emergencyTopic}. பதில் தமிழில் இருக்க வேண்டும்.` :
+                `Give me a first aid guide for this emergency: ${emergencyTopic}. The response should be in English.`;
 
-            try {
-                let chatHistory = [];
-                const prompt = currentLanguage === 'ta' ?
-                    `இந்த அவசரநிலைக்கான முதலுதவி வழிகாட்டியை எனக்கு கொடுங்கள்: ${emergencyTopic}. பதில் தமிழில் இருக்க வேண்டும்.` :
-                    `Give me a first aid guide for this emergency: ${emergencyTopic}. The response should be in English.`;
-
-                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-                const payload = { contents: chatHistory };
-                const apiKey = "";
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                const result = await response.json();
-                if (result.candidates && result.candidates.length > 0 &&
-                    result.candidates[0].content && result.candidates[0].content.parts &&
-                    result.candidates[0].content.parts.length > 0) {
-                    const text = result.candidates[0].content.parts[0].text;
-                    emergencyGuideOutput.innerHTML = `<p>${text}</p>`;
-                    firstAidEmergencyAiVoiceBtn.style.display = 'inline-flex';
-                } else {
-                    emergencyGuideOutput.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "வழிகாட்டியை உருவாக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்." : "Could not generate a guide. Please try again."}</p>`;
-                }
-            } catch (error) {
-                console.error('Error generating emergency guide:', error);
-                emergencyGuideOutput.innerHTML = `<p class="text-red-600">${currentLanguage === 'ta' ? "வழிகாட்டியை உருவாக்கும் போது பிழை ஏற்பட்டது. இணைய இணைப்பைச் சரிபார்க்கவும்." : "An error occurred while generating the guide. Please check your internet connection."}</p>`;
-            } finally {
-                loading.style.display = 'none';
-            }
+            await callGeminiAPI(prompt, emergencyGuideOutput, aiVoiceButton, translations[currentLanguage].emergencyGuideOutputPlaceholder);
         });
 
     </script>
